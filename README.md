@@ -1,2 +1,2 @@
-# JoyConDroidTASTheme
-Uses JoyCon Droid but allows TAS
+# JoyCon Droid TAS Theme
+Uses JoyCon Droid to allow you to run TAS from a Android 9 phone instead of Homebrew or specialized hardware!
