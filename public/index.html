@@ -6,12 +6,16 @@
 	<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no" />
 	<title>TAS</title>
 	<link href="./css/materialize.min.css" rel="stylesheet">
+	<!-- Materialize icons -->
+	<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 	<style>
 		textarea {
 			overflow-y: scroll;
 			height: 300px;
 			resize: none;
 			/* Remove this if you want the user to resize the textarea */
+			border: none;
+			color: white;
 		}
 
 		#logo {
@@ -21,11 +25,15 @@
 		html {
 			background-color: #1c1919;
 		}
+
+		.btn {
+			width: 100%;
+		}
 	</style>
 </head>
 
 <body>
-	<img src="./tas.png" alt="TAS Logo" id="logo">
+	<img src="./images/tas.png" alt="TAS Logo" id="logo">
 	<div class="file-field input-field">
 		<div class="btn">
 			<span>Choose TAS file</span>
@@ -35,7 +43,10 @@
 			<input class="file-path validate" type="text">
 		</div>
 	</div>
-	<a class="waves-effect waves-light btn" id="submitTASFile">Submit TAS file</a>
+	<a class="waves-effect waves-light btn" id="submitTASFile"><i class="material-icons">publish</i></a><br>
+	<a class="waves-effect waves-light btn" id="startTAS"><i class="material-icons">play_arrow</i></a><br>
+	<a class="waves-effect waves-light btn" id="stopTAS"><i class="material-icons">stop</i></a><br>
+	<a class="waves-effect waves-light btn" id="pauseTAS"><i class="material-icons">pause</i></a>
 	<textarea id="log"></textarea>
 
 	<script type="text/javascript" src="./js/main.js"></script>

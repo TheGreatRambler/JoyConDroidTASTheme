@@ -35,6 +35,9 @@ document.getElementById("submitTASFile").onclick = function() {
 			var contents = fileReader.result;
 			log("Finished reading TAS file");
 		};
+		fileReader.onerror = function() {
+			log("File reading failed");
+		};
 		fileReader.readAsText(file);
 		log("Starting to read TAS file")
 	} else {
