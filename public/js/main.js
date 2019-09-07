@@ -29,9 +29,9 @@ function formatBytes(bytes, decimals = 2) {
 	return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
 }
 
-document.write(window.JoyconJS);
-document.write(Object.keys(window.JoyconJS));
-document.write(JSON.stringify(window.JoyconJS));
+//document.write(window.JoyconJS);
+//document.write(Object.keys(window.JoyconJS || {}));
+//document.write(JSON.stringify(window.JoyconJS || {}));
 
 log("No TAS file chosen");
 document.getElementById("TASFileInput").onchange = function() {

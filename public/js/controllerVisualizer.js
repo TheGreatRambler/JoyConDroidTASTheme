@@ -162,15 +162,21 @@ function setControllerVisualizer(inputs) {
 			// Left stick
 			if (inputs.LX && inputs.LY) {
 				var xOffset = inputs.LX / 1000;
-				var yOffset = inputs.LY / 1000;
+				// Y is opposite
+				var yOffset = inputs.LY / -1000;
 				move(1, xOffset, yOffset);
+			} else {
+				// Reset
+				move(1, 0, 0);
 			}
 
 			// Right stick
 			if (inputs.RX && inputs.RY) {
 				var xOffset = inputs.RX / 1000;
-				var yOffset = inputs.RY / 1000;
+				var yOffset = inputs.RY / -1000;
 				move(2, xOffset, yOffset);
+			} else {
+				move(2, 0, 0);
 			}
 		}
 	}
