@@ -64,112 +64,114 @@ init();
 document.getElementById("toggleController").onclick = toggleVisibility;
 
 function setControllerVisualizer(inputs) {
-	if (!inputs) {
-		// No inputs this frame
-		visible(true, 17);
-	} else {
-		// Set blank as invisible automatically
-		visible(false, 17);
+	if (currentlyVisible) {
+		if (!inputs) {
+			// No inputs this frame
+			visible(true, 17);
+		} else {
+			// Set blank as invisible automatically
+			visible(false, 17);
 
-		// Inputs is an object
-		if (inputs.A) {
-			visible(true, 3);
-		} else if (inputs.A === false) {
-			// Protect against undefined
-			visible(false, 3);
-		}
+			// Inputs is an object
+			if (inputs.A) {
+				visible(true, 3);
+			} else if (inputs.A === false) {
+				// Protect against undefined
+				visible(false, 3);
+			}
 
-		if (inputs.B) {
-			visible(true, 4);
-		} else if (inputs.B === false) {
-			visible(false, 4);
-		}
+			if (inputs.B) {
+				visible(true, 4);
+			} else if (inputs.B === false) {
+				visible(false, 4);
+			}
 
-		if (inputs.X) {
-			visible(true, 5);
-		} else if (inputs.X === false) {
-			visible(false, 5);
-		}
+			if (inputs.X) {
+				visible(true, 5);
+			} else if (inputs.X === false) {
+				visible(false, 5);
+			}
 
-		if (inputs.Y) {
-			visible(true, 6);
-		} else if (inputs.Y === false) {
-			visible(false, 6);
-		}
+			if (inputs.Y) {
+				visible(true, 6);
+			} else if (inputs.Y === false) {
+				visible(false, 6);
+			}
 
-		if (inputs.L) {
-			visible(true, 7);
-		} else if (inputs.L === false) {
-			visible(false, 7);
-		}
+			if (inputs.L) {
+				visible(true, 7);
+			} else if (inputs.L === false) {
+				visible(false, 7);
+			}
 
-		if (inputs.R) {
-			visible(true, 8);
-		} else if (inputs.R === false) {
-			visible(false, 8);
-		}
+			if (inputs.R) {
+				visible(true, 8);
+			} else if (inputs.R === false) {
+				visible(false, 8);
+			}
 
-		if (inputs.ZL) {
-			visible(true, 9);
-		} else if (inputs.ZL === false) {
-			visible(false, 9);
-		}
+			if (inputs.ZL) {
+				visible(true, 9);
+			} else if (inputs.ZL === false) {
+				visible(false, 9);
+			}
 
-		if (inputs.ZR) {
-			visible(true, 10);
-		} else if (inputs.ZR === false) {
-			visible(false, 10);
-		}
+			if (inputs.ZR) {
+				visible(true, 10);
+			} else if (inputs.ZR === false) {
+				visible(false, 10);
+			}
 
-		if (inputs.PLUS) {
-			visible(true, 11);
-		} else if (inputs.PLUS === false) {
-			visible(false, 11);
-		}
+			if (inputs.PLUS) {
+				visible(true, 11);
+			} else if (inputs.PLUS === false) {
+				visible(false, 11);
+			}
 
-		if (inputs.MINUS) {
-			visible(true, 12);
-		} else if (inputs.MINUS === false) {
-			visible(false, 12);
-		}
+			if (inputs.MINUS) {
+				visible(true, 12);
+			} else if (inputs.MINUS === false) {
+				visible(false, 12);
+			}
 
-		if (inputs.DLEFT) {
-			visible(true, 13);
-		} else if (inputs.DLEFT === false) {
-			visible(false, 13);
-		}
+			if (inputs.DLEFT) {
+				visible(true, 13);
+			} else if (inputs.DLEFT === false) {
+				visible(false, 13);
+			}
 
-		if (inputs.DUP) {
-			visible(true, 14);
-		} else if (inputs.DUP === false) {
-			visible(false, 14);
-		}
+			if (inputs.DUP) {
+				visible(true, 14);
+			} else if (inputs.DUP === false) {
+				visible(false, 14);
+			}
 
-		if (inputs.DRIGHT) {
-			visible(true, 15);
-		} else if (inputs.DRIGHT === false) {
-			visible(false, 15);
-		}
+			if (inputs.DRIGHT) {
+				visible(true, 15);
+			} else if (inputs.DRIGHT === false) {
+				visible(false, 15);
+			}
 
-		if (inputs.DDOWN) {
-			visible(true, 16);
-		} else if (inputs.DDOWN === false) {
-			visible(false, 16);
-		}
+			if (inputs.DDOWN) {
+				visible(true, 16);
+			} else if (inputs.DDOWN === false) {
+				visible(false, 16);
+			}
 
-		// Joysticks
-		// Left stick
-		if (inputs.LX && inputs.LY) {
-			var xOffset = inputs.LX / 1000;
-			var yOffset = inputs.LY / 1000;
-			move(1, xOffset, yOffset);
-		}
+			// Joysticks
+			// Left stick
+			if (inputs.LX && inputs.LY) {
+				var xOffset = inputs.LX / 1000;
+				var yOffset = inputs.LY / 1000;
+				move(1, xOffset, yOffset);
+			}
 
-		// Right stick
-		if (inputs.RX && inputs.RY) {
-			var xOffset = inputs.RX / 1000;
-			var yOffset = inputs.RY / 1000;
-			move(2, xOffset, yOffset);
+			// Right stick
+			if (inputs.RX && inputs.RY) {
+				var xOffset = inputs.RX / 1000;
+				var yOffset = inputs.RY / 1000;
+				move(2, xOffset, yOffset);
+			}
 		}
 	}
 }
