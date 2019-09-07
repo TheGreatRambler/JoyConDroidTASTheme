@@ -2,9 +2,16 @@ var logTextarea = document.getElementById("log");
 var fileInput = document.getElementById("TASFileInput");
 logTextarea.value = "";
 
+var currentScriptParser = new parseScript();
+var isReadyToRun = false;
+
+var currentlyRunning = false;
+var pauseTAS = false;
+
 function log(text) {
 	var currentDate = new Date();
-	var dateString = "[" + currentDate.getHours() + ":" + currentDate.getMinutes() + ":" + currentDate.getSeconds() + ":" + currentDate.getMilliseconds() + "]: ";
+	var dateString = "[" + currentDate.getHours() + ":" + currentDate.getMinutes() + ":" + currentDate.getSeconds() + "." + Math.round(currentDate.getMilliseconds() / 10) + "]: ";
+	// Only round to nearest hundred of a second
 	logTextarea.value += (dateString + text + "\n");
 	// Keep log at bottom
 	logTextarea.scrollTop = logTextarea.scrollHeight;
@@ -23,6 +30,10 @@ function formatBytes(bytes, decimals = 2) {
 }
 
 log("No TAS file chosen");
+document.getElementById("TASFileInput").onchange = function() {
+	log("Ready to upload");
+};
+
 document.getElementById("submitTASFile").onclick = function() {
 	var file = fileInput.files[0];
 	if (file) {
@@ -34,6 +45,11 @@ document.getElementById("submitTASFile").onclick = function() {
 		fileReader.onload = function() {
 			var contents = fileReader.result;
 			log("Finished reading TAS file");
+			// Time to parse
+			currentScriptParser.setScript(contents);
+			contents = undefined;
+			log("Ready to start");
+			isReadyToRun = true;
 		};
 		fileReader.onerror = function() {
 			log("File reading failed");
@@ -44,3 +60,42 @@ document.getElementById("submitTASFile").onclick = function() {
 		log("No TAS file is chosen");
 	}
 }
+
+document.getElementById("startTAS").onclick = function() {
+	if (!currentlyRunning) {
+		if (isReadyToRun) {
+			currentlyRunning = true;
+			log("Starting to run");
+			// Check currently running every frame
+			// Also check pausing TAS every frame
+			// Simulate 60 fps
+			var currentFrame = 0;
+
+			function runFrame() {
+				var inputsThisFrame = currentScriptParser.getFrame(currentFrame);
+
+				// Just for testing
+				setControllerVisualizer(inputsThisFrame);
+				currentFrame++;
+				setTimeout(runFrame, 16);
+				// 60 fps
+			}
+			runFrame();
+		} else {
+			log("Script is not ready yet");
+		}
+	} else {
+		log("Script is currently in progress");
+	}
+};
+
+document.getElementById("stopTAS").onclick = function() {
+	log("Stopping TAS");
+	currentlyRunning = false;
+	// Its startTASs job to end the TAS
+};
+
+document.getElementById("pauseTAS").onclick = function() {
+	log("Pausing TAS");
+	pauseTAS = true;
+};

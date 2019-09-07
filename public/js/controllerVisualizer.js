@@ -1,5 +1,6 @@
 // Uses some stuff from TASVis
-var inputsNames = ["KEY_A", "KEY_B", "KEY_X", "KEY_Y", "KEY_L", "KEY_R", "KEY_ZL", "KEY_ZR", "KEY_PLUS", "KEY_MINUS", "KEY_DLEFT", "KEY_DUP", "KEY_DRIGHT", "KEY_DDOWN"];
+// Last one is blank, dont blame me
+var inputsNames = ["KEY_A", "KEY_B", "KEY_X", "KEY_Y", "KEY_L", "KEY_R", "KEY_ZL", "KEY_ZR", "KEY_PLUS", "KEY_MINUS", "KEY_DLEFT", "KEY_DUP", "KEY_DRIGHT", "KEY_DDOWN", "blank"];
 // Adds images that arent keys for now
 var imagesToMake = ["proconbase", "leftstick", "rightstick"].concat(inputsNames);
 var inputImages = [];
@@ -22,6 +23,11 @@ function visible(isVisible, index) {
 	} else {
 		inputImages[index].style.visibility = "hidden";
 	}
+}
+
+function move(index, x, y) {
+	inputImages[index].style.left = x + "px";
+	inputImages[index].style.top = y + "px";
 }
 
 function init() {
@@ -58,89 +64,112 @@ init();
 document.getElementById("toggleController").onclick = toggleVisibility;
 
 function setControllerVisualizer(inputs) {
-	// Inputs is an object
-	if (inputs.A) {
-		visible(true, 3);
-	} else if (inputs.A === false) {
-		// Protect against undefined
-		visible(false, 3);
-	}
+	if (!inputs) {
+		// No inputs this frame
+		visible(true, 17);
+	} else {
+		// Set blank as invisible automatically
+		visible(false, 17);
 
-	if (inputs.B) {
-		visible(true, 4);
-	} else if (inputs.B === false) {
-		visible(false, 4);
-	}
+		// Inputs is an object
+		if (inputs.A) {
+			visible(true, 3);
+		} else if (inputs.A === false) {
+			// Protect against undefined
+			visible(false, 3);
+		}
 
-	if (inputs.X) {
-		visible(true, 5);
-	} else if (inputs.X === false) {
-		visible(false, 5);
-	}
+		if (inputs.B) {
+			visible(true, 4);
+		} else if (inputs.B === false) {
+			visible(false, 4);
+		}
 
-	if (inputs.Y) {
-		visible(true, 6);
-	} else if (inputs.Y === false) {
-		visible(false, 6);
-	}
+		if (inputs.X) {
+			visible(true, 5);
+		} else if (inputs.X === false) {
+			visible(false, 5);
+		}
 
-	if (inputs.L) {
-		visible(true, 7);
-	} else if (inputs.L === false) {
-		visible(false, 7);
-	}
+		if (inputs.Y) {
+			visible(true, 6);
+		} else if (inputs.Y === false) {
+			visible(false, 6);
+		}
 
-	if (inputs.R) {
-		visible(true, 8);
-	} else if (inputs.R === false) {
-		visible(false, 8);
-	}
+		if (inputs.L) {
+			visible(true, 7);
+		} else if (inputs.L === false) {
+			visible(false, 7);
+		}
 
-	if (inputs.ZL) {
-		visible(true, 9);
-	} else if (inputs.ZL === false) {
-		visible(false, 9);
-	}
+		if (inputs.R) {
+			visible(true, 8);
+		} else if (inputs.R === false) {
+			visible(false, 8);
+		}
 
-	if (inputs.ZR) {
-		visible(true, 10);
-	} else if (inputs.ZR === false) {
-		visible(false, 10);
-	}
+		if (inputs.ZL) {
+			visible(true, 9);
+		} else if (inputs.ZL === false) {
+			visible(false, 9);
+		}
 
-	if (inputs.PLUS) {
-		visible(true, 11);
-	} else if (inputs.PLUS === false) {
-		visible(false, 11);
-	}
+		if (inputs.ZR) {
+			visible(true, 10);
+		} else if (inputs.ZR === false) {
+			visible(false, 10);
+		}
 
-	if (inputs.MINUS) {
-		visible(true, 12);
-	} else if (inputs.MINUS === false) {
-		visible(false, 12);
-	}
+		if (inputs.PLUS) {
+			visible(true, 11);
+		} else if (inputs.PLUS === false) {
+			visible(false, 11);
+		}
 
-	if (inputs.DLEFT) {
-		visible(true, 13);
-	} else if (inputs.DLEFT === false) {
-		visible(false, 13);
-	}
+		if (inputs.MINUS) {
+			visible(true, 12);
+		} else if (inputs.MINUS === false) {
+			visible(false, 12);
+		}
 
-	if (inputs.DUP) {
-		visible(true, 14);
-	} else if (inputs.DUP === false) {
-		visible(false, 14);
-	}
+		if (inputs.DLEFT) {
+			visible(true, 13);
+		} else if (inputs.DLEFT === false) {
+			visible(false, 13);
+		}
 
-	if (inputs.DRIGHT) {
-		visible(true, 15);
-	} else if (inputs.DRIGHT === false) {
-		visible(false, 15);
-	}
+		if (inputs.DUP) {
+			visible(true, 14);
+		} else if (inputs.DUP === false) {
+			visible(false, 14);
+		}
 
-	if (inputs.DDOWN) {
-		visible(true, 16);
-	} else if (inputs.DDOWN === false) {
-		visible(false, 16);
+		if (inputs.DRIGHT) {
+			visible(true, 15);
+		} else if (inputs.DRIGHT === false) {
+			visible(false, 15);
+		}
+
+		if (inputs.DDOWN) {
+			visible(true, 16);
+		} else if (inputs.DDOWN === false) {
+			visible(false, 16);
+		}
+
+		// Joysticks
+		// Left stick
+		if (inputs.LX && inputs.LY) {
+			var xOffset = inputs.LX / 1000;
+			var yOffset = inputs.LY / 1000;
+			move(1, xOffset, yOffset);
+		}
+
+		// Right stick
+		if (inputs.RX && inputs.RY) {
+			var xOffset = inputs.RX / 1000;
+			var yOffset = inputs.RY / 1000;
+			move(2, xOffset, yOffset);
+		}
 	}
 }
