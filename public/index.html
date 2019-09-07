@@ -29,6 +29,14 @@
 		.btn {
 			width: 100%;
 		}
+
+		.controllerImages {
+			position: absolute;
+		}
+
+		#controllerImageContainer {
+			position: relative;
+		}
 	</style>
 </head>
 
@@ -48,8 +56,11 @@
 	<a class="waves-effect waves-light btn" id="stopTAS"><i class="material-icons">stop</i></a><br>
 	<a class="waves-effect waves-light btn" id="pauseTAS"><i class="material-icons">pause</i></a>
 	<textarea id="log"></textarea>
+	<a class="waves-effect waves-light btn" id="toggleController">Toggle controller overlay</a>
+	<div id="controllerImageContainer"></div>
 
 	<script type="text/javascript" src="./js/main.js"></script>
+	<script type="text/javascript" src="./js/controllerVisualizer.js"></script>
 </body>
 
 </html>
