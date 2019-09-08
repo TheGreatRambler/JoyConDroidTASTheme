@@ -112,22 +112,22 @@ window.inputHandler = function() {
 
 document.getElementById("startTAS").onclick = function() {
 	if (!currentlyRunning) {
-		if (!controllerIsCurrentlySynced) {
-			log("Not connected to Switch");
-		} else {
-			if (isReadyToRun) {
-				currentFrame = 0;
-				currentlyRunning = true;
-				log("Starting to run");
-				// Check currently running every frame
-				// Also check pausing TAS every frame
-				// Simulate 60 fps
+		//if (!controllerIsCurrentlySynced) {
+		//	log("Not connected to Switch");
+		//} else {
+		if (isReadyToRun) {
+			currentFrame = 0;
+			currentlyRunning = true;
+			log("Starting to run");
+			// Check currently running every frame
+			// Also check pausing TAS every frame
+			// Simulate 60 fps
 
-				window.joyconJS.registerCallback("window.inputHandler");
-			} else {
-				log("Script is not ready yet");
-			}
+			window.joyconJS.registerCallback("window.inputHandler");
+		} else {
+			log("Script is not ready yet");
 		}
+		//}
 	} else {
 		log("Script is currently in progress");
 	}
