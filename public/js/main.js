@@ -91,6 +91,7 @@ document.getElementById("syncController").onclick = function() {
 }
 
 window.inputHandler = function() {
+	log("Trying");
 	if (!pauseTAS) {
 		log("Working somewhat");
 		log(currentFrame);
