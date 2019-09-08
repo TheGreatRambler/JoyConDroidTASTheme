@@ -1,3 +1,7 @@
+import {
+	log
+} from "util";
+
 var logTextarea = document.getElementById("log");
 var fileInput = document.getElementById("TASFileInput");
 logTextarea.value = "";
@@ -90,9 +94,10 @@ document.getElementById("syncController").onclick = function() {
 	}, 3000);
 }
 
-function inputHandler() {
+window.inputHandler = function() {
 	if (!pauseTAS) {
 		log("Working somewhat");
+		log(currentFrame);
 		var inputsThisFrame = currentScriptParser.getFrame(currentFrame);
 		setControllerVisualizer(inputsThisFrame);
 		currentFrame++;
@@ -100,7 +105,8 @@ function inputHandler() {
 			window.joyconJS["on" + key](inputsThisFrame[key]);
 		});
 		if (currentlyRunning === false) {
-			window.joyconJS.removeCallback();
+			//window.joyconJS.removeCallback();
+			log("TAS is stopped");
 		}
 		return true;
 	} else {
@@ -121,7 +127,7 @@ document.getElementById("startTAS").onclick = function() {
 				// Also check pausing TAS every frame
 				// Simulate 60 fps
 
-				window.joyconJS.registerCallback("inputHandler");
+				window.joyconJS.registerCallback("window.inputHandler");
 			} else {
 				log("Script is not ready yet");
 			}
