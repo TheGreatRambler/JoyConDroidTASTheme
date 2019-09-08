@@ -65,6 +65,22 @@ document.getElementById("submitTASFile").onclick = function() {
 	}
 }
 
+document.getElementById("syncController").onclick = function() {
+	// Try to sync VERY MANUALLY
+	window.joyconJS.onSync(true);
+	setTimeout(function() {
+		window.joyconJS.onSync(false);
+		// Sync
+		window.joyconJS.onL(true);
+		window.joyconJS.onR(true);
+		setTimeout(function() {
+			window.joyconJS.onL(false);
+			window.joyconJS.onR(false);
+		}, 200);
+		// 0.2 seconds is enough time
+	}, 200);
+}
+
 document.getElementById("startTAS").onclick = function() {
 	if (!currentlyRunning) {
 		if (isReadyToRun) {

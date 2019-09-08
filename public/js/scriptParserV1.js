@@ -14,6 +14,7 @@ parseScript.prototype.getFrame = function(index) {
 	// If at end of frames, skip rendering
 	if (!this.haveFinished || this.onLastFrame) {
 		if (this.currentIndex !== this.script.length) {
+
 			var returnVal = null;
 			// Returns inputs in object or undefined otherwise
 			// Skips frames that don't exist
