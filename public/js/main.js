@@ -92,6 +92,7 @@ document.getElementById("syncController").onclick = function() {
 
 function inputHandler() {
 	if (!pauseTAS) {
+		log("Working somewhat");
 		var inputsThisFrame = currentScriptParser.getFrame(currentFrame);
 		setControllerVisualizer(inputsThisFrame);
 		currentFrame++;
