@@ -1,7 +1,3 @@
-import {
-	log
-} from "util";
-
 var logTextarea = document.getElementById("log");
 var fileInput = document.getElementById("TASFileInput");
 logTextarea.value = "";
