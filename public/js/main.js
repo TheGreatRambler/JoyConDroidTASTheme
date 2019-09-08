@@ -1,3 +1,7 @@
+import {
+	log
+} from "util";
+
 var logTextarea = document.getElementById("log");
 var fileInput = document.getElementById("TASFileInput");
 logTextarea.value = "";
@@ -11,6 +15,9 @@ var currentlyRunning = false;
 var pauseTAS = false;
 
 var currentFrame = 0;
+
+var averageFrameTime = 0;
+var lastFrameTime = 0;
 
 function log(text) {
 	var currentDate = new Date();
@@ -86,15 +93,24 @@ document.getElementById("syncController").onclick = function() {
 				controllerIsCurrentlySynced = true;
 			}, 3000);
 		}, 3000);
-		// 0.2 seconds is enough time
+		// 3 seconds is enough time
 	}, 3000);
 }
 
 window.inputHandler = function() {
-	log("Trying");
 	if (!pauseTAS) {
-		log("Working somewhat");
-		log(currentFrame);
+		// Measure frame time
+		if (lastFrameTime !== 0) {
+			if (averageFrameTime === 0) {
+				averageFrameTime = performance.now() - lastFrameTime;
+			} else {
+				averageFrameTime = ((performance.now() - lastFrameTime) + averageFrameTime) / 2;
+			}
+		}
+		if (currentFrame === 100) {
+			log("Average frame time: " + averageFrameTime);
+		}
+		lastFrameTime = performance.now();
 		var inputsThisFrame = currentScriptParser.getFrame(currentFrame);
 		setControllerVisualizer(inputsThisFrame);
 		currentFrame++;
