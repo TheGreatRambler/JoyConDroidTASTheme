@@ -5,8 +5,12 @@ logTextarea.value = "";
 var currentScriptParser = new parseScript();
 var isReadyToRun = false;
 
+var controllerIsCurrentlySynced = false;
+
 var currentlyRunning = false;
 var pauseTAS = false;
+
+var currentFrame = 0;
 
 function log(text) {
 	var currentDate = new Date();
@@ -76,33 +80,50 @@ document.getElementById("syncController").onclick = function() {
 		setTimeout(function() {
 			window.joyconJS.onL(false);
 			window.joyconJS.onR(false);
-		}, 200);
+			window.joyconJS.onA(true);
+			setTimeout(function() {
+				window.joyconJS.onA(false);
+				controllerIsCurrentlySynced = true;
+			}, 3000);
+		}, 3000);
 		// 0.2 seconds is enough time
-	}, 200);
+	}, 3000);
+}
+
+function inputHandler() {
+	if (!pauseTAS) {
+		var inputsThisFrame = currentScriptParser.getFrame(currentFrame);
+		setControllerVisualizer(inputsThisFrame);
+		currentFrame++;
+		["A", "B", "X", "Y", "L", "R", "ZL", "ZR", "PLUS", "MINUS", "DLEFT", "DUP", "DRIGHT", "DDOWN"].forEach(function(key) {
+			window.joyconJS["on" + key](inputsThisFrame[key]);
+		});
+		if (currentlyRunning === false) {
+			window.joyconJS.removeCallback();
+		}
+		return true;
+	} else {
+		return false;
+	}
 }
 
 document.getElementById("startTAS").onclick = function() {
 	if (!currentlyRunning) {
-		if (isReadyToRun) {
-			currentlyRunning = true;
-			log("Starting to run");
-			// Check currently running every frame
-			// Also check pausing TAS every frame
-			// Simulate 60 fps
-			var currentFrame = 0;
-
-			function runFrame() {
-				var inputsThisFrame = currentScriptParser.getFrame(currentFrame);
-
-				// Just for testing
-				setControllerVisualizer(inputsThisFrame);
-				currentFrame++;
-				setTimeout(runFrame, 16);
-				// 60 fps
-			}
-			runFrame();
+		if (!controllerIsCurrentlySynced) {
+			log("Not connected to Switch");
 		} else {
-			log("Script is not ready yet");
+			if (isReadyToRun) {
+				currentFrame = 0;
+				currentlyRunning = true;
+				log("Starting to run");
+				// Check currently running every frame
+				// Also check pausing TAS every frame
+				// Simulate 60 fps
+
+				window.joyconJS.registerCallback("inputHandler");
+			} else {
+				log("Script is not ready yet");
+			}
 		}
 	} else {
 		log("Script is currently in progress");
