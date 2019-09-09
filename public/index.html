@@ -5,19 +5,11 @@
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no" />
 	<title>TAS</title>
-	<link href="./css/materialize.min.css" rel="stylesheet">
+	<!-- <link href="./css/materialize.min.css" rel="stylesheet"> -->
 	<!-- Materialize icons -->
 	<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+	<link href="./css/fancy.css" rel="stylesheet">
 	<style>
-		textarea {
-			overflow-y: scroll;
-			height: 100px;
-			resize: none;
-			/* Remove this if you want the user to resize the textarea */
-			border: none;
-			color: white;
-		}
-
 		#logo {
 			width: 100%;
 		}
@@ -28,6 +20,12 @@
 
 		html {
 			background-color: #1c1919;
+			font-size: 0;
+		}
+
+		body {
+			/* This disables scrolling horizontally */
+			overflow-x: hidden;
 		}
 
 		.btn {
@@ -38,36 +36,148 @@
 			position: absolute;
 		}
 
-		#controllerImageContainer {
-			position: relative;
+		#hiddenFileInput {
+			display: none;
 		}
 
-		p {
+		#stuffContainer {
+			height: 100%;
+			min-height: 100%;
+			display: block;
+		}
+
+		.buttonFake {
+			background-color: #fca103;
+			text-align: center;
+			/* Absolute positioning */
+			position: absolute;
+			display: table;
+			outline: 5px solid white;
+			height: 18%;
+		}
+
+		.buttonText {
+			display: table-cell;
+			vertical-align: middle;
+			color: white;
+		}
+
+		.material-icons.md-80 {
+			font-size: 80px;
+		}
+
+		#submitTASFile {
+			width: 50%;
+			top: 0%;
+			left: 0%;
+		}
+
+		/* When a file is added */
+		.addedFile .buttonText {
+			font-size: 10px;
+		}
+
+		.addedFile .material-icons.md-80 {
+			font-size: 45px;
+		}
+
+		/* End */
+
+		#syncController {
+			width: 50%;
+			top: 0%;
+			left: 50%;
+		}
+
+		#startTAS {
+			width: calc(100% / 3);
+			top: 19%;
+			left: 0%;
+		}
+
+		#stopTAS {
+			width: calc(100% / 3);
+			top: 19%;
+			left: calc(100% / 3);
+		}
+
+		#pauseTAS {
+			width: calc(100% / 3);
+			top: 19%;
+			left: calc(200% / 3);
+		}
+
+		#showController {
+			width: calc(100% / 3);
+			top: 38%;
+			left: 0%;
+		}
+
+		#showLog {
+			width: calc(100% / 3);
+			top: 38%;
+			left: calc(100% / 3);
+		}
+
+		#controllerImageContainer {
+			position: absolute;
+			top: 57%;
+			left: 0%;
+		}
+
+		#logContainer {
+			position: absolute;
+			top: 57%;
+			left: 0%;
+			width: 100%;
+			height: 43%;
+			display: none;
+		}
+
+		#log {
+			/* Same as fake button */
+			outline: 5px solid white;
+			overflow-y: scroll;
+			width: 100%;
+			height: 100%;
+			resize: none;
+			/* Remove this if you want the user to resize the textarea */
+			border: none;
 			color: white;
 		}
 	</style>
 </head>
 
 <body>
-	<img src="./images/tas.png" alt="TAS Logo" id="logo">
-	<p>V 0.1</p>
-	<div class="file-field input-field">
-		<div class="btn">
-			<span>Choose TAS file</span>
-			<input type="file" id="TASFileInput">
+	<input type="file" id="hiddenFileInput">
+	<div id="stuffContainer">
+		<div class="buttonFake buttonBackground" id="submitTASFile">
+			<p class="buttonText" id="fileInputText"><i class="material-icons md-80">file_upload</i></p>
 		</div>
-		<div class="file-path-wrapper">
-			<input class="file-path validate" type="text">
+		<div class="buttonFake buttonBackground" id="syncController">
+			<p class="buttonText"><i class="material-icons md-80">sync</i></p>
+		</div>
+		<div class="buttonFake buttonBackground" id="startTAS">
+			<p class="buttonText"><i class="material-icons md-80">play_arrow</i></p>
+		</div>
+		<div class="buttonFake buttonBackground" id="stopTAS">
+			<p class="buttonText"><i class="material-icons md-80">stop</i></p>
+		</div>
+		<div class="buttonFake buttonBackground" id="pauseTAS">
+			<p class="buttonText"><i class="material-icons md-80">pause</i></p>
+		</div>
+
+		<div class="buttonFake buttonBackground" id="showController">
+			<p class="buttonText"><i class="material-icons md-80">gamepad</i></p>
+		</div>
+		<div class="buttonFake buttonBackground" id="showLog">
+			<p class="buttonText"><i class="material-icons md-80">description</i></p>
+		</div>
+		<div id="controllerImageContainer" class="buttonBackground"></div>
+		<div id="logContainer">
+			<textarea readonly pellcheck="false" class="buttonBackground" id="log"></textarea>
 		</div>
 	</div>
-	<a class="waves-effect waves-light btn" id="submitTASFile"><i class="material-icons">publish</i></a>
-	<a class="waves-effect waves-light btn" id="syncController">Sync with Switch</a>
-	<a class="waves-effect waves-light btn" id="startTAS"><i class="material-icons">play_arrow</i></a>
-	<a class="waves-effect waves-light btn" id="stopTAS"><i class="material-icons">stop</i></a>
-	<a class="waves-effect waves-light btn" id="pauseTAS"><i class="material-icons">pause</i></a>
-	<textarea readonly id="log"></textarea>
-	<a class="waves-effect waves-light btn" id="toggleController">Toggle controller overlay</a>
-	<div id="controllerImageContainer"></div>
 
 	<script type="text/javascript" src="./js/controllerVisualizer.js"></script>
 	<script type="text/javascript" src="./js/scriptParserV1.js"></script>

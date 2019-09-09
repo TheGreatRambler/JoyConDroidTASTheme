@@ -1,9 +1,5 @@
-import {
-	log
-} from "util";
-
 var logTextarea = document.getElementById("log");
-var fileInput = document.getElementById("TASFileInput");
+var fileInput = document.getElementById("hiddenFileInput");
 logTextarea.value = "";
 
 var currentScriptParser = new parseScript();
@@ -23,7 +19,10 @@ function log(text) {
 	var currentDate = new Date();
 	var dateString = "[" + currentDate.getHours() + ":" + currentDate.getMinutes() + ":" + currentDate.getSeconds() + "." + Math.round(currentDate.getMilliseconds() / 10) + "]: ";
 	// Only round to nearest hundred of a second
-	logTextarea.value += (dateString + text + "\n");
+	var valueToLog = (dateString + text + "\n");
+	logTextarea.value += valueToLog;
+	// Extra logging stuff
+	console.log(text);
 	// Keep log at bottom
 	logTextarea.scrollTop = logTextarea.scrollHeight;
 }
@@ -45,35 +44,42 @@ function formatBytes(bytes, decimals = 2) {
 //document.write(JSON.stringify(window.JoyconJS || {}));
 
 log("No TAS file chosen");
-document.getElementById("TASFileInput").onchange = function() {
-	log("Ready to upload");
-};
+
+function showFileUI(fileName) {
+	document.getElementById("fileInputText").innerHTML = "<i class='material-icons md-80'>insert_drive_file</i><br>" + fileName;
+	document.getElementById("submitTASFile").className = "buttonFake buttonBackground addedFile";
+}
 
 document.getElementById("submitTASFile").onclick = function() {
-	var file = fileInput.files[0];
-	if (file) {
-		log("Added TAS file");
-		log("Name [" + file.name + "]");
-		log("Size [" + formatBytes(file.size) + "]");
-		log("Type [" + file.type + "]");
-		var fileReader = new FileReader();
-		fileReader.onload = function() {
-			var contents = fileReader.result;
-			log("Finished reading TAS file");
-			// Time to parse
-			currentScriptParser.setScript(contents);
-			contents = undefined;
-			log("Ready to start");
-			isReadyToRun = true;
-		};
-		fileReader.onerror = function() {
-			log("File reading failed");
-		};
-		fileReader.readAsText(file);
-		log("Starting to read TAS file")
-	} else {
-		log("No TAS file is chosen");
-	}
+	document.getElementById("hiddenFileInput").click();
+	document.getElementById("hiddenFileInput").onchange = function() {
+		var file = fileInput.files[0];
+		if (file) {
+			// Make file visible
+			showFileUI(file.name);
+			log("Added TAS file");
+			log("Name [" + file.name + "]");
+			log("Size [" + formatBytes(file.size) + "]");
+			log("Type [" + file.type + "]");
+			var fileReader = new FileReader();
+			fileReader.onload = function() {
+				var contents = fileReader.result;
+				log("Finished reading TAS file");
+				// Time to parse
+				currentScriptParser.setScript(contents);
+				contents = undefined;
+				log("Ready to start");
+				isReadyToRun = true;
+			};
+			fileReader.onerror = function() {
+				log("File reading failed");
+			};
+			fileReader.readAsText(file);
+			log("Starting to read TAS file")
+		} else {
+			log("No TAS file chosen");
+		}
+	};
 }
 
 document.getElementById("syncController").onclick = function() {
@@ -96,6 +102,19 @@ document.getElementById("syncController").onclick = function() {
 		// 3 seconds is enough time
 	}, 3000);
 }
+
+var logContainer = document.getElementById("logContainer");
+
+function showLog() {
+	hideController();
+	logContainer.style.display = "block";
+}
+
+function hideLog() {
+	logContainer.style.display = "none";
+}
+
+document.getElementById("showLog").onclick = showLog;
 
 window.inputHandler = function() {
 	if (!pauseTAS) {

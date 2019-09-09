@@ -8,13 +8,15 @@ var imageContainer = document.getElementById("controllerImageContainer");
 
 var currentlyVisible = true;
 
-function toggleVisibility() {
-	if (currentlyVisible) {
-		imageContainer.style.display = "none";
-	} else {
-		imageContainer.style.display = "block";
-	}
-	currentlyVisible = !currentlyVisible;
+function showController() {
+	hideLog();
+	imageContainer.style.display = "block";
+	currentlyVisible = true;
+}
+
+function hideController() {
+	imageContainer.style.display = "none";
+	currentlyVisible = false;
 }
 
 function visible(isVisible, index) {
@@ -41,7 +43,7 @@ function init() {
 		// Set to existing class
 		oImg.className = "controllerImages";
 		// Its a bit too big otherwise
-		oImg.style.width = (w - 18) + "px";
+		oImg.style.width = w + "px";
 		// Situate image
 		oImg.style.top = 0;
 		oImg.style["z-index"] = currentIndex;
@@ -61,7 +63,7 @@ function init() {
 init();
 
 // Toggle controller visibility
-document.getElementById("toggleController").onclick = toggleVisibility;
+document.getElementById("showController").onclick = showController;
 
 function setControllerVisualizer(inputs) {
 	if (currentlyVisible) {
