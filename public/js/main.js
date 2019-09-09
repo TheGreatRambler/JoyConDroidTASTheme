@@ -137,7 +137,9 @@ window.inputHandler = function() {
 			window.joyconJS["on" + key](inputsThisFrame[key]);
 		});
 		if (currentlyRunning === false) {
-			//window.joyconJS.removeCallback();
+			// Time to stop!
+			window.joyconJS.unregisterCallback();
+			currentScriptParser.reset();
 			log("TAS is stopped");
 		}
 		return true;
@@ -147,12 +149,17 @@ window.inputHandler = function() {
 }
 
 document.getElementById("startTAS").onclick = function() {
-	if (!currentlyRunning) {
+	if (!currentlyRunning || pauseTAS) {
 		//if (!controllerIsCurrentlySynced) {
 		//	log("Not connected to Switch");
 		//} else {
 		if (isReadyToRun) {
-			currentFrame = 0;
+			if (pauseTAS) {
+				// TAS was not paused, so the frames need to be reset
+				currentFrame = 0;
+				// No longer paused
+				pauseTAS = false;
+			}
 			currentlyRunning = true;
 			log("Starting to run");
 			// Check currently running every frame
@@ -170,12 +177,19 @@ document.getElementById("startTAS").onclick = function() {
 };
 
 document.getElementById("stopTAS").onclick = function() {
-	log("Stopping TAS");
-	currentlyRunning = false;
-	// Its startTASs job to end the TAS
+	// No need to stop if its not running
+	// Cant stop while pause, might change
+	if (currentlyRunning && !pauseTAS) {
+		log("Stopping TAS");
+		currentlyRunning = false;
+		// Its startTASs job to end the TAS
+	}
 };
 
 document.getElementById("pauseTAS").onclick = function() {
-	log("Pausing TAS");
-	pauseTAS = true;
+	// Must be running and not paused
+	if (currentlyRunning && !pauseTAS) {
+		log("Pausing TAS");
+		pauseTAS = true;
+	}
 };

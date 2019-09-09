@@ -3,12 +3,17 @@ function parseScript() {}
 parseScript.prototype.setScript = function(script) {
 	// Automatically resets everything
 	this.script = script;
+	this.reset();
+}
+
+parseScript.prototype.reset = function() {
+	// Reset all values
 	this.nextLine = null;
 	this.currentIndex = 0;
 	this.currentFrameNum = null;
 	this.haveFinished = false;
 	this.onLastFrame = false;
-}
+};
 
 parseScript.prototype.getFrame = function(index) {
 	// If at end of frames, skip rendering
