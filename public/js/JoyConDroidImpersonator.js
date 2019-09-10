@@ -25,10 +25,13 @@ if (!window.joyconJS) {
 	window.joyconJS.onZR = nullFunc;
 	window.joyconJS.onPlus = nullFunc;
 	window.joyconJS.onMinus = nullFunc;
+	window.joyconJS.onSync = nullFunc;
 	window.joyconJS.onLeft = nullFunc;
 	window.joyconJS.onRight = nullFunc;
 	window.joyconJS.onUp = nullFunc;
 	window.joyconJS.onDown = nullFunc;
+	window.joyconJS.onLeftJoystick = nullFunc;
+	window.joyconJS.onRightJoystick = nullFunc;
 
 	function loop() {
 		if (currentCallback) {
