@@ -10,6 +10,7 @@ var currentlyVisible = true;
 
 function showController() {
 	hideLog();
+	hideStats();
 	imageContainer.style.display = "block";
 	currentlyVisible = true;
 }
