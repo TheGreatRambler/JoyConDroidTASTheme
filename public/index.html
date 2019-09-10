@@ -121,6 +121,12 @@
 			left: calc(100% / 3);
 		}
 
+		#showStats {
+			width: calc(100% / 3);
+			top: 38%;
+			left: calc(200% / 3);
+		}
+
 		#controllerImageContainer {
 			position: absolute;
 			top: 57%;
@@ -175,12 +181,19 @@
 		<div class="buttonFake buttonBackground" id="showLog">
 			<p class="buttonText"><i class="material-icons md-80">description</i></p>
 		</div>
+		<div class="buttonFake buttonBackground" id="showStats">
+			<p class="buttonText"><i class="material-icons md-80">insert_chart</i></p>
+		</div>
 		<div id="controllerImageContainer" class="buttonBackground"></div>
 		<div id="logContainer">
 			<textarea readonly pellcheck="false" class="buttonBackground" id="log"></textarea>
 		</div>
+		<div id="statsChart" class="buttonBackground"></div>
 	</div>
 
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js"></script>
+	<script type="text/javascript" src="./js/tp/chartjs-plugin-streaming.min.js"></script>
 	<script type="text/javascript" src="./js/JoyConDroidImpersonator.js"></script>
 	<script type="text/javascript" src="./js/controllerVisualizer.js"></script>
 	<script type="text/javascript" src="./js/scriptParserV1.js"></script>
