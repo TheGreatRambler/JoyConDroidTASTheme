@@ -27,6 +27,11 @@ function log(text) {
 	logTextarea.scrollTop = logTextarea.scrollHeight;
 }
 
+// Redirect errors to logging
+window.onerror = function(message) {
+	log("ERROR: " + message);
+}
+
 function formatBytes(bytes, decimals = 2) {
 	if (bytes === 0) return '0 Bytes';
 
@@ -56,6 +61,7 @@ document.getElementById("submitTASFile").onclick = function() {
 		var file = fileInput.files[0];
 		if (file) {
 			// Make file visible
+			// We have to assume the file is good
 			showFileUI(file.name);
 			log("Added TAS file");
 			log("Name [" + file.name + "]");
@@ -67,7 +73,6 @@ document.getElementById("submitTASFile").onclick = function() {
 				log("Finished reading TAS file");
 				// Time to parse
 				currentScriptParser.setScript(contents);
-				contents = undefined;
 				log("Ready to start");
 				isReadyToRun = true;
 			};
@@ -116,6 +121,10 @@ function hideLog() {
 
 document.getElementById("showLog").onclick = showLog;
 
+// They aren't the same
+var funcNames = ["A", "B", "X", "Y", "L", "R", "ZL", "ZR", "Plus", "Minus", "Left", "Up", "Right", "Down"];
+var buttonNames = ["A", "B", "X", "Y", "L", "R", "ZL", "ZR", "PLUS", "MINUS", "DLEFT", "DUP", "DRIGHT", "DDOWN"];
+
 window.inputHandler = function() {
 	if (!pauseTAS) {
 		// Measure frame time
@@ -131,16 +140,22 @@ window.inputHandler = function() {
 		}
 		lastFrameTime = performance.now();
 		var inputsThisFrame = currentScriptParser.getFrame(currentFrame);
+
 		setControllerVisualizer(inputsThisFrame);
 		currentFrame++;
-		["A", "B", "X", "Y", "L", "R", "ZL", "ZR", "PLUS", "MINUS", "DLEFT", "DUP", "DRIGHT", "DDOWN"].forEach(function(key) {
-			window.joyconJS["on" + key](inputsThisFrame[key]);
-		});
-		if (currentlyRunning === false) {
+		if (inputsThisFrame) {
+			// Some frames have no inputs
+			funcNames.forEach(function(funcName, index) {
+				window.joyconJS["on" + funcName](inputsThisFrame[buttonNames[index]]);
+			});
+		}
+		if (currentlyRunning === false || currentScriptParser.done) {
 			// Time to stop!
 			window.joyconJS.unregisterCallback();
 			currentScriptParser.reset();
-			log("TAS is stopped");
+			// Reset controller visualizer
+			setControllerVisualizer(false);
+			log("TAS is stopped or has finished");
 		}
 		return true;
 	} else {
@@ -154,7 +169,7 @@ document.getElementById("startTAS").onclick = function() {
 		//	log("Not connected to Switch");
 		//} else {
 		if (isReadyToRun) {
-			if (pauseTAS) {
+			if (!pauseTAS) {
 				// TAS was not paused, so the frames need to be reset
 				currentFrame = 0;
 				// No longer paused

@@ -13,6 +13,7 @@ parseScript.prototype.reset = function() {
 	this.currentFrameNum = null;
 	this.haveFinished = false;
 	this.onLastFrame = false;
+	this.done = false;
 };
 
 parseScript.prototype.getFrame = function(index) {
@@ -83,8 +84,10 @@ parseScript.prototype.getFrame = function(index) {
 				this.nextLine = null;
 
 				if (this.onLastFrame) {
-					this.onLastFrame = true;
+					// Officially done
+					this.done = true;
 				}
+
 				returnVal = keyObject;
 			}
 

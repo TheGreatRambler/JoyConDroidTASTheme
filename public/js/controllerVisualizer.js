@@ -69,6 +69,7 @@ function setControllerVisualizer(inputs) {
 	if (currentlyVisible) {
 		if (!inputs) {
 			// No inputs this frame
+			// Make blank image viewable
 			visible(true, 17);
 		} else {
 			// Set blank as invisible automatically
