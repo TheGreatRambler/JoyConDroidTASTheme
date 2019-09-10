@@ -1,3 +1,5 @@
+var gMO = moment();
+
 var logTextarea = document.getElementById("log");
 var fileInput = document.getElementById("hiddenFileInput");
 logTextarea.value = "";
@@ -17,8 +19,7 @@ var lastFrameTime = 0;
 
 function log(text) {
 	var currentDate = new Date();
-	var dateString = "[" + currentDate.getHours() + ":" + currentDate.getMinutes() + ":" + currentDate.getSeconds() + "." + Math.round(currentDate.getMilliseconds() / 10) + "]: ";
-	// Only round to nearest hundred of a second
+	var dateString = "[" + gMO.format("h:mm:ss.SS") + "]: ";
 	var valueToLog = (dateString + text + "\n");
 	logTextarea.value += valueToLog;
 	// Extra logging stuff
@@ -128,18 +129,9 @@ var buttonNames = ["A", "B", "X", "Y", "L", "R", "ZL", "ZR", "PLUS", "MINUS", "D
 
 window.inputHandler = function() {
 	if (!pauseTAS) {
-		// Measure frame time
-		if (lastFrameTime !== 0) {
-			if (averageFrameTime === 0) {
-				averageFrameTime = performance.now() - lastFrameTime;
-			} else {
-				averageFrameTime = ((performance.now() - lastFrameTime) + averageFrameTime) / 2;
-			}
-		}
-		if (currentFrame === 100) {
-			log("Average frame time: " + averageFrameTime);
-		}
-		lastFrameTime = performance.now();
+		// Send FPS to profiler
+		callProfiler();
+		
 		var inputsThisFrame = currentScriptParser.getFrame(currentFrame);
 
 		setControllerVisualizer(inputsThisFrame);
@@ -150,6 +142,23 @@ window.inputHandler = function() {
 				window.joyconJS["on" + funcName](inputsThisFrame[buttonNames[index]]);
 			});
 		}
+		
+		// Send joystick inputs
+		if (!inputsThisFrame) {
+			// Neither are being held
+			window.joyconJS.onLeftJoystick(0,0);
+			window.joyconJS.onRightJoystick(0,0);
+		} else {
+			// Power goes to 100
+			var leftJoystickPower = Math.abs(Math.hypot(inputsThisFrame.LX, -inputsThisFrame.LY)) / 300;
+			var rightJoystickPower = Math.abs(Math.hypot(inputsThisFrame.RX, -inputsThisFrame.RY)) / 300;
+			// Angle is in radians
+			var leftJoystickAngle = Math.atan2(-inputsThisFrame.LY, inputsThisFrame.LX);
+			var rightJoystickAngle = Math.atan2(-inputsThisFrame.RY, inputsThisFrame.RX);
+			window.joyconJS.onLeftJoystick(leftJoystickPower, leftJoystickAngle);
+			window.joyconJS.onRightJoystick(rightJoystickPower, rightJoystickAngle);
+		}
+		
 		if (currentlyRunning === false || currentScriptParser.done) {
 			// Time to stop!
 			window.joyconJS.unregisterCallback();
