@@ -112,6 +112,7 @@ var logContainer = document.getElementById("logContainer");
 
 function showLog() {
 	hideController();
+	hideStats();
 	logContainer.style.display = "block";
 }
 
