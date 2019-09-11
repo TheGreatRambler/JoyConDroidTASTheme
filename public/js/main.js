@@ -131,7 +131,7 @@ window.inputHandler = function() {
 	if (!pauseTAS) {
 		// Send FPS to profiler
 		callProfiler();
-		
+
 		var inputsThisFrame = currentScriptParser.getFrame(currentFrame);
 
 		setControllerVisualizer(inputsThisFrame);
@@ -142,12 +142,12 @@ window.inputHandler = function() {
 				window.joyconJS["on" + funcName](inputsThisFrame[buttonNames[index]]);
 			});
 		}
-		
+
 		// Send joystick inputs
 		if (!inputsThisFrame) {
 			// Neither are being held
-			window.joyconJS.onLeftJoystick(0,0);
-			window.joyconJS.onRightJoystick(0,0);
+			window.joyconJS.onLeftJoystick(0, 0);
+			window.joyconJS.onRightJoystick(0, 0);
 		} else {
 			// Power goes to 100
 			var leftJoystickPower = Math.abs(Math.hypot(inputsThisFrame.LX, -inputsThisFrame.LY)) / 300;
@@ -158,13 +158,14 @@ window.inputHandler = function() {
 			window.joyconJS.onLeftJoystick(leftJoystickPower, leftJoystickAngle);
 			window.joyconJS.onRightJoystick(rightJoystickPower, rightJoystickAngle);
 		}
-		
+
 		if (currentlyRunning === false || currentScriptParser.done) {
 			// Time to stop!
 			window.joyconJS.unregisterCallback();
 			currentScriptParser.reset();
 			// Reset controller visualizer
 			setControllerVisualizer(false);
+			currentlyRunning = false;
 			log("TAS is stopped or has finished");
 		}
 		return true;
