@@ -1,12 +1,12 @@
-function parseScript() {}
+function ParserV1() {}
 
-parseScript.prototype.setScript = function(script) {
+ParserV1.prototype.setScript = function(script) {
 	// Automatically resets everything
 	this.script = script;
 	this.reset();
 }
 
-parseScript.prototype.reset = function() {
+ParserV1.prototype.reset = function() {
 	// Reset all values
 	this.nextLine = null;
 	this.currentIndex = 0;
@@ -16,7 +16,7 @@ parseScript.prototype.reset = function() {
 	this.done = false;
 };
 
-parseScript.prototype.getFrame = function(index) {
+ParserV1.prototype.getFrame = function(index) {
 	// If at end of frames, skip rendering
 	if (!this.haveFinished || this.onLastFrame) {
 		if (this.currentIndex !== this.script.length) {
@@ -99,4 +99,4 @@ parseScript.prototype.getFrame = function(index) {
 
 	// Runs if the last frame has been reached or if no inputs will run this frame
 	return undefined;
-}
+};
