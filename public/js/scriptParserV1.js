@@ -1,4 +1,29 @@
-function ParserV1() {}
+function ParserV1() {
+	// Inputs are stored in a big array
+	this.keyDict = {
+					KEY_A: 0,
+					KEY_B: 1,
+					KEY_X: 2,
+					KEY_Y: 3,
+					KEY_L: 4,
+					KEY_R: 5,
+					KEY_ZL: 6,
+					KEY_ZR: 7,
+					KEY_PLUS: 8,
+					KEY_MINUS: 9,
+					KEY_DLEFT: 10,
+					KEY_DUP: 11,
+					KEY_DRIGHT: 12,
+					KEY_DDOWN: 13,
+					LX: 14,
+					LY: 15
+					RX: 16,
+					RY: 17
+				};
+	
+	// This array is never destroyed, just continually reused
+	this.inputsThisFrame = [];
+}
 
 ParserV1.prototype.setScript = function(script) {
 	// Automatically resets everything
@@ -21,7 +46,7 @@ ParserV1.prototype.getFrame = function(index) {
 	if (!this.haveFinished || this.onLastFrame) {
 		if (this.currentIndex !== this.script.length) {
 
-			var returnVal = null;
+			var returnVal = false;
 			// Returns inputs in object or undefined otherwise
 			// Skips frames that don't exist
 
@@ -48,38 +73,25 @@ ParserV1.prototype.getFrame = function(index) {
 				// Start to parse
 				var parts = this.nextLine.split(" ");
 				// Initialize all as false
-				var keyObject = {
-					A: false,
-					B: false,
-					X: false,
-					Y: false,
-					L: false,
-					R: false,
-					ZL: false,
-					ZR: false,
-					PLUS: false,
-					MINUS: false,
-					DLEFT: false,
-					DUP: false,
-					DRIGHT: false,
-					DDOWN: false
-				};
+				for (var i = 0; i < this.inputsThisFrame.length; i++) {
+					this.inputsThisFrame[i] = 0;
+				}
 				var keys = parts[1].split(";");
 				if (keys[0] !== "NONE") {
 					// Keys exist
 					keys.forEach(function(key) {
-						var keyName = key.replace("KEY_", "");
-						keyObject[keyName] = true;
+						// 1 is true
+						this.inputsThisFrame[this.keyDict[key]] = 1;
 					});
 				}
 
 				// Now for joysticks
 				var leftJoystickValues = parts[2].split(";");
 				var rightJoystickValues = parts[3].split(";");
-				keyObject.LX = Number(leftJoystickValues[0]);
-				keyObject.LY = Number(leftJoystickValues[1]);
-				keyObject.RX = Number(rightJoystickValues[0]);
-				keyObject.RY = Number(rightJoystickValues[1]);
+				this.inputsThisFrame[this.keyDict.LX] = Number(leftJoystickValues[0]);
+				this.inputsThisFrame[this.keyDict.LY] = Number(leftJoystickValues[1]);
+				this.inputsThisFrame[this.keyDict.RX] = Number(rightJoystickValues[0]);
+				this.inputsThisFrame[this.keyDict.RY] = Number(rightJoystickValues[1]);
 
 				this.nextLine = null;
 
@@ -88,15 +100,15 @@ ParserV1.prototype.getFrame = function(index) {
 					this.done = true;
 				}
 
-				returnVal = keyObject;
+				returnVal = true;
 			}
 
 			if (returnVal) {
-				return returnVal;
+				return true;
 			}
 		}
 	}
 
 	// Runs if the last frame has been reached or if no inputs will run this frame
-	return undefined;
+	return false;
 };
