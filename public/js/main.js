@@ -88,6 +88,14 @@ document.getElementById("submitTASFile").onclick = function() {
 	};
 }
 
+function setCompileIconIfNeeded() {
+	if (currentScriptParser.isAsync()) {
+		// Set icon to wrench instead
+		document.getElementById("playArrow").innerHTML = "<i class='material-icons md-80'>build</i>";
+	}
+}
+setCompileIconIfNeeded();
+
 document.getElementById("syncController").onclick = function() {
 	// Try to sync VERY MANUALLY
 	window.joyconJS.onSync(true);
@@ -159,7 +167,7 @@ window.inputHandler = function() {
 			window.joyconJS.onRightJoystick(rightJoystickPower, rightJoystickAngle);
 		}
 
-		if (currentlyRunning === false || currentScriptParser.done) {
+		if (currentlyRunning === false || currentScriptParser.done()) {
 			// Time to stop!
 			window.joyconJS.unregisterCallback();
 			currentScriptParser.reset();
@@ -187,6 +195,10 @@ document.getElementById("startTAS").onclick = function() {
 				pauseTAS = false;
 			}
 			currentlyRunning = true;
+			
+			// Let parser know parsing is started just in case it needs to compile
+			currentScriptParser.startCompiling();
+			
 			log("Starting to run");
 			// Check currently running every frame
 			// Also check pausing TAS every frame
