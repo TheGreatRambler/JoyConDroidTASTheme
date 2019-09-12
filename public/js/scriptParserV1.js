@@ -1,6 +1,7 @@
 function ParserV1() {
 	// Inputs are stored in a big array
 	this.keyDict = {
+					FRAME: 0,
 					KEY_A: 0,
 					KEY_B: 1,
 					KEY_X: 2,
