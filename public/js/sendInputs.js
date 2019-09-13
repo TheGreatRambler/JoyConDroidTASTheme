@@ -12,17 +12,19 @@ var funcNames = ["A", "B", "X", "Y", "L", "R", "ZL", "ZR", "Plus", "Minus", "Lef
 
 window.inputHandler = function() {
 	if (!pauseTAS) {
-    // Get next frame
+		// Send FPS to profiler
+		callProfiler();
+    		// Get next frame
 		var inputsThisFrame = currentScriptParser.nextFrame();
 
 		setControllerVisualizer(inputsThisFrame);
-    // Actually, not needed right now
+    		// Actually, not needed right now
 		currentFrame++;
 		if (inputsThisFrame) {
 			// Some frames have no inputs
 			funcNames.forEach(function(funcName, index) {
 				// Frame is included, so need to add 1
-        // Turns off inputs if they don't run this frame
+        			// Turns off inputs if they don't run this frame
 				window.joyconJS["on" + funcName](inputsThisFrame[index + 1]);
 			});
 		}
