@@ -10,6 +10,13 @@ var isReadyToRun = false;
 
 var funcNames = ["A", "B", "X", "Y", "L", "R", "ZL", "ZR", "Plus", "Minus", "Left", "Up", "Right", "Down"];
 
+function clearAllInputs() {
+	funcNames.forEach(function(funcName) {
+		// Turns off each and every input
+		window.joyconJS["on" + funcName](0);
+	});
+}
+
 window.inputHandler = function() {
 	if (!pauseTAS) {
 		// Send FPS to profiler
@@ -27,6 +34,9 @@ window.inputHandler = function() {
         			// Turns off inputs if they don't run this frame
 				window.joyconJS["on" + funcName](inputsThisFrame[index + 1]);
 			});
+		} else {
+			// All inputs need to be cleared from last frame
+			clearAllInputs();
 		}
 
 		// Send joystick inputs
