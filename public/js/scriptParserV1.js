@@ -1,8 +1,5 @@
 function ParserV1() {
-	// Inputs are stored in a big array
-	this.keyDict = KEY_DICT;
-
-	// This array is never destroyed, just continually reused
+	// This array is never destroyed, just continually reused and cleared
 	this.inputsThisFrame = [];
 }
 
@@ -57,33 +54,36 @@ ParserV1.prototype.getFrame = function(index) {
 			}
 
 			if (this.currentFrameNum === index) {
+				// Empty array for next inputs
+				this.inputsThisFrame.length = 0;
 				// Set frame num
 				this.inputsThisFrame[0] = index;
+
 				// Start to parse
 				var parts = this.nextLine.split(" ");
-				// Initialize all as false
-				for (var i = 1; i < this.inputsThisFrame.length; i++) {
-					// Skip over frame number
-					this.inputsThisFrame[i] = 0;
-				}
-				var keys = parts[1].split(";");
 
-				if (keys[0] !== "NONE") {
-					// Keys exist
-					keys.forEach(function(key) {
-						// 1 is true
-						var ind = this.keyDict[key];
-						this.inputsThisFrame[ind] = 1;
-					});
-				}
-
-				// Now for joysticks
+				// Do joysticks first
 				var leftJoystickValues = parts[2].split(";");
 				var rightJoystickValues = parts[3].split(";");
-				this.inputsThisFrame[this.keyDict.LX] = Number(leftJoystickValues[0]);
-				this.inputsThisFrame[this.keyDict.LY] = Number(leftJoystickValues[1]);
-				this.inputsThisFrame[this.keyDict.RX] = Number(rightJoystickValues[0]);
-				this.inputsThisFrame[this.keyDict.RY] = Number(rightJoystickValues[1]);
+				// LX
+				this.inputsThisFrame[1] = Number(leftJoystickValues[0]);
+				// LY
+				this.inputsThisFrame[2] = Number(leftJoystickValues[1]);
+				// RX
+				this.inputsThisFrame[3] = Number(rightJoystickValues[0]);
+				// RY
+				this.inputsThisFrame[4] = Number(rightJoystickValues[1]);
+
+				var keysToPress = parts[1].split(";");
+
+				if (keysToPress[0] !== "NONE") {
+					// Keys exist
+					keysToPress.forEach(function(key) {
+						var ind = KEY_DICT[key];
+						// Add inputs (this is done so the array is small if there arent many inputs, saves space)
+						this.inputsThisFrame.push(ind);
+					});
+				}
 
 				this.nextLine = null;
 

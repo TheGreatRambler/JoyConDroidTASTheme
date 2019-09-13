@@ -72,7 +72,6 @@
 
 		#submitTASFile {
 			width: calc(100% / 3);
-			;
 			top: 0%;
 			left: 0%;
 		}
@@ -92,18 +91,14 @@
 
 		#syncController {
 			width: calc(100% / 3);
-			;
 			top: 0%;
 			left: calc(100% / 3);
-			;
 		}
 
 		#openSettings {
 			width: calc(100% / 3);
-			;
 			top: 0%;
 			left: calc(200% / 3);
-			;
 		}
 
 		#startTAS {
@@ -142,18 +137,46 @@
 			left: calc(200% / 3);
 		}
 
+		/*
+			Progress bar stuff
+		*/
+		.progressBar {
+			position: absolute;
+			height: 2%;
+			top: 57%;
+			border-radius: 5px;
+		}
+
+		#progressBarBase {
+			z-index: 0;
+			width: 100%;
+			background-color: black;
+		}
+
+		#progressBarComp {
+			z-index: 0;
+			width: 0%;
+			background-color: orange;
+		}
+
+		#progressBarRun {
+			z-index: 0;
+			width: 0%;
+			background-color: greenyellow;
+		}
+
 		#controllerImageContainer {
 			position: absolute;
-			top: 57%;
+			top: 59%;
 			left: 0%;
 		}
 
 		#logContainer {
 			position: absolute;
-			top: 57%;
+			top: 59%;
 			left: 0%;
 			width: 100%;
-			height: 43%;
+			height: 41%;
 			display: none;
 		}
 
@@ -174,10 +197,10 @@
 			/* Same as fake button */
 			outline: 5px solid white;
 			position: absolute;
-			top: 57%;
+			top: 59%;
 			left: 0%;
 			width: 100%;
-			height: 43%;
+			height: 41%;
 			display: none;
 		}
 	</style>
@@ -186,6 +209,7 @@
 <body>
 	<input type="file" id="hiddenFileInput">
 	<div id="stuffContainer">
+		<!-- Housekeeping buttons -->
 		<div class="buttonFake buttonBackground" id="submitTASFile">
 			<p class="buttonText" id="fileInputText"><i class="material-icons md-80">file_upload</i></p>
 		</div>
@@ -195,6 +219,7 @@
 		<div class="buttonFake buttonBackground" id="openSettings">
 			<p class="buttonText"><i class="material-icons md-80">settings</i></p>
 		</div>
+		<!-- Running TAS -->
 		<div class="buttonFake buttonBackground" id="startTAS">
 			<p class="buttonText" id="playArrow"><i class="material-icons md-80">play_arrow</i></p>
 		</div>
@@ -204,7 +229,7 @@
 		<div class="buttonFake buttonBackground" id="pauseTAS">
 			<p class="buttonText"><i class="material-icons md-80">pause</i></p>
 		</div>
-
+		<!-- Extra UIs buttons -->
 		<div class="buttonFake buttonBackground" id="showController">
 			<p class="buttonText"><i class="material-icons md-80">gamepad</i></p>
 		</div>
@@ -214,6 +239,11 @@
 		<div class="buttonFake buttonBackground" id="showStats">
 			<p class="buttonText"><i class="material-icons md-80">insert_chart</i></p>
 		</div>
+		<!-- Progress bar -->
+		<div class="progressBar" id="progressBarBase"></div>
+		<div class="progressBar" id="progressBarComp"></div>
+		<div class="progressBar" id="progressBarRun"></div>
+		<!-- Extra UIs -->
 		<div id="controllerImageContainer" class="buttonBackground"></div>
 		<div id="logContainer">
 			<textarea readonly pellcheck="false" class="buttonBackground" id="log"></textarea>
@@ -223,8 +253,8 @@
 		</div>
 	</div>
 
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js" crossorigin="anonymous"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js" crossorigin="anonymous"></script>
 	<script src="./js/tp/FastIntegerCompression.js"></script>
 	<script src="./js/tp/denque.js"></script>
 	<script src="./js/tp/chartjs-plugin-streaming.min.js"></script>

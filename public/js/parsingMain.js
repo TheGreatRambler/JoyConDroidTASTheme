@@ -41,6 +41,12 @@ var KEY_DICT = {
 	RY: 18
 };
 
+// Allows you to go backwards
+var KEY_INT_ARRAY = Object.keys(KEY_DICT);
+
+// RY + 1
+var LENGTH_BUTTON_ARRAY = 19;
+
 // Main script parsing frontend
 
 function parseScript() {
@@ -58,10 +64,17 @@ function parseScript() {
 	this.frame = 0;
 
 	this.scriptFinished = false;
-	
+
+	this.lastFrame = 0;
+
 	// Only used for compressed inputs
 	this._compressedFrameNum = -1;
 }
+
+parseScript.prototype.setProgressBar = function(compProgress, runProgress) {
+	document.getElementById("progressBarComp").style.width = compProgress + "%";
+	document.getElementById("progressBarRun").style.width = runProgress + "0%";
+};
 
 parseScript.prototype.isAsync = function() {
 	if (parsingStyle === PARSING_STYLE_PRECOMPILE || parsingStyle === PARSING_STYLE_PRECOMPILE_COMPRESSION) {
@@ -78,79 +91,68 @@ parseScript.prototype.done = function() {
 
 parseScript.prototype.nextFrame = function() {
 	if (!this.scriptFinished) {
-			// Undefined, not false
-			// Generate new one 
-			if (parsingStyle === PARSING_STYLE_SYNC) {
-				var success = this.getFrame(this.frame);
-				// A copy has to be made
-				var nextInput;
-				if (success) {
-					// Can send actual array only because we know that this array wont be modified
-					// Until the next input is called for (can't do for async)
-					nextInput = this.parser.inputsThisFrame;
-				} else {
-					nextInput = false;
-				}
+		// Undefined, not false
+		// Generate new one
+		var nextInput = false;
+		if (parsingStyle === PARSING_STYLE_SYNC) {
+			var success = this.getFrame(this.frame);
+			// A copy has to be made
+			if (success) {
+				// Can send actual array only because we know that this array wont be modified
+				// Until the next input is called for (can't do for async)
+				nextInput = this.parser.inputsThisFrame;
+			}
+			if (this.parserIsDone()) {
+				this.scriptFinished = true;
+			}
+		} else {
+			if (this.queue.isEmpty()) {
 				if (this.parserIsDone()) {
 					this.scriptFinished = true;
-				}
-				return nextInput;
-			} else {
-				var nextInput;
-				if (this.queue.isEmpty()) {
-					if (this.parserIsDone()) {
-						this.scriptFinished = true;
-						// Parser is done
-						// Has reached the end
-						return false;
-					} else {
-						var isDone = false;
-						// This is will pause the WHOLE PROGRAM while it is waiting for an input
-						while (!isDone) {
-							if (!this.queue.isEmpty()) {
-								if (parsingStyle === PARSING_STYLE_PRECOMPILE_COMPRESSION) {
-									if (this._compressedFrameNum !== -1) {
-										// No next frame has been specified
-										// Do it now
-										// Uncompress and do it
-										this._compressedFrameNum = FastIntegerCompression.uncompress(this.queue.peekBack())[0];
-									}
-									if (this._compressedFrameNum === this.frame) {
-										// This frame needs to be sent because the script is waiting for it
-										nextInput = FastIntegerCompression.uncompress(this.queue.pop());
-										// Set next frame specified as not avaliable
-										this._compressedFrameNum = -1;
-									} else {
-										// Nothing to do, this frame isn't needed yet
-										nextInput = false;
-									}
-								} else if (parsingStyle === PARSING_STYLE_PRECOMPILE) {
-									var isRightFrame = this.queue.peekBack()[0] === this.frame;
-									if (isRightFrame) {
-										nextInput = this.queue.pop();
-									} else {
-										// No inputs this frame
-										nextInput = false;
-									}
+					// Parser is done
+					// Has reached the end
+					nextInput = false;
+				} else {
+					var isDone = false;
+					// This is will pause the WHOLE PROGRAM while it is waiting for an input
+					while (!isDone) {
+						if (!this.queue.isEmpty()) {
+							if (parsingStyle === PARSING_STYLE_PRECOMPILE_COMPRESSION) {
+								if (this._compressedFrameNum !== -1) {
+									// No next frame has been specified
+									// Do it now
+									// Uncompress and do it
+									this._compressedFrameNum = FastIntegerCompression.uncompress(this.queue.peekBack())[0];
 								}
-								// Can break out of while loop
-								isDone = true;
+								if (this._compressedFrameNum === this.frame) {
+									// This frame needs to be sent because the script is waiting for it
+									nextInput = FastIntegerCompression.uncompress(this.queue.pop());
+									// Set next frame specified as not avaliable
+									this._compressedFrameNum = -1;
+								}
+							} else if (parsingStyle === PARSING_STYLE_PRECOMPILE) {
+								var isRightFrame = this.queue.peekBack()[0] === this.frame;
+								if (isRightFrame) {
+									nextInput = this.queue.pop();
+								}
 							}
+							// Can break out of while loop
+							isDone = true;
 						}
 					}
-				} else {
-					// We can simply push it
-					// Check if right frame
-					var isRightFrame = this.queue.peekBack()[0] === this.frame;
-					if (isRightFrame) {
-						nextInput = this.queue.pop();
-					} else {
-						// No inputs this frame
-						nextInput = false;
-					}
 				}
-				return nextInput;
+			} else {
+				// We can simply push it
+				// Check if right frame
+				var isRightFrame = this.queue.peekBack()[0] === this.frame;
+				if (isRightFrame) {
+					nextInput = this.queue.pop();
+				}
 			}
+		}
+		// Always increment frame
+		this.frame++;
+		return nextInput;
 	}
 }
 
@@ -172,13 +174,14 @@ parseScript.prototype.asyncParse = function() {
 		var frameSuccess = this.getFrame(this.currentIndex);
 		if (frameSuccess) {
 			if (parsingStyle === PARSING_STYLE_PRECOMPILE_COMPRESSION) {
+				// No need for new array because this one is being compressed
 				var compressed = FastIntegerCompression.compress(this.parser.inputsThisFrame);
 				// Add compressed to queue
 				this.queue.push(compressed);
 			} else if (parsingStyle === PARSING_STYLE_PRECOMPILE) {
 				// Puts array on if not compression
 				// Makes a copy of the array
-				var arrayToAdd = Array.from(this.parser.inputsThisFrame);
+				var arrayToAdd = this.parser.inputsThisFrame.slice();
 				this.queue.push(arrayToAdd);
 			}
 		}
@@ -204,6 +207,8 @@ parseScript.prototype.asyncParse = function() {
 
 parseScript.prototype.setScript = function(script) {
 	this.parser.setScript(script);
+	// Last frame number for progress bar sheanigans
+	this.lastFrame = this.parser.getLastFrame();
 }
 
 parseScript.prototype.hardStop = function() {

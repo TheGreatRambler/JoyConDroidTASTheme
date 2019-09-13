@@ -66,6 +66,23 @@ init();
 // Toggle controller visibility
 document.getElementById("showController").onclick = showController;
 
+var keyIndex = {
+	KEY_A: 3,
+	KEY_B: 4,
+	KEY_X: 5,
+	KEY_Y: 6,
+	KEY_L: 7,
+	KEY_R: 8,
+	KEY_ZL: 9,
+	KEY_ZR: 10,
+	KEY_PLUS: 11,
+	KEY_MINUS: 12,
+	KEY_DLEFT: 13,
+	KEY_DUP: 14,
+	KEY_DRIGHT: 15,
+	KEY_DDOWN: 16,
+};
+
 function setControllerVisualizer(inputs) {
 	if (currentlyVisible) {
 		if (!inputs) {
@@ -76,96 +93,27 @@ function setControllerVisualizer(inputs) {
 			// Set blank as invisible automatically
 			visible(false, 17);
 
-			// Inputs is an object
-			if (inputs[KEY_DICT.KEY_A]) {
-				visible(true, 3);
-			} else {
-				// Protect against undefined
-				visible(false, 3);
+			// May init this some other way, this is good right now
+			var listOfButtons = [3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16];
+
+			for (var i = 5; i < inputs.length; i++) {
+				// Start at 5 because those first 5 are joystick inputs and frame numbers
+				var keyNum = keyIndex[KEY_INT_ARRAY[inputs[i]]];
+				visible(true, keyNum);
+				listOfButtons[keyNum] = -1;
 			}
 
-			if (inputs[KEY_DICT.KEY_B]) {
-				visible(true, 4);
-			} else {
-				visible(false, 4);
-			}
-
-			if (inputs[KEY_DICT.KEY_X]) {
-				visible(true, 5);
-			} else {
-				visible(false, 5);
-			}
-
-			if (inputs[KEY_DICT.KEY_Y]) {
-				visible(true, 6);
-			} else {
-				visible(false, 6);
-			}
-
-			if (inputs[KEY_DICT.KEY_L]) {
-				visible(true, 7);
-			} else {
-				visible(false, 7);
-			}
-
-			if (inputs[KEY_DICT.KEY_R]) {
-				visible(true, 8);
-			} else {
-				visible(false, 8);
-			}
-
-			if (inputs[KEY_DICT.KEY_ZL]) {
-				visible(true, 9);
-			} else {
-				visible(false, 9);
-			}
-
-			if (inputs[KEY_DICT.KEY_ZR]) {
-				visible(true, 10);
-			} else {
-				visible(false, 10);
-			}
-
-			if (inputs[KEY_DICT.KEY_PLUS]) {
-				visible(true, 11);
-			} else {
-				visible(false, 11);
-			}
-
-			if (inputs[KEY_DICT.KEY_MINUS]) {
-				visible(true, 12);
-			} else {
-				visible(false, 12);
-			}
-
-			if (inputs[KEY_DICT.KEY_DLEFT]) {
-				visible(true, 13);
-			} else {
-				visible(false, 13);
-			}
-
-			if (inputs[KEY_DICT.KEY_DUP]) {
-				visible(true, 14);
-			} else {
-				visible(false, 14);
-			}
-
-			if (inputs[KEY_DICT.KEY_DRIGHT]) {
-				visible(true, 15);
-			} else {
-				visible(false, 15);
-			}
-
-			if (inputs[KEY_DICT.KEY_DDOWN]) {
-				visible(true, 16);
-			} else {
-				visible(false, 16);
-			}
+			listOfButtons.forEach(function(button) {
+				if (button !== -1) {
+					// Hide buttons that did not run this frame
+					visible(false, button);
+				}
+			});
 
 			// Joysticks
 			// Left stick
-			var LX = inputs[KEY_DICT.LX];
-			var LY = inputs[KEY_DICT.LY];
+			var LX = inputs[1];
+			var LY = inputs[2];
 			if (LX && LY) {
 				var xOffset = LX / 1000;
 				// Y is opposite
@@ -177,8 +125,8 @@ function setControllerVisualizer(inputs) {
 			}
 
 			// Right stick
-			var RX = inputs[KEY_DICT.RX];
-			var RY = inputs[KEY_DICT.RY];
+			var RX = inputs[3];
+			var RY = inputs[4];
 			if (RX && RY) {
 				var xOffset = RX / 1000;
 				var yOffset = RY / -1000;

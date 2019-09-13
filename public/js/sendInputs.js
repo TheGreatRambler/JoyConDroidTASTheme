@@ -21,22 +21,32 @@ window.inputHandler = function() {
 	if (!pauseTAS) {
 		// Send FPS to profiler
 		callProfiler();
-    		// Get next frame
+		// Get next frame
 		var inputsThisFrame = currentScriptParser.nextFrame();
 
+		// Inputs format
+		/*
+			0: Frame
+			1: LX,
+			2: LY,
+			3: RX,
+			4: RY,
+			5 - Infinity: The rest of the inputs
+		*/
+
 		setControllerVisualizer(inputsThisFrame);
-    		// Actually, not needed right now
+		// Actually, not needed right now
+
+		// Makes it easier to clear all of them beforehand
+		clearAllInputs();
+
 		currentFrame++;
 		if (inputsThisFrame) {
-			// Some frames have no inputs
-			funcNames.forEach(function(funcName, index) {
-				// Frame is included, so need to add 1
-        			// Turns off inputs if they don't run this frame
-				window.joyconJS["on" + funcName](inputsThisFrame[index + 1]);
-			});
-		} else {
-			// All inputs need to be cleared from last frame
-			clearAllInputs();
+			for (var i = 5; i < inputsThisFrame.length; i++) {
+				// Start at 5 because those first 5 are joystick inputs and frame numbers
+				// -1 because the first value is actually frames
+				window.joyconJS["on" + funcNames[inputsThisFrame[i] - 1]](1);
+			}
 		}
 
 		// Send joystick inputs
@@ -45,8 +55,10 @@ window.inputHandler = function() {
 			window.joyconJS.onLeftJoystick(0, 0);
 			window.joyconJS.onRightJoystick(0, 0);
 		} else {
-			var RX = inputsThisFrame[KEY_DICT.RX];
-			var RY = inputsThisFrame[KEY_DICT.RY];
+			var LX = inputsThisFrame[1];
+			var LY = inputsThisFrame[2];
+			var RX = inputsThisFrame[3];
+			var RY = inputsThisFrame[4];
 			// Power goes to 100
 			var leftJoystickPower = Math.abs(Math.hypot(LX, -LY)) / 300;
 			var rightJoystickPower = Math.abs(Math.hypot(RX, -RY)) / 300;
