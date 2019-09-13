@@ -58,8 +58,9 @@ function parseScript() {
 	this.frame = 0;
 
 	this.scriptFinished = false;
-
-	this.lastFrameForTwice = undefined;
+	
+	// Only used for compressed inputs
+	this._compressedFrameNum = -1;
 }
 
 parseScript.prototype.isAsync = function() {
@@ -76,13 +77,7 @@ parseScript.prototype.done = function() {
 };
 
 parseScript.prototype.nextFrame = function() {
-	// Send FPS to profiler
-	callProfiler();
-	// Beause it asks twice, we give it the same input twice in a row
-	// This is because pro controllers update twice in a frame
 	if (!this.scriptFinished) {
-		// This is the fastest way, but it is technically discouraged
-		if (this.lastFrameForTwice === undefined) {
 			// Undefined, not false
 			// Generate new one 
 			if (parsingStyle === PARSING_STYLE_SYNC) {
@@ -90,12 +85,12 @@ parseScript.prototype.nextFrame = function() {
 				// A copy has to be made
 				var nextInput;
 				if (success) {
-					// Need to make a copy of the internal array
-					nextInput = Array.from(this.parser.inputsThisFrame);
+					// Can send actual array only because we know that this array wont be modified
+					// Until the next input is called for (can't do for async)
+					nextInput = this.parser.inputsThisFrame;
 				} else {
 					nextInput = false;
 				}
-				this.lastFrameForTwice = nextInput;
 				if (this.parserIsDone()) {
 					this.scriptFinished = true;
 				}
@@ -114,14 +109,19 @@ parseScript.prototype.nextFrame = function() {
 						while (!isDone) {
 							if (!this.queue.isEmpty()) {
 								if (parsingStyle === PARSING_STYLE_PRECOMPILE_COMPRESSION) {
-									var valueReturned = FastIntegerCompression.uncompress(this.queue.peekBack());
-									var isRightFrame = valueReturned[0] === this.frame;
-									if (isRightFrame) {
-										nextInput = valueReturned
+									if (this._compressedFrameNum !== -1) {
+										// No next frame has been specified
+										// Do it now
+										// Uncompress and do it
+										this._compressedFrameNum = FastIntegerCompression.uncompress(this.queue.peekBack())[0];
+									}
+									if (this._compressedFrameNum === this.frame) {
+										// This frame needs to be sent because the script is waiting for it
+										nextInput = FastIntegerCompression.uncompress(this.queue.pop());
+										// Set next frame specified as not avaliable
+										this._compressedFrameNum = -1;
 									} else {
-										// Doesnt exist
-										// Remove element now
-										his.queue.pop()
+										// Nothing to do, this frame isn't needed yet
 										nextInput = false;
 									}
 								} else if (parsingStyle === PARSING_STYLE_PRECOMPILE) {
@@ -149,18 +149,8 @@ parseScript.prototype.nextFrame = function() {
 						nextInput = false;
 					}
 				}
-				// Does the same as sync
-				this.lastFrameForTwice = nextInput;
 				return nextInput;
 			}
-		} else {
-			var dataToSend = this.lastFrameForTwice;
-			// Dont worry, dataToSend still exists
-			this.lastFrameForTwice = undefined;
-			// Now, we can increment
-			this.frame++;
-			return dataToSend;
-		}
 	}
 }
 
