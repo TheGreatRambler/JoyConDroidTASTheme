@@ -6,7 +6,7 @@
   
   0 is default
 */
-var parsingStyle ===  = 0;
+var parsingStyle = 0;
 var PARSING_STYLE_SYNC = 0;
 var PARSING_STYLE_PRECOMPILE = 1;
 var PARSING_STYLE_PRECOMPILE_COMPRESSION = 2;
@@ -19,6 +19,28 @@ var PARSING_STYLE_PRECOMPILE_COMPRESSION = 2;
 var scriptCompilerVersion = 0;
 var PARSER_FIRST_VERSION = 0;
 
+var KEY_DICT = {
+	FRAME: 0,
+	KEY_A: 1,
+	KEY_B: 2,
+	KEY_X: 3,
+	KEY_Y: 4,
+	KEY_L: 5,
+	KEY_R: 6,
+	KEY_ZL: 7,
+	KEY_ZR: 8,
+	KEY_PLUS: 9,
+	KEY_MINUS: 10,
+	KEY_DLEFT: 11,
+	KEY_DUP: 12,
+	KEY_DRIGHT: 13,
+	KEY_DDOWN: 14,
+	LX: 15,
+	LY: 16,
+	RX: 17,
+	RY: 18
+};
+
 // Main script parsing frontend
 
 function parseScript() {
@@ -26,14 +48,18 @@ function parseScript() {
 		// This means that changing the compiler requires a reload
 		this.parser = new ParserV1();
 	}
-	
+
+	// For async
 	this.queue = new Denque();
 	this.currentIndex = 0;
 	this.stopAsync = false;
-	
+
+	// Unrelated to currentIndex
+	this.frame = 0;
+
 	this.scriptFinished = false;
-	
-	this.lastFrameForTwice = false;
+
+	this.lastFrameForTwice = undefined;
 }
 
 parseScript.prototype.isAsync = function() {
@@ -49,58 +75,92 @@ parseScript.prototype.done = function() {
 	return this.scriptFinished;
 };
 
-parseScript.prototype.frame = function() {
+parseScript.prototype.nextFrame = function() {
+	// Send FPS to profiler
+	callProfiler();
 	// Beause it asks twice, we give it the same input twice in a row
 	// This is because pro controllers update twice in a frame
 	if (!this.scriptFinished) {
-	if (!this.lastFrameForTwice) {
-		// Generate new one 
-		if (parsingStyle === PARSING_STYLE_SYNC) {
-			var success = this.getFrame(this.currentIndex);
-			// A copy has to be made
-			var nextInput = Array.from(this.parser.inputsThisFrame);
-			this.lastFrameForTwice = nextInput;
-			if (this.parserIsDone()) {
-				this.scriptFinished = true;
-			}
-			return nextInput;
-		} else {
-			var nextInput;
-			if (this.queue.isEmpty()) {
+		// This is the fastest way, but it is technically discouraged
+		if (this.lastFrameForTwice === undefined) {
+			// Undefined, not false
+			// Generate new one 
+			if (parsingStyle === PARSING_STYLE_SYNC) {
+				var success = this.getFrame(this.frame);
+				// A copy has to be made
+				var nextInput;
+				if (success) {
+					// Need to make a copy of the internal array
+					nextInput = Array.from(this.parser.inputsThisFrame);
+				} else {
+					nextInput = false;
+				}
+				this.lastFrameForTwice = nextInput;
 				if (this.parserIsDone()) {
 					this.scriptFinished = true;
-					// Parser is done
-					// Has reached the end
-					return false;
-				} else {
-				var isDone = false;
-				// This is will pause the WHOLE PROGRAM while it is waiting for an input
-				while (!isDone) {
-					if (!this.queue.isEmpty()) {
-						if (parsingStyle === PARSING_STYLE_PRECOMPILE_COMPRESSION) {
-							nextInput = FastIntegerCompression.uncompress(this.queue.pop())
-						} else if (parsingStyle === PARSING_STYLE_PRECOMPILE) {
-							nextInput = this.queue.pop();
+				}
+				return nextInput;
+			} else {
+				var nextInput;
+				if (this.queue.isEmpty()) {
+					if (this.parserIsDone()) {
+						this.scriptFinished = true;
+						// Parser is done
+						// Has reached the end
+						return false;
+					} else {
+						var isDone = false;
+						// This is will pause the WHOLE PROGRAM while it is waiting for an input
+						while (!isDone) {
+							if (!this.queue.isEmpty()) {
+								if (parsingStyle === PARSING_STYLE_PRECOMPILE_COMPRESSION) {
+									var valueReturned = FastIntegerCompression.uncompress(this.queue.peekBack());
+									var isRightFrame = valueReturned[0] === this.frame;
+									if (isRightFrame) {
+										nextInput = valueReturned
+									} else {
+										// Doesnt exist
+										// Remove element now
+										his.queue.pop()
+										nextInput = false;
+									}
+								} else if (parsingStyle === PARSING_STYLE_PRECOMPILE) {
+									var isRightFrame = this.queue.peekBack()[0] === this.frame;
+									if (isRightFrame) {
+										nextInput = this.queue.pop();
+									} else {
+										// No inputs this frame
+										nextInput = false;
+									}
+								}
+								// Can break out of while loop
+								isDone = true;
+							}
 						}
-						// Can break out of while loop
-						isDone = true;
+					}
+				} else {
+					// We can simply push it
+					// Check if right frame
+					var isRightFrame = this.queue.peekBack()[0] === this.frame;
+					if (isRightFrame) {
+						nextInput = this.queue.pop();
+					} else {
+						// No inputs this frame
+						nextInput = false;
 					}
 				}
-				}
-			} else {
-				// We can simply push it
-				nextInput = this.queue.pop();
+				// Does the same as sync
+				this.lastFrameForTwice = nextInput;
+				return nextInput;
 			}
-			// Does the same as sync
-			this.lastFrameForTwice = nextInput;
-			return nextInput;
+		} else {
+			var dataToSend = this.lastFrameForTwice;
+			// Dont worry, dataToSend still exists
+			this.lastFrameForTwice = undefined;
+			// Now, we can increment
+			this.frame++;
+			return dataToSend;
 		}
-	} else {
-		var dataToSend = this.lastFrameForTwice;
-		// Dont worry, dataToSend still exists
-		this.lastFrameForTwice = false;
-		return dataToSend;
-	}
 	}
 }
 
@@ -114,11 +174,11 @@ parseScript.prototype.startCompiling = function() {
 };
 
 parseScript.prototype.parserIsDone = function() {
-    return this.parser.done;
+	return this.parser.done;
 }
 
 parseScript.prototype.asyncParse = function() {
-	(new Promise(function(resolve, reject) {
+	(new Promise(function(resolve) {
 		var frameSuccess = this.getFrame(this.currentIndex);
 		if (frameSuccess) {
 			if (parsingStyle === PARSING_STYLE_PRECOMPILE_COMPRESSION) {
@@ -147,6 +207,7 @@ parseScript.prototype.asyncParse = function() {
 			// Notice, the recursive function stops because it is not called again in this function
 			this.reset();
 			this.stopAsync = false;
+			this.currentIndex = 0;
 		}
 	});
 }
@@ -157,13 +218,14 @@ parseScript.prototype.setScript = function(script) {
 
 parseScript.prototype.hardStop = function() {
 	// Only used to alert async to stop
-		this.stopAsync = true;
+	this.stopAsync = true;
 }
 
 parseScript.prototype.reset = function() {
 	this.parser.reset();
+	this.frame = 0;
 };
 
 parseScript.prototype.getFrame = function(index) {
-  return this.parser.getFrame();
+	return this.parser.getFrame(index);
 };

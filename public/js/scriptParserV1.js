@@ -1,27 +1,7 @@
 function ParserV1() {
 	// Inputs are stored in a big array
-	this.keyDict = {
-					FRAME: 0,
-					KEY_A: 0,
-					KEY_B: 1,
-					KEY_X: 2,
-					KEY_Y: 3,
-					KEY_L: 4,
-					KEY_R: 5,
-					KEY_ZL: 6,
-					KEY_ZR: 7,
-					KEY_PLUS: 8,
-					KEY_MINUS: 9,
-					KEY_DLEFT: 10,
-					KEY_DUP: 11,
-					KEY_DRIGHT: 12,
-					KEY_DDOWN: 13,
-					LX: 14,
-					LY: 15
-					RX: 16,
-					RY: 17
-				};
-	
+	this.keyDict = KEY_DICT;
+
 	// This array is never destroyed, just continually reused
 	this.inputsThisFrame = [];
 }
@@ -41,6 +21,12 @@ ParserV1.prototype.reset = function() {
 	this.onLastFrame = false;
 	this.done = false;
 };
+
+ParserV1.prototype.getLastFrame = function() {
+	// Gets final frame so things can be computed
+	var endString = this.script.substring(this.script.lastIndexOf("\n") + 1, this.script.length);
+	return Number(endString.split(" ")[0]);
+}
 
 ParserV1.prototype.getFrame = function(index) {
 	// If at end of frames, skip rendering
@@ -71,18 +57,23 @@ ParserV1.prototype.getFrame = function(index) {
 			}
 
 			if (this.currentFrameNum === index) {
+				// Set frame num
+				this.inputsThisFrame[0] = index;
 				// Start to parse
 				var parts = this.nextLine.split(" ");
 				// Initialize all as false
-				for (var i = 0; i < this.inputsThisFrame.length; i++) {
+				for (var i = 1; i < this.inputsThisFrame.length; i++) {
+					// Skip over frame number
 					this.inputsThisFrame[i] = 0;
 				}
 				var keys = parts[1].split(";");
+
 				if (keys[0] !== "NONE") {
 					// Keys exist
 					keys.forEach(function(key) {
 						// 1 is true
-						this.inputsThisFrame[this.keyDict[key]] = 1;
+						var ind = this.keyDict[key];
+						this.inputsThisFrame[ind] = 1;
 					});
 				}
 

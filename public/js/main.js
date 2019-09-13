@@ -133,21 +133,18 @@ document.getElementById("showLog").onclick = showLog;
 
 // They aren't the same
 var funcNames = ["A", "B", "X", "Y", "L", "R", "ZL", "ZR", "Plus", "Minus", "Left", "Up", "Right", "Down"];
-var buttonNames = ["A", "B", "X", "Y", "L", "R", "ZL", "ZR", "PLUS", "MINUS", "DLEFT", "DUP", "DRIGHT", "DDOWN"];
 
 window.inputHandler = function() {
 	if (!pauseTAS) {
-		// Send FPS to profiler
-		callProfiler();
-
-		var inputsThisFrame = currentScriptParser.getFrame(currentFrame);
+		var inputsThisFrame = currentScriptParser.nextFrame();
 
 		setControllerVisualizer(inputsThisFrame);
 		currentFrame++;
 		if (inputsThisFrame) {
 			// Some frames have no inputs
 			funcNames.forEach(function(funcName, index) {
-				window.joyconJS["on" + funcName](inputsThisFrame[buttonNames[index]]);
+				// Frame is included, so need to add 1
+				window.joyconJS["on" + funcName](inputsThisFrame[index + 1]);
 			});
 		}
 
@@ -157,12 +154,14 @@ window.inputHandler = function() {
 			window.joyconJS.onLeftJoystick(0, 0);
 			window.joyconJS.onRightJoystick(0, 0);
 		} else {
+			var RX = inputsThisFrame[KEY_DICT.RX];
+			var RY = inputsThisFrame[KEY_DICT.RY];
 			// Power goes to 100
-			var leftJoystickPower = Math.abs(Math.hypot(inputsThisFrame.LX, -inputsThisFrame.LY)) / 300;
-			var rightJoystickPower = Math.abs(Math.hypot(inputsThisFrame.RX, -inputsThisFrame.RY)) / 300;
+			var leftJoystickPower = Math.abs(Math.hypot(LX, -LY)) / 300;
+			var rightJoystickPower = Math.abs(Math.hypot(RX, -RY)) / 300;
 			// Angle is in radians
-			var leftJoystickAngle = Math.atan2(-inputsThisFrame.LY, inputsThisFrame.LX);
-			var rightJoystickAngle = Math.atan2(-inputsThisFrame.RY, inputsThisFrame.RX);
+			var leftJoystickAngle = Math.atan2(-LY, LX);
+			var rightJoystickAngle = Math.atan2(-RY, RX);
 			window.joyconJS.onLeftJoystick(leftJoystickPower, leftJoystickAngle);
 			window.joyconJS.onRightJoystick(rightJoystickPower, rightJoystickAngle);
 		}
@@ -171,6 +170,8 @@ window.inputHandler = function() {
 			// Time to stop!
 			window.joyconJS.unregisterCallback();
 			currentScriptParser.reset();
+			// Hard reset for async (for now)
+			//currentScriptParser.hardStop();
 			// Reset controller visualizer
 			setControllerVisualizer(false);
 			currentlyRunning = false;
@@ -195,10 +196,10 @@ document.getElementById("startTAS").onclick = function() {
 				pauseTAS = false;
 			}
 			currentlyRunning = true;
-			
+
 			// Let parser know parsing is started just in case it needs to compile
 			currentScriptParser.startCompiling();
-			
+
 			log("Starting to run");
 			// Check currently running every frame
 			// Also check pausing TAS every frame

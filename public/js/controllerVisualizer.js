@@ -77,97 +77,99 @@ function setControllerVisualizer(inputs) {
 			visible(false, 17);
 
 			// Inputs is an object
-			if (inputs.A) {
+			if (inputs[KEY_DICT.KEY_A]) {
 				visible(true, 3);
-			} else if (inputs.A === false) {
+			} else {
 				// Protect against undefined
 				visible(false, 3);
 			}
 
-			if (inputs.B) {
+			if (inputs[KEY_DICT.KEY_B]) {
 				visible(true, 4);
-			} else if (inputs.B === false) {
+			} else {
 				visible(false, 4);
 			}
 
-			if (inputs.X) {
+			if (inputs[KEY_DICT.KEY_X]) {
 				visible(true, 5);
-			} else if (inputs.X === false) {
+			} else {
 				visible(false, 5);
 			}
 
-			if (inputs.Y) {
+			if (inputs[KEY_DICT.KEY_Y]) {
 				visible(true, 6);
-			} else if (inputs.Y === false) {
+			} else {
 				visible(false, 6);
 			}
 
-			if (inputs.L) {
+			if (inputs[KEY_DICT.KEY_L]) {
 				visible(true, 7);
-			} else if (inputs.L === false) {
+			} else {
 				visible(false, 7);
 			}
 
-			if (inputs.R) {
+			if (inputs[KEY_DICT.KEY_R]) {
 				visible(true, 8);
-			} else if (inputs.R === false) {
+			} else {
 				visible(false, 8);
 			}
 
-			if (inputs.ZL) {
+			if (inputs[KEY_DICT.KEY_ZL]) {
 				visible(true, 9);
-			} else if (inputs.ZL === false) {
+			} else {
 				visible(false, 9);
 			}
 
-			if (inputs.ZR) {
+			if (inputs[KEY_DICT.KEY_ZR]) {
 				visible(true, 10);
-			} else if (inputs.ZR === false) {
+			} else {
 				visible(false, 10);
 			}
 
-			if (inputs.PLUS) {
+			if (inputs[KEY_DICT.KEY_PLUS]) {
 				visible(true, 11);
-			} else if (inputs.PLUS === false) {
+			} else {
 				visible(false, 11);
 			}
 
-			if (inputs.MINUS) {
+			if (inputs[KEY_DICT.KEY_MINUS]) {
 				visible(true, 12);
-			} else if (inputs.MINUS === false) {
+			} else {
 				visible(false, 12);
 			}
 
-			if (inputs.DLEFT) {
+			if (inputs[KEY_DICT.KEY_DLEFT]) {
 				visible(true, 13);
-			} else if (inputs.DLEFT === false) {
+			} else {
 				visible(false, 13);
 			}
 
-			if (inputs.DUP) {
+			if (inputs[KEY_DICT.KEY_DUP]) {
 				visible(true, 14);
-			} else if (inputs.DUP === false) {
+			} else {
 				visible(false, 14);
 			}
 
-			if (inputs.DRIGHT) {
+			if (inputs[KEY_DICT.KEY_DRIGHT]) {
 				visible(true, 15);
-			} else if (inputs.DRIGHT === false) {
+			} else {
 				visible(false, 15);
 			}
 
-			if (inputs.DDOWN) {
+			if (inputs[KEY_DICT.KEY_DDOWN]) {
 				visible(true, 16);
-			} else if (inputs.DDOWN === false) {
+			} else {
 				visible(false, 16);
 			}
 
 			// Joysticks
 			// Left stick
-			if (inputs.LX && inputs.LY) {
-				var xOffset = inputs.LX / 1000;
+			var LX = inputs[KEY_DICT.LX];
+			var LY = inputs[KEY_DICT.LY];
+			if (LX && LY) {
+				var xOffset = LX / 1000;
 				// Y is opposite
-				var yOffset = inputs.LY / -1000;
+				var yOffset = LY / -1000;
 				move(1, xOffset, yOffset);
 			} else {
 				// Reset
@@ -175,9 +177,11 @@ function setControllerVisualizer(inputs) {
 			}
 
 			// Right stick
-			if (inputs.RX && inputs.RY) {
-				var xOffset = inputs.RX / 1000;
-				var yOffset = inputs.RY / -1000;
+			var RX = inputs[KEY_DICT.RX];
+			var RY = inputs[KEY_DICT.RY];
+			if (RX && RY) {
+				var xOffset = RX / 1000;
+				var yOffset = RY / -1000;
 				move(2, xOffset, yOffset);
 			} else {
 				move(2, 0, 0);

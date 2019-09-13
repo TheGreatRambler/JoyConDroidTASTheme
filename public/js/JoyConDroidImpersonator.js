@@ -1,15 +1,16 @@
 if (!window.joyconJS) {
 	// Used to test when not connected to the JoyConDroid API
-	var currentCallback = null;
 
 	window.joyconJS = {};
 
+	var funcToRun;
+
 	window.joyconJS.registerCallback = function(functionName) {
-		currentCallback = functionName;
+		funcToRun = new Function(functionName + "()");
 	};
 
 	window.joyconJS.unregisterCallback = function() {
-		currentCallback = null;
+		funcToRun = null;
 	}
 
 	function nullFunc() {}
@@ -34,8 +35,8 @@ if (!window.joyconJS) {
 	window.joyconJS.onRightJoystick = nullFunc;
 
 	function loop() {
-		if (currentCallback) {
-			eval(currentCallback + "()");
+		if (funcToRun) {
+			funcToRun();
 		}
 		// Run 60 FPS
 		setTimeout(loop, 16);
