@@ -11,6 +11,9 @@ var PARSING_STYLE_SYNC = 0;
 var PARSING_STYLE_PRECOMPILE = 1;
 var PARSING_STYLE_PRECOMPILE_COMPRESSION = 2;
 
+// Set wether to memoize
+var MEMOIZE_FUNCTION = true;
+
 /*
   0 = First version: Supports buttons and joysticks in cartesian coordinates only. No motion controls or polar coordinates supported
   
@@ -69,6 +72,9 @@ function parseScript() {
 
 	// Only used for compressed inputs
 	this._compressedFrameNum = -1;
+
+	// Only used if memoize is enabled
+	this.memoizeObject = {};
 }
 
 parseScript.prototype.setCompProgress = function(compProgress) {
@@ -175,39 +181,40 @@ parseScript.prototype.parserIsDone = function() {
 }
 
 parseScript.prototype.asyncParse = function() {
+	var self = this;
 	(new Promise(function(resolve) {
-		var frameSuccess = this.getFrame(this.currentIndex);
+		var frameSuccess = self.getFrame(self.currentIndex);
 		if (frameSuccess) {
 			if (parsingStyle === PARSING_STYLE_PRECOMPILE_COMPRESSION) {
 				// No need for new array because this one is being compressed
-				var compressed = FastIntegerCompression.compress(this.parser.inputsThisFrame);
+				var compressed = FastIntegerCompression.compress(self.parser.inputsThisFrame);
 				// Add compressed to queue
-				this.queue.push(compressed);
+				self.queue.push(compressed);
 			} else if (parsingStyle === PARSING_STYLE_PRECOMPILE) {
 				// Puts array on if not compression
 				// Makes a copy of the array
-				var arrayToAdd = this.parser.inputsThisFrame.slice();
-				this.queue.push(arrayToAdd);
+				var arrayToAdd = self.parser.inputsThisFrame.slice();
+				self.queue.push(arrayToAdd);
 			}
 		}
 		// Tells the next functions if the parser is done
-		resolve(this.parserIsDone());
+		resolve(self.parserIsDone());
 	})).then(function(stop) {
-		if (!this.stopAsync && !stop) {
+		if (!self.stopAsync && !stop) {
 			// Update progress bar
-			this.setCompProgress(this.currentIndex / this.lastFrame);
+			self.setCompProgress(self.currentIndex / self.lastFrame);
 			// Increment index
-			this.currentIndex++;
+			self.currentIndex++;
 			// Call again
-			this.asyncParse();
+			self.asyncParse();
 		} else {
 			// Reset state now because we know its okay
 			// Its time to stop
 			// note: pausing doesnt actually stop async compilation
 			// Notice, the recursive function stops because it is not called again in this function
-			this.reset();
-			this.stopAsync = false;
-			this.currentIndex = 0;
+			self.reset();
+			self.stopAsync = false;
+			self.currentIndex = 0;
 		}
 	});
 }
@@ -229,5 +236,9 @@ parseScript.prototype.reset = function() {
 };
 
 parseScript.prototype.getFrame = function(index) {
-	return this.parser.getFrame(index);
+	if (MEMOIZE_FUNCTION) {
+		return this.parser.getFrame(index, this.memoizeObject);
+	} else {
+		return this.parser.getFrame(index);
+	}
 };

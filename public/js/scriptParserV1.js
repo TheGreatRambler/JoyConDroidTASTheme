@@ -25,7 +25,7 @@ ParserV1.prototype.getLastFrame = function() {
 	return Number(endString.split(" ")[0]);
 }
 
-ParserV1.prototype.getFrame = function(index) {
+ParserV1.prototype.getFrame = function(index, memoizeObject) {
 	// If at end of frames, skip rendering
 	if (!this.haveFinished || this.onLastFrame) {
 		if (this.currentIndex !== this.script.length) {
@@ -62,29 +62,45 @@ ParserV1.prototype.getFrame = function(index) {
 				// Start to parse
 				var parts = this.nextLine.split(" ");
 
-				// Do joysticks first
-				var leftJoystickValues = parts[2].split(";");
-				var rightJoystickValues = parts[3].split(";");
-				// LX
-				this.inputsThisFrame[1] = Number(leftJoystickValues[0]);
-				// LY
-				this.inputsThisFrame[2] = Number(leftJoystickValues[1]);
-				// RX
-				this.inputsThisFrame[3] = Number(rightJoystickValues[0]);
-				// RY
-				this.inputsThisFrame[4] = Number(rightJoystickValues[1]);
+				var memoizeIndex = parts[1] + parts[2] + parts[3];
 
-				var keysToPress = parts[1].split(";");
-
-				if (keysToPress[0] !== "NONE") {
-					// Keys exist
+				if (memoizeObject && memoizeObject[memoizeIndex]) {
 					var self = this;
-					keysToPress.forEach(function(key) {
-						var ind = KEY_DICT[key];
-						// Add inputs (this is done so the array is small if there arent many inputs, saves space)
-						// Using self because this is lost because context change
-						self.inputsThisFrame.push(ind);
+					memoizeObject[memoizeIndex].forEach(function(value) {
+						self.inputsThisFrame.push(value);
 					});
+				} else {
+					// Do joysticks first
+					var leftJoystickValues = parts[2].split(";");
+					var rightJoystickValues = parts[3].split(";");
+					// LX
+					this.inputsThisFrame[1] = Number(leftJoystickValues[0]);
+					// LY
+					this.inputsThisFrame[2] = Number(leftJoystickValues[1]);
+					// RX
+					this.inputsThisFrame[3] = Number(rightJoystickValues[0]);
+					// RY
+					this.inputsThisFrame[4] = Number(rightJoystickValues[1]);
+
+					var keysToPress = parts[1].split(";");
+
+					if (keysToPress[0] !== "NONE") {
+						// Keys exist
+						var self = this;
+						keysToPress.forEach(function(key) {
+							var ind = KEY_DICT[key];
+							// Add inputs (this is done so the array is small if there arent many inputs, saves space)
+							// Using self because this is lost because context change
+							self.inputsThisFrame.push(ind);
+						});
+					}
+
+					if (memoizeObject) {
+						// Memoize values
+						// Make a copy of the array
+						// Dont include first value because that is frame
+						memoizeObject[memoizeIndex] = this.inputsThisFrame.slice(1);
+					}
 				}
 
 				this.nextLine = null;

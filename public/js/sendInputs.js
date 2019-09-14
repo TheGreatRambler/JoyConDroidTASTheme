@@ -45,7 +45,8 @@ window.inputHandler = function() {
 			for (var i = 5; i < inputsThisFrame.length; i++) {
 				// Start at 5 because those first 5 are joystick inputs and frame numbers
 				// -1 because the first value is actually frames
-				window.joyconJS["on" + funcNames[inputsThisFrame[i] - 1]](true);
+				var name = funcNames[inputsThisFrame[i] - 1];
+				window.joyconJS["on" + name](true);
 			}
 		}
 
@@ -73,6 +74,8 @@ window.inputHandler = function() {
 			// Time to stop!
 			window.joyconJS.unregisterCallback();
 			currentScriptParser.reset();
+			// Clear controller visualizer
+			setControllerVisualizer(false);
 			// Hard reset for async (for now)
 			//currentScriptParser.hardStop();
 			// Reset controller visualizer
