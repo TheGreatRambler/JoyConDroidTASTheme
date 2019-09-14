@@ -78,10 +78,12 @@ ParserV1.prototype.getFrame = function(index) {
 
 				if (keysToPress[0] !== "NONE") {
 					// Keys exist
+					var self = this;
 					keysToPress.forEach(function(key) {
 						var ind = KEY_DICT[key];
 						// Add inputs (this is done so the array is small if there arent many inputs, saves space)
-						this.inputsThisFrame.push(ind);
+						// Using self because this is lost because context change
+						self.inputsThisFrame.push(ind);
 					});
 				}
 
