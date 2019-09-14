@@ -115,7 +115,6 @@ function setControllerVisualizer(inputs) {
 			// Left stick
 			var LX = inputs[1];
 			var LY = inputs[2];
-			console.log(LX, LY);
 			if (LX || LY) {
 				// At least one needs moving
 				var xOffset = LX / 1000;
