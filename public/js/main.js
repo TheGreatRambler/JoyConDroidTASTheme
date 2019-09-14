@@ -75,14 +75,6 @@ document.getElementById("submitTASFile").onclick = function() {
 	};
 }
 
-function setCompileIconIfNeeded() {
-	if (currentScriptParser.isAsync()) {
-		// Set icon to wrench instead
-		document.getElementById("playArrow").innerHTML = "<i class='material-icons md-80'>build</i>";
-	}
-}
-setCompileIconIfNeeded();
-
 document.getElementById("syncController").onclick = function() {
 	// Try to sync VERY MANUALLY
 	window.joyconJS.onSync(true);

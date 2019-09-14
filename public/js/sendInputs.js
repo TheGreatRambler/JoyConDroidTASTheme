@@ -10,11 +10,18 @@ var isReadyToRun = false;
 
 var funcNames = ["A", "B", "X", "Y", "L", "R", "ZL", "ZR", "Plus", "Minus", "Left", "Up", "Right", "Down"];
 
+var hasCompiledAlready = false;
+
 function clearAllInputs() {
 	funcNames.forEach(function(funcName) {
 		// Turns off each and every input
 		window.joyconJS["on" + funcName](false);
 	});
+}
+
+function disableMotionControls() {
+	// Disable motion controls
+	window.joyconJS.setMotionControlsEnabled(false);
 }
 
 window.inputHandler = function() {
@@ -33,6 +40,7 @@ window.inputHandler = function() {
 			4: RY,
 			5 - Infinity: The rest of the inputs
 		*/
+
 
 		setControllerVisualizer(inputsThisFrame);
 		// Actually, not needed right now
@@ -78,6 +86,7 @@ window.inputHandler = function() {
 			setControllerVisualizer(false);
 			// Hard reset for async (for now)
 			//currentScriptParser.hardStop();
+			//hasCompiledAlready = false;
 			// Reset controller visualizer
 			setControllerVisualizer(false);
 			currentlyRunning = false;
@@ -89,33 +98,53 @@ window.inputHandler = function() {
 	}
 }
 
+function setCompileIconIfNeeded() {
+	if (currentScriptParser.isAsync()) {
+		// Set icon to wrench instead
+		document.getElementById("playArrow").innerHTML = "<i class='material-icons md-80'>build</i>";
+	}
+}
+setCompileIconIfNeeded();
+
+function setPlayArrow() {
+	// Set icon to play arrow again
+	document.getElementById("playArrow").innerHTML = "<i class='material-icons md-80'>play_arrow</i>";
+}
+
 document.getElementById("startTAS").onclick = function() {
-	if (!currentlyRunning || pauseTAS) {
-		//if (!controllerIsCurrentlySynced) {
-		//	log("Not connected to Switch");
-		//} else {
-		if (isReadyToRun) {
-			if (!pauseTAS) {
-				// TAS was not paused, so the frames need to be reset
-				currentFrame = 0;
-			}
-			currentlyRunning = true;
-
-			// Let parser know parsing is started just in case it needs to compile
-			currentScriptParser.startCompiling();
-
-			log("Starting to run");
-			// Check currently running every frame
-			// Also check pausing TAS every frame
-			// Simulate 60 fps
-
-			window.joyconJS.registerCallback("window.inputHandler");
-		} else {
-			log("Script is not ready yet");
-		}
-		//}
+	if (currentScriptParser.isAsync() && !hasCompiledAlready) {
+		// Need to compile
+		currentScriptParser.startCompiling();
+		log("Started compiling");
+		// Set icon back to play
+		setPlayArrow();
+		// Now can play
+		hasCompiledAlready = true;
 	} else {
-		log("Script is currently in progress");
+		if (!currentlyRunning || pauseTAS) {
+			//if (!controllerIsCurrentlySynced) {
+			//	log("Not connected to Switch");
+			//} else {
+			if (isReadyToRun) {
+				if (!pauseTAS) {
+					// TAS was not paused, so the frames need to be reset
+					currentFrame = 0;
+				}
+				currentlyRunning = true;
+
+				log("Starting to run");
+				// Check currently running every frame
+				// Also check pausing TAS every frame
+				// Simulate 60 fps
+
+				window.joyconJS.registerCallback("window.inputHandler");
+			} else {
+				log("Script is not ready yet");
+			}
+			//}
+		} else {
+			log("Script is currently in progress");
+		}
 	}
 };
 

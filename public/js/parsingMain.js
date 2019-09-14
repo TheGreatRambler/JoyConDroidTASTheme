@@ -99,6 +99,44 @@ parseScript.prototype.done = function() {
 	return this.scriptFinished;
 };
 
+parseScript.prototype.checkPrecompileQueue = function() {
+	var nextInput = false;
+	var frame = this.queue.peekFront()[0];
+	var isRightFrame = (frame === this.frame);
+	if (isRightFrame) {
+		nextInput = this.queue.shift()
+	}
+	return nextInput;
+};
+
+parseScript.prototype.checkPrecompileCompressionQueue = function() {
+	var nextInput = false;
+	if (this._compressedFrameNum === -1) {
+		// No next frame has been specified
+		// Do it now
+		// Uncompress and do it
+		this._compressedFrameNum = IntegerDecompress(this.queue.peekFront())[0];
+	}
+
+	if (this._compressedFrameNum === this.frame) {
+		// This frame needs to be sent because the script is waiting for it
+		nextInput = IntegerDecompress(this.queue.shift());
+		// Set next frame specified as not avaliable
+		this._compressedFrameNum = -1;
+	}
+	return nextInput;
+};
+
+parseScript.prototype.checkQueues = function() {
+	var nextInput = false;
+	if (parsingStyle === PARSING_STYLE_PRECOMPILE) {
+		nextInput = this.checkPrecompileQueue();
+	} else if (parsingStyle === PARSING_STYLE_PRECOMPILE_COMPRESSION) {
+		nextInput = this.checkPrecompileCompressionQueue();
+	}
+	return nextInput;
+}
+
 parseScript.prototype.nextFrame = function() {
 	if (!this.scriptFinished) {
 		// Undefined, not false
@@ -114,37 +152,16 @@ parseScript.prototype.nextFrame = function() {
 			if (this.parserIsDone()) {
 				this.scriptFinished = true;
 			}
-		} else {
+		} else if (this.isAsync()) {
 			if (this.queue.isEmpty()) {
 				if (this.parserIsDone()) {
 					this.scriptFinished = true;
-					// Parser is done
-					// Has reached the end
-					nextInput = false;
 				} else {
 					var isDone = false;
 					// This is will pause the WHOLE PROGRAM while it is waiting for an input
 					while (!isDone) {
 						if (!this.queue.isEmpty()) {
-							if (parsingStyle === PARSING_STYLE_PRECOMPILE_COMPRESSION) {
-								if (this._compressedFrameNum !== -1) {
-									// No next frame has been specified
-									// Do it now
-									// Uncompress and do it
-									this._compressedFrameNum = FastIntegerCompression.uncompress(this.queue.peekBack())[0];
-								}
-								if (this._compressedFrameNum === this.frame) {
-									// This frame needs to be sent because the script is waiting for it
-									nextInput = FastIntegerCompression.uncompress(this.queue.pop());
-									// Set next frame specified as not avaliable
-									this._compressedFrameNum = -1;
-								}
-							} else if (parsingStyle === PARSING_STYLE_PRECOMPILE) {
-								var isRightFrame = this.queue.peekBack()[0] === this.frame;
-								if (isRightFrame) {
-									nextInput = this.queue.pop();
-								}
-							}
+							nextInput = this.checkQueues();
 							// Can break out of while loop
 							isDone = true;
 						}
@@ -152,15 +169,15 @@ parseScript.prototype.nextFrame = function() {
 				}
 			} else {
 				// We can simply push it
-				// Check if right frame
-				var isRightFrame = this.queue.peekBack()[0] === this.frame;
-				if (isRightFrame) {
-					nextInput = this.queue.pop();
-				}
+				nextInput = this.checkQueues();
 			}
 		}
 		// Update progress bar
 		this.setRunProgress(this.frame / this.lastFrame);
+		if (this.scriptFinished) {
+			this.reset();
+			this.setRunProgress(1);
+		}
 		// Always increment frame
 		this.frame++;
 		return nextInput;
@@ -187,7 +204,7 @@ parseScript.prototype.asyncParse = function() {
 		if (frameSuccess) {
 			if (parsingStyle === PARSING_STYLE_PRECOMPILE_COMPRESSION) {
 				// No need for new array because this one is being compressed
-				var compressed = FastIntegerCompression.compress(self.parser.inputsThisFrame);
+				var compressed = IntegerCompress(self.parser.inputsThisFrame);
 				// Add compressed to queue
 				self.queue.push(compressed);
 			} else if (parsingStyle === PARSING_STYLE_PRECOMPILE) {
@@ -212,9 +229,9 @@ parseScript.prototype.asyncParse = function() {
 			// Its time to stop
 			// note: pausing doesnt actually stop async compilation
 			// Notice, the recursive function stops because it is not called again in this function
-			self.reset();
 			self.stopAsync = false;
 			self.currentIndex = 0;
+			log("Finished compiling");
 		}
 	});
 }
