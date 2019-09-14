@@ -72,12 +72,12 @@ function parseScript() {
 }
 
 parseScript.prototype.setCompProgress = function(compProgress) {
-	document.getElementById("progressBarComp").style.width = compProgress + "%";
+	document.getElementById("progressBarComp").style.width = (compProgress * 100) + "%";
 };
 
 
 parseScript.prototype.setRunProgress = function(runProgress) {
-	document.getElementById("progressBarRun").style.width = runProgress + "%";
+	document.getElementById("progressBarRun").style.width = (runProgress * 100) + "%";
 };
 
 parseScript.prototype.isAsync = function() {
