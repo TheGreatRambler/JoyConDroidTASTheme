@@ -99,11 +99,13 @@ function setControllerVisualizer(inputs) {
 			for (var i = 5; i < inputs.length; i++) {
 				// Start at 5 because those first 5 are joystick inputs and frame numbers
 				var keyNum = keyIndex[KEY_INT_ARRAY[inputs[i]]];
+				console.log("key", keyNum);
 				visible(true, keyNum);
 				listOfButtons[keyNum] = -1;
 			}
 
 			listOfButtons.forEach(function(button) {
+				console.log("num", button);
 				if (button !== -1) {
 					// Hide buttons that did not run this frame
 					visible(false, button);
