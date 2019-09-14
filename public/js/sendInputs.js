@@ -13,7 +13,7 @@ var funcNames = ["A", "B", "X", "Y", "L", "R", "ZL", "ZR", "Plus", "Minus", "Lef
 function clearAllInputs() {
 	funcNames.forEach(function(funcName) {
 		// Turns off each and every input
-		window.joyconJS["on" + funcName](0);
+		window.joyconJS["on" + funcName](false);
 	});
 }
 
@@ -45,7 +45,7 @@ window.inputHandler = function() {
 			for (var i = 5; i < inputsThisFrame.length; i++) {
 				// Start at 5 because those first 5 are joystick inputs and frame numbers
 				// -1 because the first value is actually frames
-				window.joyconJS["on" + funcNames[inputsThisFrame[i] - 1]](1);
+				window.joyconJS["on" + funcNames[inputsThisFrame[i] - 1]](true);
 			}
 		}
 
