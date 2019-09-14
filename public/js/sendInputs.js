@@ -87,13 +87,15 @@ window.inputHandler = function() {
 			// Hard reset for async (for now)
 			//currentScriptParser.hardStop();
 			//hasCompiledAlready = false;
-			// Reset controller visualizer
-			setControllerVisualizer(false);
+			// Stop all currently held inputs
+			clearAllInputs();
 			currentlyRunning = false;
 			log("TAS is stopped or has finished");
 		}
 		return true;
 	} else {
+		// Just to keep it in check
+		clearAllInputs();
 		return false;
 	}
 }
