@@ -71,9 +71,13 @@ function parseScript() {
 	this._compressedFrameNum = -1;
 }
 
-parseScript.prototype.setProgressBar = function(compProgress, runProgress) {
+parseScript.prototype.setCompProgress = function(compProgress) {
 	document.getElementById("progressBarComp").style.width = compProgress + "%";
-	document.getElementById("progressBarRun").style.width = runProgress + "0%";
+};
+
+
+parseScript.prototype.setRunProgress = function(runProgress) {
+	document.getElementById("progressBarRun").style.width = runProgress + "%";
 };
 
 parseScript.prototype.isAsync = function() {
@@ -149,6 +153,8 @@ parseScript.prototype.nextFrame = function() {
 				}
 			}
 		}
+		// Update progress bar
+		this.setRunProgress(this.frame / this.lastFrame);
 		// Always increment frame
 		this.frame++;
 		return nextInput;
@@ -188,6 +194,8 @@ parseScript.prototype.asyncParse = function() {
 		resolve(this.parserIsDone());
 	})).then(function(stop) {
 		if (!this.stopAsync && !stop) {
+			// Update progress bar
+			this.setCompProgress(this.currentIndex / this.lastFrame);
 			// Increment index
 			this.currentIndex++;
 			// Call again
