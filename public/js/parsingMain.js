@@ -95,12 +95,7 @@ parseScript.prototype.nextFrame = function() {
 		// Generate new one
 		var nextInput = false;
 		if (parsingStyle === PARSING_STYLE_SYNC) {
-			try {
-				var success = this.getFrame(this.frame);
-			} catch(e) {
-				console.error("Thing", e);
-			}
-			// A copy has to be made
+			var success = this.getFrame(this.frame);
 			if (success) {
 				// Can send actual array only because we know that this array wont be modified
 				// Until the next input is called for (can't do for async)
