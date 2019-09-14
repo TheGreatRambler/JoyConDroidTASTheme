@@ -99,7 +99,6 @@ function setControllerVisualizer(inputs) {
 			for (var i = 5; i < inputs.length; i++) {
 				// Start at 5 because those first 5 are joystick inputs and frame numbers
 				var keyNum = keyIndex[KEY_INT_ARRAY[inputs[i]]];
-				console.log("Yeah boi");
 				visible(true, keyNum);
 				// Set as already run
 				listOfButtons[keyNum - 3] = -1;
@@ -116,6 +115,7 @@ function setControllerVisualizer(inputs) {
 			// Left stick
 			var LX = inputs[1];
 			var LY = inputs[2];
+			console.log(LX, LY);
 			if (LX && LY) {
 				var xOffset = LX / 1000;
 				// Y is opposite
