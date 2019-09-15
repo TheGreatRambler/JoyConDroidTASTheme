@@ -96,7 +96,8 @@ parseScript.prototype.isAsync = function() {
 };
 
 parseScript.prototype.done = function() {
-	return this.scriptFinished;
+	// Should technically work
+	return this.lastFrame === this.frame;
 };
 
 parseScript.prototype.checkPrecompileQueue = function() {
