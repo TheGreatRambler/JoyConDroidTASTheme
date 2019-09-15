@@ -11,7 +11,7 @@ var PARSING_STYLE_SYNC = 0;
 var PARSING_STYLE_PRECOMPILE = 1;
 var PARSING_STYLE_PRECOMPILE_COMPRESSION = 2;
 
-// Set wether to memoize
+// Set whether to memoize parser function
 var MEMOIZE_FUNCTION = true;
 
 /*

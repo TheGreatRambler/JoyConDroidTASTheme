@@ -17,12 +17,15 @@ function clearAllInputs() {
 		// Turns off each and every input
 		window.joyconJS["on" + funcName](false);
 	});
+	window.joyconJS.onLeftJoystick(0, 0);
+	window.joyconJS.onRightJoystick(0, 0);
 }
 
 function disableMotionControls() {
 	// Disable motion controls
 	window.joyconJS.setMotionControlsEnabled(false);
 }
+disableMotionControls();
 
 window.inputHandler = function() {
 	if (!pauseTAS) {
@@ -69,8 +72,8 @@ window.inputHandler = function() {
 			var RX = inputsThisFrame[3];
 			var RY = inputsThisFrame[4];
 			// Power goes to 100
-			var leftJoystickPower = Math.abs(Math.hypot(LX, -LY)) / 300;
-			var rightJoystickPower = Math.abs(Math.hypot(RX, -RY)) / 300;
+			var leftJoystickPower = Math.min(Math.abs(Math.hypot(LX, LY)) / 300, 100);
+			var rightJoystickPower = Math.min(Math.abs(Math.hypot(RX, RY)) / 300, 100);
 			// Angle is in radians
 			var leftJoystickAngle = Math.atan2(-LY, LX);
 			var rightJoystickAngle = Math.atan2(-RY, RX);

@@ -28,10 +28,6 @@
 			overflow-x: hidden;
 		}
 
-		.btn {
-			width: 100%;
-		}
-
 		.controllerImages {
 			position: absolute;
 		}
@@ -58,6 +54,15 @@
 			display: table;
 			outline: 5px solid white;
 			height: 18%;
+			/* Prevent text from being selected */
+			-webkit-user-select: none;
+			/* Safari */
+			-moz-user-select: none;
+			/* Firefox */
+			-ms-user-select: none;
+			/* IE10+/Edge */
+			user-select: none;
+			/* Standard */
 		}
 
 		.buttonText {
