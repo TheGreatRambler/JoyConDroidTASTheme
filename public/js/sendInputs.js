@@ -75,8 +75,8 @@ window.inputHandler = function() {
 			var leftJoystickPower = Math.min(Math.abs(Math.hypot(LX, LY)) / 300, 100);
 			var rightJoystickPower = Math.min(Math.abs(Math.hypot(RX, RY)) / 300, 100);
 			// Angle is in radians
-			var leftJoystickAngle = Math.atan2(LY, LX);
-			var rightJoystickAngle = Math.atan2(RY, RX);
+			var leftJoystickAngle = -Math.atan2(LY, LX);
+			var rightJoystickAngle = -Math.atan2(RY, RX);
 			window.joyconJS.onLeftJoystick(leftJoystickPower, leftJoystickAngle);
 			window.joyconJS.onRightJoystick(rightJoystickPower, rightJoystickAngle);
 		}

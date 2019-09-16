@@ -109,3 +109,8 @@ function hideLog() {
 }
 
 document.getElementById("showLog").onclick = showLog;
+
+document.getElementById("openSettings").onclick = function() {
+	log("Open settings");
+	openSettingsWindow();
+};
