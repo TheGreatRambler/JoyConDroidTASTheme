@@ -209,3 +209,47 @@ body {
 }
 
 /* Settings stuff */
+
+.settingsInput {
+	position: absolute;
+	width: 80%;
+	/* Dont define top */
+	left: 10%;
+	bottom: 100%;
+	background-color: #183170;
+	/* Doesnt work on safari */
+	text-align-last: center;
+	text-align: center;
+	color: white;
+	font-weight: bold;
+	outline: 5px solid white;
+	/* Flex stuff */
+	display: flex;
+	justify-content: center;
+	align-content: center;
+	flex-direction: column;
+}
+
+.settingsInputTitle {
+	height: 5%;
+	font-size: 25px;
+}
+
+.settingsInputItem {
+	height: 10%;
+	font-size: 20px;
+}
+
+#parsingTitle {
+	top: 5%;
+}
+
+#parsingStyle {
+	top: 10%;
+}
+
+#submitButton {
+	top: 25%;
+	height: 15%;
+	font-size: 40px;
+}

@@ -1,27 +1,3 @@
-/*
-  Parsing style represents way in which inputs are parsed
-  0 = Sync: Parse each frame as it is asked for and pause execution until it is parsed
-  1 = Precompile: Parse all the frames onto a queue async and start using them if play is pressed a second time
-  2 = Precompile with compression: Precompile but uses integer compression to decrease memory usage (uses more cpu)
-  
-  0 is default
-*/
-var parsingStyle = 0;
-var PARSING_STYLE_SYNC = 0;
-var PARSING_STYLE_PRECOMPILE = 1;
-var PARSING_STYLE_PRECOMPILE_COMPRESSION = 2;
-
-// Set whether to memoize parser function
-var MEMOIZE_FUNCTION = true;
-
-/*
-  0 = First version: Supports buttons and joysticks in cartesian coordinates only. No motion controls or polar coordinates supported
-  
-  0 is default
-*/
-var scriptCompilerVersion = 0;
-var PARSER_FIRST_VERSION = 0;
-
 var KEY_DICT = {
 	FRAME: 0,
 	KEY_A: 1,
@@ -232,6 +208,7 @@ parseScript.prototype.asyncParse = function() {
 			// Notice, the recursive function stops because it is not called again in this function
 			self.stopAsync = false;
 			self.currentIndex = 0;
+			//self.setCompProgress(0);
 			log("Finished compiling");
 		}
 	});
@@ -240,17 +217,27 @@ parseScript.prototype.asyncParse = function() {
 parseScript.prototype.setScript = function(script) {
 	this.parser.setScript(script);
 	// Last frame number for progress bar sheanigans
-	this.lastFrame = this.parser.getLastFrame();
+	this.reset();
 }
 
 parseScript.prototype.hardStop = function() {
 	// Only used to alert async to stop
 	this.stopAsync = true;
+	this.setCompProgress(0);
+	this.setRunProgress(0);
+	this.reset();
+	this.queue = new Denque();
+	this.currentIndex = 0;
+	this.lastFrame = 0;
+	// Only used for compressed inputs
+	this._compressedFrameNum = -1;
 }
 
 parseScript.prototype.reset = function() {
 	this.parser.reset();
 	this.frame = 0;
+	this.lastFrame = this.parser.getLastFrame();
+	this.scriptFinished = false;
 };
 
 parseScript.prototype.getFrame = function(index) {

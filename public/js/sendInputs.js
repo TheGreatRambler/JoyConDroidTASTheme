@@ -6,6 +6,7 @@ var currentFrame = 0;
 var controllerIsCurrentlySynced = false;
 
 var currentScriptParser = new parseScript();
+
 var isReadyToRun = false;
 
 var funcNames = ["A", "B", "X", "Y", "L", "R", "ZL", "ZR", "Plus", "Minus", "Left", "Up", "Right", "Down"];
@@ -88,8 +89,10 @@ window.inputHandler = function() {
 			// Clear controller visualizer
 			setControllerVisualizer(false);
 			// Hard reset for async (for now)
-			//currentScriptParser.hardStop();
-			//hasCompiledAlready = false;
+			currentScriptParser.hardStop();
+			// Let user know recompiling is needed
+			setCompileIconIfNeeded();
+			hasCompiledAlready = false;
 			// Stop all currently held inputs
 			clearAllInputs();
 			currentlyRunning = false;
@@ -131,9 +134,14 @@ document.getElementById("startTAS").onclick = function() {
 			//	log("Not connected to Switch");
 			//} else {
 			if (isReadyToRun) {
+				// Is about to run right now
 				if (!pauseTAS) {
 					// TAS was not paused, so the frames need to be reset
 					currentFrame = 0;
+					currentScriptParser.reset();
+				} else {
+					// Was paused, needs to be unpaused
+					pauseTAS = false;
 				}
 				currentlyRunning = true;
 
@@ -141,8 +149,9 @@ document.getElementById("startTAS").onclick = function() {
 				// Check currently running every frame
 				// Also check pausing TAS every frame
 				// Simulate 60 fps
-
-				window.joyconJS.registerCallback("window.inputHandler");
+				if (!pauseTAS) {
+					window.joyconJS.registerCallback("window.inputHandler");
+				}
 			} else {
 				log("Script is not ready yet");
 			}
