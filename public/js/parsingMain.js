@@ -46,20 +46,25 @@ function parseScript() {
 
 	this.lastFrame = 0;
 
-	// Only used for compressed inputs
-	this._compressedFrameNum = -1;
+	// Only used for precompiled inputs
+	this._precompileFrameNum = -1;
 
 	// Only used if memoize is enabled
 	this.memoizeObject = {};
+	
+	// Percentages
+	this.currentRunPercentage = 0;
+	this.currentCompilePercentage = 0;
 }
 
-parseScript.prototype.setCompProgress = function(compProgress) {
-	document.getElementById("progressBarComp").style.width = (compProgress * 100) + "%";
+parseScript.prototype.setRunProgress = function(runProgress) {
+	this.currentRunPercentage = (runProgress * 100);
+	document.getElementById("progressBarRun").style.width = this.currentRunPercentage + "%";
 };
 
-
-parseScript.prototype.setRunProgress = function(runProgress) {
-	document.getElementById("progressBarRun").style.width = (runProgress * 100) + "%";
+parseScript.prototype.setCompProgress = function(compProgress) {
+	this.currentCompilePercentage = (compProgress * 100);
+	document.getElementById("progressBarComp").style.width = this.currentCompilePercentage + "%";
 };
 
 parseScript.prototype.isAsync = function() {
@@ -78,28 +83,55 @@ parseScript.prototype.done = function() {
 
 parseScript.prototype.checkPrecompileQueue = function() {
 	var nextInput = false;
-	var frame = this.queue.peekFront()[0];
-	var isRightFrame = (frame === this.frame);
-	if (isRightFrame) {
-		nextInput = this.queue.shift()
+	var useIfNeeded;
+	if (this._precompileFrameNum === -1) {
+		// No next frame has been specified
+		// Do it now
+		// Uncompress and do it
+		useIfNeeded = this.queue.peekFront().split("|").map(parseInt);
+		this._precompileFrameNum = useIfNeeded[0];
+	}
+
+	if (this._precompileFrameNum === this.frame) {
+		// This frame needs to be sent because the script is waiting for it
+		if (useIfNeeded) {
+			// Saves a bit of processing power
+			nextInput = useIfNeeded;
+			this.queue.shift()
+		} else {
+			// Convert array to array of numbers from string
+			nextInput = this.queue.shift().split("|").map(parseInt);
+		}
+		
+		// Set next frame specified as not avaliable
+		this._precompileFrameNum = -1;
 	}
 	return nextInput;
 };
 
 parseScript.prototype.checkPrecompileCompressionQueue = function() {
 	var nextInput = false;
-	if (this._compressedFrameNum === -1) {
+	var useIfNeeded;
+	if (this._precompileFrameNum === -1) {
 		// No next frame has been specified
 		// Do it now
 		// Uncompress and do it
-		this._compressedFrameNum = IntegerDecompress(this.queue.peekFront())[0];
+		useIfNeeded = IntegerDecompress(this.queue.peekFront());
+		this._precompileFrameNum = useIfNeeded[0];
 	}
 
-	if (this._compressedFrameNum === this.frame) {
+	if (this._precompileFrameNum === this.frame) {
 		// This frame needs to be sent because the script is waiting for it
-		nextInput = IntegerDecompress(this.queue.shift());
+		if (useIfNeeded) {
+			// Saves a bit of processing power
+			nextInput = useIfNeeded;
+			this.queue.shift()
+		} else {
+			nextInput = IntegerDecompress(this.queue.shift());
+		}
+		
 		// Set next frame specified as not avaliable
-		this._compressedFrameNum = -1;
+		this._precompileFrameNum = -1;
 	}
 	return nextInput;
 };
@@ -186,9 +218,9 @@ parseScript.prototype.asyncParse = function() {
 				self.queue.push(compressed);
 			} else if (parsingStyle === PARSING_STYLE_PRECOMPILE) {
 				// Puts array on if not compression
-				// Makes a copy of the array
-				var arrayToAdd = self.parser.inputsThisFrame.slice();
-				self.queue.push(arrayToAdd);
+				// Uses strings instead of arrays
+				var stringToAdd = self.parser.inputsThisFrame.join("|");
+				self.queue.push(stringToAdd);
 			}
 		}
 		// Tells the next functions if the parser is done
@@ -229,8 +261,11 @@ parseScript.prototype.hardStop = function() {
 	this.queue = new Denque();
 	this.currentIndex = 0;
 	this.lastFrame = 0;
-	// Only used for compressed inputs
-	this._compressedFrameNum = -1;
+	// Only used for precompiled inputs
+	this._precompileFrameNum = -1;
+	// Percentages
+	this.currentRunPercentage = 0;
+	this.currentCompilePercentage = 0;
 }
 
 parseScript.prototype.reset = function() {
