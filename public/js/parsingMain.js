@@ -182,6 +182,7 @@ parseScript.prototype.nextFrame = function() {
 			}
 		}
 		// Update progress bar
+		log(this.lastFrame);
 		this.setRunProgress(this.frame / this.lastFrame);
 		if (this.scriptFinished) {
 			this.reset();
