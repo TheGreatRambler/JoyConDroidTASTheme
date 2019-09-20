@@ -37,11 +37,11 @@ if (!window.joyconJS) {
 	window.joyconJS.setMotionControlsEnabled = nullFunc;
 
 	function loop() {
+		// Run 60 FPS
+		setTimeout(loop, 16);
 		if (funcToRun) {
 			funcToRun();
 		}
-		// Run 60 FPS
-		setTimeout(loop, 16);
 	}
 	loop();
 }
