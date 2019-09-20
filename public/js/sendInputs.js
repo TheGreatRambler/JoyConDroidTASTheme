@@ -81,11 +81,17 @@ window.inputHandler = function() {
 			window.joyconJS.onLeftJoystick(leftJoystickPower, leftJoystickAngle);
 			window.joyconJS.onRightJoystick(rightJoystickPower, rightJoystickAngle);
 		}
+		
+		if (currentScriptParser.frame % 60 === 0) {
+			// Check if this frame is a multiple of 60
+			// This means that this runs every second
+			// Shows thousands of a percent
+			log("TAS is " + currentScriptParserl.currentRunPercentage.toFixed(3) + " done");
+		}
 
 		if (currentlyRunning === false || currentScriptParser.done()) {
 			// Time to stop!
 			window.joyconJS.unregisterCallback();
-			currentScriptParser.reset();
 			// Clear controller visualizer
 			setControllerVisualizer(false);
 			// Hard reset for async (for now)
