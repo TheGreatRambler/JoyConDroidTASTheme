@@ -86,7 +86,7 @@ window.inputHandler = function() {
 			// Check if this frame is a multiple of 60
 			// This means that this runs every second
 			// Shows thousands of a percent
-			log("TAS is " + currentScriptParserl.currentRunPercentage.toFixed(3) + " done");
+			log("TAS is " + currentScriptParser.currentRunPercentage.toFixed(3) + " done");
 		}
 
 		if (currentlyRunning === false || currentScriptParser.done()) {
