@@ -148,7 +148,7 @@ body {
 	position: absolute;
 	height: 2%;
 	top: 57%;
-	border-radius: 5px;
+	/*border-radius: 5px;*/
 }
 
 #progressBarBase {

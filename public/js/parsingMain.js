@@ -1,3 +1,4 @@
+/*
 var KEY_DICT = {
 	FRAME: 0,
 	KEY_A: 1,
@@ -19,6 +20,7 @@ var KEY_DICT = {
 	RX: 17,
 	RY: 18
 };
+*/
 
 // Allows you to go backwards
 var KEY_INT_ARRAY = Object.keys(KEY_DICT);
@@ -37,7 +39,6 @@ function parseScript() {
 	// For async
 	this.queue = new Denque();
 	this.currentIndex = 0;
-	this.stopAsync = false;
 
 	// Unrelated to currentIndex
 	this.frame = 0;
@@ -46,25 +47,58 @@ function parseScript() {
 
 	this.lastFrame = 0;
 
-	// Only used for precompiled inputs
-	this._precompileFrameNum = -1;
-
 	// Only used if memoize is enabled
 	this.memoizeObject = {};
-	
+
+	this._precompileParserDone = false;
+	this._precompileFrameNum = -1;
+
 	// Percentages
 	this.currentRunPercentage = 0;
 	this.currentCompilePercentage = 0;
+
+	// Precompiling webworker
+	this.precompileWebworker = new Worker("./js/webworkerParser.js");
+
+	var self = this;
+	this.precompileWebworker.onmessage = function(e) {
+		var recievedData = e.data;
+		if (recievedData.flag !== undefined) {
+			// This is a flagged message
+			if (recievedData.flag === 0) {
+				// Set compilation percentage
+				self.setCompProgress(recievedData.data);
+			} else if (recievedData.flag === 1) {
+				// It is done
+				log("Finished compiling");
+				self._precompileParserDone = true;
+			} else if (recievedData.flag === 2) {
+				// Logging
+				// Just logging
+				log(recievedData.data);
+			} else if (recievedData.flag === 3) {
+				// Set last frame
+				self.lastFrame = recievedData.frame;
+			}
+		} else {
+			// This is just plain data
+			// Push onto queue
+			self.queue.push(recievedData);
+		}
+	};
 }
+
+var runProgressBar = document.getElementById("progressBarRun");
+var compProgressBar = document.getElementById("progressBarComp");
 
 parseScript.prototype.setRunProgress = function(runProgress) {
 	this.currentRunPercentage = (runProgress * 100);
-	document.getElementById("progressBarRun").style.width = this.currentRunPercentage + "%";
+	runProgressBar.style.width = this.currentRunPercentage + "%";
 };
 
 parseScript.prototype.setCompProgress = function(compProgress) {
 	this.currentCompilePercentage = (compProgress * 100);
-	document.getElementById("progressBarComp").style.width = this.currentCompilePercentage + "%";
+	compProgressBar.style.width = this.currentCompilePercentage + "%";
 };
 
 parseScript.prototype.isAsync = function() {
@@ -84,11 +118,15 @@ parseScript.prototype.done = function() {
 parseScript.prototype.checkPrecompileQueue = function() {
 	var nextInput = false;
 	var useIfNeeded;
+
 	if (this._precompileFrameNum === -1) {
 		// No next frame has been specified
 		// Do it now
 		// Uncompress and do it
-		useIfNeeded = this.queue.peekFront().split("|").map(parseInt);
+		var value = this.queue.peekFront();
+		useIfNeeded = value.split("|").map(function(val) {
+			return parseInt(val, 10);
+		});
 		this._precompileFrameNum = useIfNeeded[0];
 	}
 
@@ -97,15 +135,18 @@ parseScript.prototype.checkPrecompileQueue = function() {
 		if (useIfNeeded) {
 			// Saves a bit of processing power
 			nextInput = useIfNeeded;
-			this.queue.shift()
+			this.queue.shift();
 		} else {
 			// Convert array to array of numbers from string
-			nextInput = this.queue.shift().split("|").map(parseInt);
+			nextInput = this.queue.shift().split("|").map(function(val) {
+				return parseInt(val, 10);
+			});
 		}
-		
+
 		// Set next frame specified as not avaliable
 		this._precompileFrameNum = -1;
 	}
+
 	return nextInput;
 };
 
@@ -116,7 +157,7 @@ parseScript.prototype.checkPrecompileCompressionQueue = function() {
 		// No next frame has been specified
 		// Do it now
 		// Uncompress and do it
-		useIfNeeded = IntegerDecompress(this.queue.peekFront());
+		useIfNeeded = FastIntegerCompression.uncompress(this.queue.peekFront());
 		this._precompileFrameNum = useIfNeeded[0];
 	}
 
@@ -127,9 +168,9 @@ parseScript.prototype.checkPrecompileCompressionQueue = function() {
 			nextInput = useIfNeeded;
 			this.queue.shift()
 		} else {
-			nextInput = IntegerDecompress(this.queue.shift());
+			nextInput = FastIntegerCompression.uncompress(this.queue.shift());
 		}
-		
+
 		// Set next frame specified as not avaliable
 		this._precompileFrameNum = -1;
 	}
@@ -182,7 +223,6 @@ parseScript.prototype.nextFrame = function() {
 			}
 		}
 		// Update progress bar
-		log(this.lastFrame);
 		this.setRunProgress(this.frame / this.lastFrame);
 		if (this.scriptFinished) {
 			this.reset();
@@ -199,80 +239,61 @@ parseScript.prototype.startCompiling = function() {
 	// Start async if needed
 	if (parsingStyle === PARSING_STYLE_PRECOMPILE || parsingStyle === PARSING_STYLE_PRECOMPILE_COMPRESSION) {
 		// Start parsing
-		this.asyncParse();
+		this.precompileWebworker.postMessage({
+			flag: 1
+		});
 	}
 };
 
 parseScript.prototype.parserIsDone = function() {
-	return this.parser.done;
-}
-
-parseScript.prototype.asyncParse = function() {
-	var self = this;
-	(new Promise(function(resolve) {
-		var frameSuccess = self.getFrame(self.currentIndex);
-		if (frameSuccess) {
-			if (parsingStyle === PARSING_STYLE_PRECOMPILE_COMPRESSION) {
-				// No need for new array because this one is being compressed
-				var compressed = IntegerCompress(self.parser.inputsThisFrame);
-				// Add compressed to queue
-				self.queue.push(compressed);
-			} else if (parsingStyle === PARSING_STYLE_PRECOMPILE) {
-				// Puts array on if not compression
-				// Uses strings instead of arrays
-				var stringToAdd = self.parser.inputsThisFrame.join("|");
-				self.queue.push(stringToAdd);
-			}
-		}
-		// Tells the next functions if the parser is done
-		resolve(self.parserIsDone());
-	})).then(function(stop) {
-		if (!self.stopAsync && !stop) {
-			// Update progress bar
-			self.setCompProgress(self.currentIndex / self.lastFrame);
-			// Increment index
-			self.currentIndex++;
-			// Call again
-			self.asyncParse();
-		} else {
-			// Reset state now because we know its okay
-			// Its time to stop
-			// note: pausing doesnt actually stop async compilation
-			// Notice, the recursive function stops because it is not called again in this function
-			self.stopAsync = false;
-			self.currentIndex = 0;
-			//self.setCompProgress(0);
-			log("Finished compiling");
-		}
-	});
+	if (this.isAsync()) {
+		return this._precompileParserDone;
+	} else {
+		return this.parser.done;
+	}
 }
 
 parseScript.prototype.setScript = function(script) {
-	this.parser.setScript(script);
-	// Last frame number for progress bar sheanigans
+	// Removes whitespace before and after to fix things
+	script = script.trim();
+	if (this.isAsync()) {
+		this.precompileWebworker.postMessage({
+			flag: 0,
+			script: script,
+			parseType: parsingStyle,
+			lastFrame: this.lastFrame
+		});
+	} else {
+		this.parser.setScript(script.trim());
+		// Last frame number for progress bar sheanigans
+		this.lastFrame = this.parser.getLastFrame();
+	}
+
 	this.reset();
 }
 
 parseScript.prototype.hardStop = function() {
 	// Only used to alert async to stop
-	this.stopAsync = true;
+	this.precompileWebworker.postMessage({
+		flag: 2,
+		data: true
+	});
 	this.setCompProgress(0);
 	this.setRunProgress(0);
 	this.reset();
 	this.queue = new Denque();
-	this.currentIndex = 0;
 	this.lastFrame = 0;
-	// Only used for precompiled inputs
-	this._precompileFrameNum = -1;
 	// Percentages
 	this.currentRunPercentage = 0;
 	this.currentCompilePercentage = 0;
+	// Parser stuff
+	this._precompileParserDone = false;
+	this._precompileFrameNum = -1;
 }
 
 parseScript.prototype.reset = function() {
 	this.parser.reset();
 	this.frame = 0;
-	this.lastFrame = this.parser.getLastFrame();
 	this.scriptFinished = false;
 };
 

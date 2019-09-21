@@ -73,20 +73,20 @@ window.inputHandler = function() {
 			var RX = inputsThisFrame[3];
 			var RY = inputsThisFrame[4];
 			// Power goes to 100
-			var leftJoystickPower = Math.min(Math.abs(Math.hypot(LX, LY)) / 300, 100);
-			var rightJoystickPower = Math.min(Math.abs(Math.hypot(RX, RY)) / 300, 100);
+			var leftJoystickPower = Math.min(Math.abs(Math.hypot(LX, LY)), 100);
+			var rightJoystickPower = Math.min(Math.abs(Math.hypot(RX, RY)), 100);
 			// Angle is in radians
 			var leftJoystickAngle = Math.atan2(LY, LX); // + (Math.PI / 2);
 			var rightJoystickAngle = Math.atan2(RY, RX); // + (Math.PI / 2);
 			window.joyconJS.onLeftJoystick(leftJoystickPower, leftJoystickAngle);
 			window.joyconJS.onRightJoystick(rightJoystickPower, rightJoystickAngle);
 		}
-		
-		if (currentScriptParser.frame % 60 === 0) {
+
+		if (currentScriptParser.frame % 180 === 0) {
 			// Check if this frame is a multiple of 60
-			// This means that this runs every second
+			// This means that this runs every 3 seconds
 			// Shows thousands of a percent
-			log("TAS is " + currentScriptParser.currentRunPercentage.toFixed(3) + " done");
+			log("TAS is " + currentScriptParser.currentRunPercentage.toFixed(3) + "% done");
 		}
 
 		if (currentlyRunning === false || currentScriptParser.done()) {

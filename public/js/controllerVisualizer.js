@@ -117,9 +117,9 @@ function setControllerVisualizer(inputs) {
 			var LY = inputs[2];
 			if (LX || LY) {
 				// At least one needs moving
-				var xOffset = LX / 1200;
+				var xOffset = LX / 4;
 				// Y is opposite
-				var yOffset = LY / -1200;
+				var yOffset = LY / -4;
 				move(1, xOffset, yOffset);
 			} else {
 				// Reset

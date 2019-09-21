@@ -1,3 +1,25 @@
+var KEY_DICT = {
+	FRAME: 0,
+	KEY_A: 1,
+	KEY_B: 2,
+	KEY_X: 3,
+	KEY_Y: 4,
+	KEY_L: 5,
+	KEY_R: 6,
+	KEY_ZL: 7,
+	KEY_ZR: 8,
+	KEY_PLUS: 9,
+	KEY_MINUS: 10,
+	KEY_DLEFT: 11,
+	KEY_DUP: 12,
+	KEY_DRIGHT: 13,
+	KEY_DDOWN: 14,
+	LX: 15,
+	LY: 16,
+	RX: 17,
+	RY: 18
+};
+
 function ParserV1() {
 	// This array is never destroyed, just continually reused and cleared
 	this.inputsThisFrame = [];
@@ -74,13 +96,13 @@ ParserV1.prototype.getFrame = function(index, memoizeObject) {
 					var leftJoystickValues = parts[2].split(";");
 					var rightJoystickValues = parts[3].split(";");
 					// LX
-					this.inputsThisFrame[1] = Number(leftJoystickValues[0]);
+					this.inputsThisFrame[1] = Number(leftJoystickValues[0] / 300);
 					// LY
-					this.inputsThisFrame[2] = Number(leftJoystickValues[1]);
+					this.inputsThisFrame[2] = Number(leftJoystickValues[1] / 300);
 					// RX
-					this.inputsThisFrame[3] = Number(rightJoystickValues[0]);
+					this.inputsThisFrame[3] = Number(rightJoystickValues[0] / 300);
 					// RY
-					this.inputsThisFrame[4] = Number(rightJoystickValues[1]);
+					this.inputsThisFrame[4] = Number(rightJoystickValues[1] / 300);
 
 					var keysToPress = parts[1].split(";");
 
