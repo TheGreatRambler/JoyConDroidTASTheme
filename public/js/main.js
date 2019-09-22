@@ -15,6 +15,9 @@ function log(text) {
 	logTextarea.scrollTop = logTextarea.scrollHeight;
 }
 
+// Log version
+log("V 1.0.0");
+
 // Redirect errors to logging
 window.onerror = function(message) {
 	log("ERROR: " + message);
