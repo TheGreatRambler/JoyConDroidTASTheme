@@ -5,6 +5,4 @@ Currently built into JoyCon Droid as TAS UI.
 
 Uses the script format from nx-TAS.
 
-Not yet working, but check back here soon.
-
-[Test page (Doesnt actually run TAS)](https://thegreatrambler.github.io/JoyConDroidTASTheme/public/index.html)
+Development has stopped for now due to Bluetooth reliability issues. Check this project later for more information. 
