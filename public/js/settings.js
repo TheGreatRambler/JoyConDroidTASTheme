@@ -121,6 +121,7 @@ PARSER_INPUT.onchange = function() {
 
 LOOP_INPUT.onclick = function() {
 	var selectedOption = LOOP_INPUT.checked;
+	log(selectedOption);
 	// Dont set `parsingStyle`, set localstorage option
 	SHOULD_LOOP = selectedOption;
 	localStorage.setItem("shouldLoop", selectedOption);
