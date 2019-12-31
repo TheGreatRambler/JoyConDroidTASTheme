@@ -103,6 +103,8 @@ window.inputHandler = function() {
 			setControllerVisualizer(false);
 			// Hard reset for async (for now)
 			currentScriptParser.hardStop();
+			currentFrame = 0;
+			currentScriptParser.reset();
 			// Let user know recompiling is needed
 			setCompileIconIfNeeded();
 			hasCompiledAlready = false;
