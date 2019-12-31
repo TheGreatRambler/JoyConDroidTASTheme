@@ -98,6 +98,8 @@ window.inputHandler = function() {
 			log("Looping back again");
 		}
 		
+		log(currentlyRunning + currentScriptParser.done() + currentScriptParser.frame)
+		
 		if (currentlyRunning === false || currentScriptParser.done()) {
 			// Time to stop!
 			window.joyconJS.unregisterCallback();
