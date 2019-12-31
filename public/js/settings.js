@@ -26,6 +26,9 @@ var PARSING_STYLE_PRECOMPILE_COMPRESSION = 2;
 // Set whether to memoize parser function
 var MEMOIZE_FUNCTION = true;
 
+// Whether the script should loop after ending
+var SHOULD_LOOP = false;
+
 /*
   0 = First version: Supports buttons and joysticks in cartesian coordinates only. No motion controls or polar coordinates supported
   
@@ -80,6 +83,7 @@ defaultUiPlacement();
 // Handle setting inputs
 
 var PARSER_INPUT = document.getElementById("parsingStyle");
+var LOOP_INPUT = document.getElementById("shouldLoop");
 var SETTINGS_SUBMIT = document.getElementById("submitButton");
 
 function SetValuesForStartup() {
@@ -93,6 +97,17 @@ function SetValuesForStartup() {
 		parsingStyle = window[value];
 		PARSER_INPUT.value = value;
 	}
+	
+	if (localStorage.getItem("shouldLoop") === null) {
+		// Set it
+		// Default
+		SHOULD_LOOP = false;
+		LOOP_INPUT.value = false;
+	} else {
+		var value = localStorage.getItem("shouldLoop");
+		SHOULD_LOOP = !!value;
+		LOOP_INPUT.value = !!value;
+	}
 }
 
 // Set values now
@@ -103,6 +118,15 @@ PARSER_INPUT.onchange = function() {
 	// Dont set `parsingStyle`, set localstorage option
 	localStorage.setItem("parsingStyle", selectedOption);
 };
+
+LOOP_INPUT.onchange = function() {
+	var selectedOption = LOOP_INPUT.value;
+	// Dont set `parsingStyle`, set localstorage option
+	SHOULD_LOOP = selectedOption;
+	localStorage.setItem("shouldLoop", selectedOption);
+};
+
+LOOP_INPUT
 
 SETTINGS_SUBMIT.onclick = function() {
 	openTASWindow();
