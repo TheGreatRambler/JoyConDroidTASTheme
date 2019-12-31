@@ -102,11 +102,11 @@ function SetValuesForStartup() {
 		// Set it
 		// Default
 		SHOULD_LOOP = false;
-		LOOP_INPUT.value = false;
+		LOOP_INPUT.checked = false;
 	} else {
 		var value = localStorage.getItem("shouldLoop");
 		SHOULD_LOOP = !!value;
-		LOOP_INPUT.value = !!value;
+		LOOP_INPUT.checked = !!value;
 	}
 }
 
@@ -119,15 +119,12 @@ PARSER_INPUT.onchange = function() {
 	localStorage.setItem("parsingStyle", selectedOption);
 };
 
-LOOP_INPUT.onchange = function() {
-	var selectedOption = LOOP_INPUT.value;
-	log(selectedOption);
+LOOP_INPUT.onclick = function() {
+	var selectedOption = LOOP_INPUT.checked;
 	// Dont set `parsingStyle`, set localstorage option
 	SHOULD_LOOP = selectedOption;
 	localStorage.setItem("shouldLoop", selectedOption);
 };
-
-LOOP_INPUT
 
 SETTINGS_SUBMIT.onclick = function() {
 	openTASWindow();
