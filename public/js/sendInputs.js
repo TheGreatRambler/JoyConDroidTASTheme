@@ -88,8 +88,15 @@ window.inputHandler = function() {
 			// Shows thousands of a percent
 			log("TAS is " + currentScriptParser.currentRunPercentage.toFixed(3) + "% done");
 		}
-
-		if (currentlyRunning === false || currentScriptParser.done()) {
+		
+		if (currentlyRunning && currentScriptParser.done() && SHOULD_LOOP) {
+			// The TAS has not been stopped, the last frame has been reached
+			// And the user wishes to loop
+			// Just start it again
+			currentFrame = 0;
+			currentScriptParser.reset();
+			log("Looping back again");
+		} else if (currentlyRunning === false || currentScriptParser.done()) {
 			// Time to stop!
 			window.joyconJS.unregisterCallback();
 			// Clear controller visualizer
