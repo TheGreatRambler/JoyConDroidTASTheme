@@ -96,7 +96,9 @@ window.inputHandler = function() {
 			currentFrame = 0;
 			currentScriptParser.reset();
 			log("Looping back again");
-		} else if (currentlyRunning === false || currentScriptParser.done()) {
+		}
+		
+		if (currentlyRunning === false || currentScriptParser.done()) {
 			// Time to stop!
 			window.joyconJS.unregisterCallback();
 			// Clear controller visualizer
