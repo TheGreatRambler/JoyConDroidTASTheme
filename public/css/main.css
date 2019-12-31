@@ -248,8 +248,16 @@ body {
 	top: 10%;
 }
 
-#submitButton {
+#parsingTitle {
+	top: 20%;
+}
+
+#shouldLoop {
 	top: 25%;
+}
+
+#submitButton {
+	top: 35%;
 	height: 15%;
 	font-size: 40px;
 }
