@@ -98,7 +98,7 @@ window.inputHandler = function() {
 			log("Looping back again");
 		}
 		
-		log(currentlyRunning + currentScriptParser.done() + currentScriptParser.frame)
+		log(currentlyRunning + " " + currentScriptParser.done() + " " + currentScriptParser.frame)
 		
 		if (currentlyRunning === false || currentScriptParser.done()) {
 			// Time to stop!
@@ -107,11 +107,9 @@ window.inputHandler = function() {
 			setControllerVisualizer(false);
 			// Hard reset for async (for now)
 			currentScriptParser.hardStop();
-			currentFrame = 0;
-			currentScriptParser.reset();
 			// Let user know recompiling is needed
 			setCompileIconIfNeeded();
-			hasCompiledAlready = false;
+			hasCompiledAlready = false; 
 			// Stop all currently held inputs
 			clearAllInputs();
 			currentlyRunning = false;
