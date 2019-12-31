@@ -124,7 +124,7 @@ LOOP_INPUT.onclick = function() {
 	log(selectedOption);
 	// Dont set `parsingStyle`, set localstorage option
 	SHOULD_LOOP = selectedOption;
-	localStorage.setItem("shouldLoop", selectedOption);
+	localStorage.setItem("shouldLoop", selectedOption ? "1" : "0");
 };
 
 SETTINGS_SUBMIT.onclick = function() {
