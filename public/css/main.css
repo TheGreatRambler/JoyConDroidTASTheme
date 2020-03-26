@@ -207,56 +207,45 @@ body {
 #SettingsContainer {
 	left: -300%;
 	top: 0%;
+	display: flex;
+	flex-wrap: wrap;
+	flex-direction: column;
+}
+
+.settingsItem {
+	margin: 5% 10%;
+
+	/* Flex stuff */
+	flex: 1;
+	display: flex;
+	justify-content: center;
+	align-content: center;
+	flex-direction: column;
+	outline: 5px solid white;
 }
 
 .settingsInput {
-	position: absolute;
-	width: 80%;
-	/* Dont define top */
-	left: 10%;
-	bottom: 100%;
+	/* Center items */
 	background-color: #183170;
 	/* Doesnt work on safari */
 	text-align-last: center;
 	text-align: center;
 	color: white;
 	font-weight: bold;
-	outline: 5px solid white;
-	/* Flex stuff */
-	display: flex;
-	justify-content: center;
-	align-content: center;
-	flex-direction: column;
 }
 
 .settingsInputTitle {
-	height: 5%;
 	font-size: 25px;
+	flex: 1;
 }
 
 .settingsInputItem {
-	height: 10%;
 	font-size: 20px;
-}
-
-#parsingTitle {
-	top: 5%;
-}
-
-#parsingStyle {
-	top: 10%;
-}
-
-#loopTitle {
-	top: 25%;
-}
-
-#shouldLoop {
-	top: 30%;
+	flex:2;
+	width:100%;
 }
 
 #submitButton {
-	top: 45%;
-	height: 15%;
 	font-size: 40px;
+	height: 100%;
 }

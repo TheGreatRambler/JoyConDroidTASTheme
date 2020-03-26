@@ -58,17 +58,22 @@
 			<canvas id="statsCanvas"></canvas>
 		</div>
 	</div>
-
 	<div id="SettingsContainer" class="window">
-		<div class="settingsInput settingsInputTitle" id="parsingTitle">Parsing Algorithm</div>
-		<select class="settingsInput settingsInputItem" id="parsingStyle">
-			<option value="PARSING_STYLE_SYNC">Sync</option>
-			<!-- <option value="PARSING_STYLE_PRECOMPILE">Precompile</option> -->
-			<!-- <option value="PARSING_STYLE_PRECOMPILE_COMPRESSION">Precompile (With compression)</option> -->
-		</select>
-		<div class="settingsInput settingsInputTitle" id="loopTitle">Should loop</div>
-		<input class="settingsInput settingsInputItem" id="shouldLoop" type="checkbox">
-		<div class="settingsInput" id="submitButton">Close Settings</div>
+		<div class="settingsItem">
+			<div class="settingsInput settingsInputTitle" id="parsingTitle">Parsing Algorithm</div>
+			<select class="settingsInput settingsInputItem" id="parsingStyle">
+				<option value="PARSING_STYLE_SYNC">Sync</option>
+				<!-- <option value="PARSING_STYLE_PRECOMPILE">Precompile</option> -->
+				<!-- <option value="PARSING_STYLE_PRECOMPILE_COMPRESSION">Precompile (With compression)</option> -->
+			</select>
+		</div>
+		<div class="settingsItem">
+			<div class="settingsInput settingsInputTitle" id="loopTitle">Should loop</div>
+			<input class="settingsInput settingsInputItem" id="shouldLoop" type="checkbox">
+		</div>
+		<div class="settingsItem">
+			<button class="settingsInput" id="submitButton">Close Settings</div>
+		</div>
 	</div>
 
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js" crossorigin="anonymous"></script>
