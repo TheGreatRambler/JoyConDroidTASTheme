@@ -5,6 +5,11 @@ var fileInput = document.getElementById("hiddenFileInput");
 logTextarea.value = "";
 
 function log(text) {
+	if (VERBOSE_LOGGING == false)
+	{
+		return;
+	}
+
 	var currentDate = new Date();
 	var dateString = "[" + gMO.format("h:mm:ss.SS") + "]: ";
 	var valueToLog = (dateString + text + "\n");
