@@ -84,59 +84,63 @@ var keyIndex = {
 };
 
 function setControllerVisualizer(inputs) {
-  if (currentlyVisible) {
-    if (!inputs) {
-      // No inputs this frame
-      // Make blank image viewable
-      visible(true, 17);
-    } else {
-      // Set blank as invisible automatically
-      visible(false, 17);
+	if (!currentlyVisible)
+	{
+		return;
+	}
 
-      // May init this some other way, this is good right now
-      var listOfButtons = [3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16];
+  if (!inputs) {
+    // No inputs this frame
+    // Make blank image viewable
+    visible(true, 17);
+		return;
+  } 
 
-      var numActiveButtons = inputs.buttons.length;
-      for (var i = 0; i < numActiveButtons; i++) {
-        var keyNum = keyIndex[KEY_INT_ARRAY[inputs.buttons[i]]];
-        visible(true, keyNum);
-        // Set as already run
-        listOfButtons[keyNum - 3] = -1;
-      }
+  // Set blank as invisible automatically
+  visible(false, 17);
 
-      listOfButtons.forEach(function(button) {
-        if (button !== -1) {
-          // Hide buttons that did not run this frame
-          visible(false, button);
-        }
-      });
+  // May init this some other way, this is good right now
+  var listOfButtons = [3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16];
 
-      // Joysticks
-      // Left stick
-      var LX = inputs.leftStick.x;
-      var LY = inputs.leftStick.y;
-      if (LX || LY) {
-        // At least one needs moving
-        var xOffset = LX / 4;
-        // Y is opposite
-        var yOffset = LY / -4;
-        move(1, xOffset, yOffset);
-      } else {
-        // Reset
-        move(1, 0, 0);
-      }
+  var numActiveButtons = inputs.buttons.length;
+  for (var i = 0; i < numActiveButtons; i++) {
+    var keyNum = keyIndex[KEY_INT_ARRAY[inputs.buttons[i]]];
+    visible(true, keyNum);
+    // Set as already run
+    listOfButtons[keyNum - 3] = -1;
+  }
 
-      // Right stick
-      var RX = inputs.rightStick.x;
-      var RY = inputs.rightStick.y;
-      if (RX || RY) {
-        // At least one needs moving
-        var xOffset = RX / 1200;
-        var yOffset = RY / -1200;
-        move(2, xOffset, yOffset);
-      } else {
-        move(2, 0, 0);
-      }
+  listOfButtons.forEach(function(button) {
+    if (button !== -1) {
+      // Hide buttons that did not run this frame
+      visible(false, button);
     }
+  });
+
+  // Joysticks
+  // Left stick
+  var LX = inputs.leftStick.x;
+  var LY = inputs.leftStick.y;
+  if (LX || LY) {
+    // At least one needs moving
+    var xOffset = LX / 4;
+    // Y is opposite
+    var yOffset = LY / -4;
+    move(1, xOffset, yOffset);
+  } else {
+    // Reset
+    move(1, 0, 0);
+  }
+
+  // Right stick
+  var RX = inputs.rightStick.x;
+  var RY = inputs.rightStick.y;
+  if (RX || RY) {
+    // At least one needs moving
+    var xOffset = RX / 1200;
+    var yOffset = RY / -1200;
+    move(2, xOffset, yOffset);
+  } else {
+    move(2, 0, 0);
   }
 }
