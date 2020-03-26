@@ -98,16 +98,9 @@ function SetValuesForStartup() {
     PARSER_INPUT.value = value;
   }
 
-  if (localStorage.getItem("shouldLoop") === null) {
-    // Set it
-    // Default
-    SHOULD_LOOP = false;
-    LOOP_INPUT.checked = false;
-  } else {
-    var value = localStorage.getItem("shouldLoop") === "1" ? true : false;
-    SHOULD_LOOP = value;
-    LOOP_INPUT.checked = value;
-  }
+  var value = localStorage.getItem("shouldLoop") === "1" ? true : false;
+  SHOULD_LOOP = value;
+  LOOP_INPUT.checked = value;
 }
 
 // Set values now
