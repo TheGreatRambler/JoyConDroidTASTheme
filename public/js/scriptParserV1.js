@@ -98,7 +98,7 @@ ParserV1.prototype.parseScript = function(script) {
     };
 
     this.instructions[frame] = instruction;
-    this.lastFrame = frame;
+    this.lastFrame = Number(frame);
   }
 }
 
@@ -121,9 +121,7 @@ ParserV1.prototype.reset = function() {
 };
 
 ParserV1.prototype.getLastFrame = function() {
-  // Gets final frame so things can be computed
-  var endString = this.script.substring(this.script.lastIndexOf("\n") + 1, this.script.length);
-  return Number(endString.split(" ")[0]);
+  return this.lastFrame;
 }
 
 ParserV1.prototype.getFrame = function(index, memoizeObject) {
