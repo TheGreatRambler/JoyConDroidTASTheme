@@ -27,73 +27,74 @@ function disableMotionControls() {
 disableMotionControls();
 
 window.inputHandler = function() {
-  if (!pauseTAS) {
-    // Send FPS to profiler
-    callProfiler();
-    // Get next frame
-    var inputsThisFrame = currentScriptParser.nextFrame();
-
-    setControllerVisualizer(inputsThisFrame);
-    // Actually, not needed right now
-
-    // Makes it easier to clear all of them beforehand
-    clearAllInputs();
-
-    if (inputsThisFrame) {
-			var numActiveButtons = inputsThisFrame.buttons.length;
-      for (var i = 0; i < numActiveButtons; i++) {
-        var name = funcNames[inputsThisFrame.buttons[i]- 1]; // Key dict has FRAME for 0, but funcNames starts with A
-        window.joyconJS["on" + name](true);
-      }
-    }
-
-    // Send joystick inputs
-    if (!inputsThisFrame) {
-      // Neither are being held
-      window.joyconJS.onLeftJoystick(0, 0);
-      window.joyconJS.onRightJoystick(0, 0);
-    } else {
-      var LX = inputsThisFrame[1];
-      var LY = inputsThisFrame[2];
-      var RX = inputsThisFrame[3];
-      var RY = inputsThisFrame[4];
-      // Power goes to 100
-      var leftJoystickPower = inputsThisFrame.leftStick.power;
-      var rightJoystickPower = inputsThisFrame.rightStick.power;;
-      // Angle is in radians
-      var leftJoystickAngle = inputsThisFrame.leftStick.angle;
-      var rightJoystickAngle = inputsThisFrame.rightStick.angle;
-      window.joyconJS.onLeftJoystick(leftJoystickPower, leftJoystickAngle);
-      window.joyconJS.onRightJoystick(rightJoystickPower, rightJoystickAngle);
-    }
-
-    if (currentlyRunning && currentScriptParser.done() && SHOULD_LOOP) {
-      // The TAS has not been stopped, the last frame has been reached
-      // And the user wishes to loop
-      // Just start it again
-      currentScriptParser.reset();
-      log("Looping back again");
-    }
-
-    if (currentlyRunning === false || currentScriptParser.done()) {
-      // Time to stop!
-      window.joyconJS.unregisterCallback();
-      // Clear controller visualizer
-      setControllerVisualizer(false);
-      // Let user know recompiling is needed
-      setCompileIconIfNeeded();
-      hasCompiledAlready = false;
-      // Stop all currently held inputs
-      clearAllInputs();
-      currentlyRunning = false;
-      log("TAS is stopped or has finished");
-    }
-    return true;
-  } else {
+  if (pauseTAS) {
     // Just to keep it in check
     clearAllInputs();
     return false;
   }
+
+  // Send FPS to profiler
+  callProfiler();
+  // Get next frame
+  var inputsThisFrame = currentScriptParser.nextFrame();
+
+  setControllerVisualizer(inputsThisFrame);
+  // Actually, not needed right now
+
+  // Makes it easier to clear all of them beforehand
+  clearAllInputs();
+
+  if (inputsThisFrame) {
+    var numActiveButtons = inputsThisFrame.buttons.length;
+    for (var i = 0; i < numActiveButtons; i++) {
+      var name = funcNames[inputsThisFrame.buttons[i] - 1]; // Key dict has FRAME for 0, but funcNames starts with A
+      window.joyconJS["on" + name](true);
+    }
+  }
+
+  // Send joystick inputs
+  if (!inputsThisFrame) {
+    // Neither are being held
+    window.joyconJS.onLeftJoystick(0, 0);
+    window.joyconJS.onRightJoystick(0, 0);
+  } else {
+    var LX = inputsThisFrame[1];
+    var LY = inputsThisFrame[2];
+    var RX = inputsThisFrame[3];
+    var RY = inputsThisFrame[4];
+    // Power goes to 100
+    var leftJoystickPower = inputsThisFrame.leftStick.power;
+    var rightJoystickPower = inputsThisFrame.rightStick.power;;
+    // Angle is in radians
+    var leftJoystickAngle = inputsThisFrame.leftStick.angle;
+    var rightJoystickAngle = inputsThisFrame.rightStick.angle;
+    window.joyconJS.onLeftJoystick(leftJoystickPower, leftJoystickAngle);
+    window.joyconJS.onRightJoystick(rightJoystickPower, rightJoystickAngle);
+  }
+
+  if (currentlyRunning && currentScriptParser.done() && SHOULD_LOOP) {
+    // The TAS has not been stopped, the last frame has been reached
+    // And the user wishes to loop
+    // Just start it again
+    currentScriptParser.reset();
+    log("Looping back again");
+  }
+
+  if (currentlyRunning === false || currentScriptParser.done()) {
+    // Time to stop!
+    window.joyconJS.unregisterCallback();
+    // Clear controller visualizer
+    setControllerVisualizer(false);
+    // Let user know recompiling is needed
+    setCompileIconIfNeeded();
+    hasCompiledAlready = false;
+    // Stop all currently held inputs
+    clearAllInputs();
+    currentlyRunning = false;
+    log("TAS is stopped or has finished");
+  }
+
+  return true;
 }
 
 function setPlayArrow() {
