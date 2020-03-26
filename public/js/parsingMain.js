@@ -62,28 +62,28 @@ function parseScript() {
 
   var self = this;
   this.precompileWebworker.onmessage = function(e) {
-    var recievedData = e.data;
-    if (recievedData.flag !== undefined) {
+    var receivedData = e.data;
+    if (receivedData.flag !== undefined) {
       // This is a flagged message
-      if (recievedData.flag === 0) {
+      if (receivedData.flag === 0) {
         // Set compilation percentage
-        self.setCompProgress(recievedData.data);
-      } else if (recievedData.flag === 1) {
+        self.setCompProgress(receivedData.data);
+      } else if (receivedData.flag === 1) {
         // It is done
         log("Finished compiling");
         self._precompileParserDone = true;
-      } else if (recievedData.flag === 2) {
+      } else if (receivedData.flag === 2) {
         // Logging
         // Just logging
-        log(recievedData.data);
-      } else if (recievedData.flag === 3) {
+        log(receivedData.data);
+      } else if (receivedData.flag === 3) {
         // Set last frame
-        self.lastFrame = recievedData.frame;
+        self.lastFrame = receivedData.frame;
       }
     } else {
       // This is just plain data
       // Push onto queue
-      self.queue.push(recievedData);
+      self.queue.push(receivedData);
     }
   };
 }
