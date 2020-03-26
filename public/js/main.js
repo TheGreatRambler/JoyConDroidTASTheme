@@ -52,8 +52,9 @@ function showFileUI(fileName) {
 }
 
 document.getElementById("submitTASFile").onclick = function() {
-	document.getElementById("hiddenFileInput").click();
-	document.getElementById("hiddenFileInput").onchange = function() {
+	var hiddenInput = document.getElementById("hiddenFileInput");
+	hiddenInput.click();
+	hiddenInput.onchange = function() {
 		var file = fileInput.files[0];
 		if (file) {
 			// Make file visible
@@ -77,6 +78,9 @@ document.getElementById("submitTASFile").onclick = function() {
 			};
 			fileReader.readAsText(file);
 			log("Starting to read TAS file")
+
+			// Reset hidden input to allow reselecting the same file
+			this.value = "";
 		} else {
 			log("No TAS file chosen");
 		}
