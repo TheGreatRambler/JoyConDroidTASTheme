@@ -43,27 +43,16 @@ window.inputHandler = function() {
   clearAllInputs();
 
   if (inputsThisFrame) {
+    // Fire Buttons
     var numActiveButtons = inputsThisFrame.buttons.length;
     for (var i = 0; i < numActiveButtons; i++) {
       var name = funcNames[inputsThisFrame.buttons[i] - 1]; // Key dict has FRAME for 0, but funcNames starts with A
       window.joyconJS["on" + name](true);
     }
-  }
 
-  // Send joystick inputs
-  if (!inputsThisFrame) {
-    // Neither are being held
-    window.joyconJS.onLeftJoystick(0, 0);
-    window.joyconJS.onRightJoystick(0, 0);
-  } else {
-    var LX = inputsThisFrame[1];
-    var LY = inputsThisFrame[2];
-    var RX = inputsThisFrame[3];
-    var RY = inputsThisFrame[4];
-    // Power goes to 100
+    // Send joystick inputs
     var leftJoystickPower = inputsThisFrame.leftStick.power;
-    var rightJoystickPower = inputsThisFrame.rightStick.power;;
-    // Angle is in radians
+    var rightJoystickPower = inputsThisFrame.rightStick.power;
     var leftJoystickAngle = inputsThisFrame.leftStick.angle;
     var rightJoystickAngle = inputsThisFrame.rightStick.angle;
     window.joyconJS.onLeftJoystick(leftJoystickPower, leftJoystickAngle);
