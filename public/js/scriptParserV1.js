@@ -124,7 +124,12 @@ ParserV1.prototype.getLastFrame = function() {
   return this.lastFrame;
 }
 
-ParserV1.prototype.getFrame = function(index, memoizeObject) {
+ParserV1.prototype.getFrame = function (requestedFrame)
+{
+  return this.instructions[requestedFrame];
+}
+
+ParserV1.prototype.getFrameOld = function(index, memoizeObject) {
   // If at end of frames, skip rendering
   if (!this.haveFinished || this.onLastFrame) {
     if (this.currentIndex !== this.script.length) {

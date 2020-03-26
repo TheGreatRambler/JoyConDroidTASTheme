@@ -13,14 +13,10 @@ var SETTINGS_WINDOW_Y = "-0.25%";
 /*
   Parsing style represents way in which inputs are parsed
   0 = Sync: Parse each frame as it is asked for and pause execution until it is parsed
-  1 = Precompile: Parse all the frames onto a queue async and start using them if play is pressed a second time
-  2 = Precompile with compression: Precompile but uses integer compression to decrease memory usage (uses more cpu)
-
   0 is default
 */
 var parsingStyle = 0;
 var PARSING_STYLE_SYNC = 0;
-var PARSING_STYLE_PRECOMPILE = 1;
 
 // Set whether to memoize parser function
 var MEMOIZE_FUNCTION = true;

@@ -100,8 +100,6 @@ window.inputHandler = function() {
       window.joyconJS.unregisterCallback();
       // Clear controller visualizer
       setControllerVisualizer(false);
-      // Hard reset for async (for now)
-      currentScriptParser.hardStop();
       // Let user know recompiling is needed
       setCompileIconIfNeeded();
       hasCompiledAlready = false;
@@ -118,58 +116,40 @@ window.inputHandler = function() {
   }
 }
 
-function setCompileIconIfNeeded() {
-  if (currentScriptParser.isAsync()) {
-    // Set icon to wrench instead
-    document.getElementById("playArrow").innerHTML = "<i class='material-icons md-80'>build</i>";
-  }
-}
-setCompileIconIfNeeded();
-
 function setPlayArrow() {
   // Set icon to play arrow again
   document.getElementById("playArrow").innerHTML = "<i class='material-icons md-80'>play_arrow</i>";
 }
 
 document.getElementById("startTAS").onclick = function() {
-  if (currentScriptParser.isAsync() && !hasCompiledAlready) {
-    // Need to compile
-    currentScriptParser.startCompiling();
-    log("Started compiling");
-    // Set icon back to play
-    setPlayArrow();
-    // Now can play
-    hasCompiledAlready = true;
-  } else {
-    if (!currentlyRunning || pauseTAS) {
-      //if (!controllerIsCurrentlySynced) {
-      //	log("Not connected to Switch");
-      //} else {
-      if (isReadyToRun) {
-        // Is about to run right now
-        if (!pauseTAS) {
-          // TAS was not paused, so the frames need to be reset
-          currentScriptParser.reset();
-        } else {
-          // Was paused, needs to be unpaused
-          pauseTAS = false;
-        }
-        currentlyRunning = true;
-
-        log("Starting to run");
-        // Check currently running every frame
-        // Also check pausing TAS every frame
-        // Simulate 60 fps
-        if (!pauseTAS) {
-          window.joyconJS.registerCallback("window.inputHandler");
-        }
+  if (!currentlyRunning || pauseTAS) {
+    //if (!controllerIsCurrentlySynced) {
+    //	log("Not connected to Switch");
+    //} else {
+    if (isReadyToRun) {
+      // Is about to run right now
+      if (!pauseTAS) {
+        // TAS was not paused, so the frames need to be reset
+        currentScriptParser.reset();
       } else {
-        log("Script is not ready yet");
+        // Was paused, needs to be unpaused
+        pauseTAS = false;
       }
-      //}
+      currentlyRunning = true;
+
+      log("Starting to run");
+      // Check currently running every frame
+      // Also check pausing TAS every frame
+      // Simulate 60 fps
+      if (!pauseTAS) {
+        window.joyconJS.registerCallback("window.inputHandler");
+      }
     } else {
-      log("Script is currently in progress");
+      log("Script is not ready yet");
     }
+    //}
+  } else {
+    log("Script is currently in progress");
   }
 };
 
