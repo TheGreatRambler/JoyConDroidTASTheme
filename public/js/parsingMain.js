@@ -188,53 +188,56 @@ parseScript.prototype.checkQueues = function() {
 }
 
 parseScript.prototype.nextFrame = function() {
-  if (!this.scriptFinished) {
-    // Undefined, not false
-    // Generate new one
-    var nextInput = false;
-    if (parsingStyle === PARSING_STYLE_SYNC) {
-      nextInput = this.parser.instructions[this.frame]
-      /*
-      var success = this.getFrame(this.frame);
-      if (success) {
-        // Can send actual array only because we know that this array wont be modified
-        // Until the next input is called for (can't do for async)
-        nextInput = this.parser.inputsThisFrame;
-      }
-      */
+  if (this.scriptFinished)
+  {
+    return;
+  }
+
+  // Undefined, not false
+  // Generate new one
+  var nextInput = false;
+  if (parsingStyle === PARSING_STYLE_SYNC) {
+    nextInput = this.parser.instructions[this.frame]
+    /*
+    var success = this.getFrame(this.frame);
+    if (success) {
+      // Can send actual array only because we know that this array wont be modified
+      // Until the next input is called for (can't do for async)
+      nextInput = this.parser.inputsThisFrame;
+    }
+    */
+    if (this.parserIsDone()) {
+      this.scriptFinished = true;
+    }
+  } else if (this.isAsync()) {
+    if (this.queue.isEmpty()) {
       if (this.parserIsDone()) {
         this.scriptFinished = true;
-      }
-    } else if (this.isAsync()) {
-      if (this.queue.isEmpty()) {
-        if (this.parserIsDone()) {
-          this.scriptFinished = true;
-        } else {
-          var isDone = false;
-          // This is will pause the WHOLE PROGRAM while it is waiting for an input
-          while (!isDone) {
-            if (!this.queue.isEmpty()) {
-              nextInput = this.checkQueues();
-              // Can break out of while loop
-              isDone = true;
-            }
+      } else {
+        var isDone = false;
+        // This is will pause the WHOLE PROGRAM while it is waiting for an input
+        while (!isDone) {
+          if (!this.queue.isEmpty()) {
+            nextInput = this.checkQueues();
+            // Can break out of while loop
+            isDone = true;
           }
         }
-      } else {
-        // We can simply push it
-        nextInput = this.checkQueues();
       }
+    } else {
+      // We can simply push it
+      nextInput = this.checkQueues();
     }
-    // Update progress bar
-    this.setRunProgress(this.frame / this.lastFrame);
-    if (this.scriptFinished) {
-      this.reset();
-      this.setRunProgress(1);
-    }
-    // Always increment frame
-    this.frame++;
-    return nextInput;
   }
+  // Update progress bar
+  this.setRunProgress(this.frame / this.lastFrame);
+  if (this.scriptFinished) {
+    this.reset();
+    this.setRunProgress(1);
+  }
+  // Always increment frame
+  this.frame++;
+  return nextInput;
 }
 
 parseScript.prototype.startCompiling = function() {
