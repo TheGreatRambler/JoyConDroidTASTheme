@@ -52,7 +52,22 @@ ParserV1.prototype.parseScript = function(script) {
     if (!matches) {
       continue;
     }
+
     var frame = matches[1];
+
+    var buttons = matches[2].split(";");
+    var numButtons = buttons.length;
+
+    // Ignore invalid buttons
+    var validButtons = [];
+    for (var j = 0; j < numButtons; j++) {
+      var buttonName = buttons[j];
+      var ind = KEY_DICT[buttonName];
+
+      if (ind) {
+        validButtons.push(ind);
+      }
+    }
 
     var LX = this.parseJoystickValue(matches[3]);
     var LY = this.parseJoystickValue(matches[4]);
@@ -67,7 +82,7 @@ ParserV1.prototype.parseScript = function(script) {
     var rightJoystickAngle = Math.atan2(RY, RX); // + (Math.PI / 2);
 
     var instruction = {
-      buttons: matches[2].split(";"),
+      buttons: validButtons,
       leftStick: {
         x: LX,
         y: LY,
