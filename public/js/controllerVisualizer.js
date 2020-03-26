@@ -9,55 +9,55 @@ var imageContainer = document.getElementById("controllerImageContainer");
 var currentlyVisible = true;
 
 function showController() {
-	hideLog();
-	hideStats();
-	imageContainer.style.display = "block";
-	currentlyVisible = true;
+  hideLog();
+  hideStats();
+  imageContainer.style.display = "block";
+  currentlyVisible = true;
 }
 
 function hideController() {
-	imageContainer.style.display = "none";
-	currentlyVisible = false;
+  imageContainer.style.display = "none";
+  currentlyVisible = false;
 }
 
 function visible(isVisible, index) {
-	if (isVisible) {
-		inputImages[index].style.visibility = "visible";
-	} else {
-		inputImages[index].style.visibility = "hidden";
-	}
+  if (isVisible) {
+    inputImages[index].style.visibility = "visible";
+  } else {
+    inputImages[index].style.visibility = "hidden";
+  }
 }
 
 function move(index, x, y) {
-	inputImages[index].style.left = x + "px";
-	inputImages[index].style.top = y + "px";
+  inputImages[index].style.left = x + "px";
+  inputImages[index].style.top = y + "px";
 }
 
 function init() {
-	// Every image is sized 1000 by 750
-	// Width of screen
-	var w = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
-	var currentIndex = 0;
-	imagesToMake.forEach(function(key) {
-		var oImg = document.createElement("img");
-		oImg.setAttribute("src", "./images/controller/" + key + ".png");
-		// Set to existing class
-		oImg.className = "controllerImages";
-		// Its a bit too big otherwise
-		oImg.style.width = w + "px";
-		// Situate image
-		oImg.style.top = 0;
-		oImg.style["z-index"] = currentIndex;
-		// Hide image for now
-		oImg.style.visibility = "hidden";
-		currentIndex++;
-		imageContainer.appendChild(oImg);
-		inputImages.push(oImg);
-	});
-	// Make proconbase visible as well as the sticks
-	visible(true, 0);
-	visible(true, 1);
-	visible(true, 2);
+  // Every image is sized 1000 by 750
+  // Width of screen
+  var w = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
+  var currentIndex = 0;
+  imagesToMake.forEach(function(key) {
+    var oImg = document.createElement("img");
+    oImg.setAttribute("src", "./images/controller/" + key + ".png");
+    // Set to existing class
+    oImg.className = "controllerImages";
+    // Its a bit too big otherwise
+    oImg.style.width = w + "px";
+    // Situate image
+    oImg.style.top = 0;
+    oImg.style["z-index"] = currentIndex;
+    // Hide image for now
+    oImg.style.visibility = "hidden";
+    currentIndex++;
+    imageContainer.appendChild(oImg);
+    inputImages.push(oImg);
+  });
+  // Make proconbase visible as well as the sticks
+  visible(true, 0);
+  visible(true, 1);
+  visible(true, 2);
 }
 
 // Start
@@ -67,76 +67,76 @@ init();
 document.getElementById("showController").onclick = showController;
 
 var keyIndex = {
-	KEY_A: 3,
-	KEY_B: 4,
-	KEY_X: 5,
-	KEY_Y: 6,
-	KEY_L: 7,
-	KEY_R: 8,
-	KEY_ZL: 9,
-	KEY_ZR: 10,
-	KEY_PLUS: 11,
-	KEY_MINUS: 12,
-	KEY_DLEFT: 13,
-	KEY_DUP: 14,
-	KEY_DRIGHT: 15,
-	KEY_DDOWN: 16,
+  KEY_A: 3,
+  KEY_B: 4,
+  KEY_X: 5,
+  KEY_Y: 6,
+  KEY_L: 7,
+  KEY_R: 8,
+  KEY_ZL: 9,
+  KEY_ZR: 10,
+  KEY_PLUS: 11,
+  KEY_MINUS: 12,
+  KEY_DLEFT: 13,
+  KEY_DUP: 14,
+  KEY_DRIGHT: 15,
+  KEY_DDOWN: 16,
 };
 
 function setControllerVisualizer(inputs) {
-	if (currentlyVisible) {
-		if (!inputs) {
-			// No inputs this frame
-			// Make blank image viewable
-			visible(true, 17);
-		} else {
-			// Set blank as invisible automatically
-			visible(false, 17);
+  if (currentlyVisible) {
+    if (!inputs) {
+      // No inputs this frame
+      // Make blank image viewable
+      visible(true, 17);
+    } else {
+      // Set blank as invisible automatically
+      visible(false, 17);
 
-			// May init this some other way, this is good right now
-			var listOfButtons = [3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16];
+      // May init this some other way, this is good right now
+      var listOfButtons = [3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16];
 
-			for (var i = 5; i < inputs.length; i++) {
-				// Start at 5 because those first 5 are joystick inputs and frame numbers
-				var keyNum = keyIndex[KEY_INT_ARRAY[inputs[i]]];
-				visible(true, keyNum);
-				// Set as already run
-				listOfButtons[keyNum - 3] = -1;
-			}
+      var numActiveButtons = inputs.buttons.length;
+      for (var i = 0; i < numActiveButtons; i++) {
+        var keyNum = keyIndex[KEY_INT_ARRAY[inputs.buttons[i]]];
+        visible(true, keyNum);
+        // Set as already run
+        listOfButtons[keyNum - 3] = -1;
+      }
 
-			listOfButtons.forEach(function(button) {
-				if (button !== -1) {
-					// Hide buttons that did not run this frame
-					visible(false, button);
-				}
-			});
+      listOfButtons.forEach(function(button) {
+        if (button !== -1) {
+          // Hide buttons that did not run this frame
+          visible(false, button);
+        }
+      });
 
-			// Joysticks
-			// Left stick
-			var LX = inputs[1];
-			var LY = inputs[2];
-			if (LX || LY) {
-				// At least one needs moving
-				var xOffset = LX / 4;
-				// Y is opposite
-				var yOffset = LY / -4;
-				move(1, xOffset, yOffset);
-			} else {
-				// Reset
-				move(1, 0, 0);
-			}
+      // Joysticks
+      // Left stick
+      var LX = inputs.leftStick.x;
+      var LY = inputs.leftStick.y;
+      if (LX || LY) {
+        // At least one needs moving
+        var xOffset = LX / 4;
+        // Y is opposite
+        var yOffset = LY / -4;
+        move(1, xOffset, yOffset);
+      } else {
+        // Reset
+        move(1, 0, 0);
+      }
 
-			// Right stick
-			var RX = inputs[3];
-			var RY = inputs[4];
-			if (RX || RY) {
-				// At least one needs moving
-				var xOffset = RX / 1200;
-				var yOffset = RY / -1200;
-				move(2, xOffset, yOffset);
-			} else {
-				move(2, 0, 0);
-			}
-		}
-	}
+      // Right stick
+      var RX = inputs.rightStick.x;
+      var RY = inputs.rightStick.y;
+      if (RX || RY) {
+        // At least one needs moving
+        var xOffset = RX / 1200;
+        var yOffset = RY / -1200;
+        move(2, xOffset, yOffset);
+      } else {
+        move(2, 0, 0);
+      }
+    }
+  }
 }
