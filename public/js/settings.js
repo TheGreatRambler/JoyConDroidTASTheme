@@ -18,9 +18,6 @@ var SETTINGS_WINDOW_Y = "-0.25%";
 var parsingStyle = 0;
 var PARSING_STYLE_SYNC = 0;
 
-// Set whether to memoize parser function
-var MEMOIZE_FUNCTION = true;
-
 // Whether the script should loop after ending
 var SHOULD_LOOP = false;
 

@@ -33,17 +33,6 @@ window.inputHandler = function() {
     // Get next frame
     var inputsThisFrame = currentScriptParser.nextFrame();
 
-    // Inputs format
-    /*
-    	0: Frame
-    	1: LX,
-    	2: LY,
-    	3: RX,
-    	4: RY,
-    	5 - Infinity: The rest of the inputs
-    */
-
-
     setControllerVisualizer(inputsThisFrame);
     // Actually, not needed right now
 
@@ -78,13 +67,6 @@ window.inputHandler = function() {
       window.joyconJS.onRightJoystick(rightJoystickPower, rightJoystickAngle);
     }
 
-    if (currentScriptParser.frame % 180 === 0) {
-      // Check if this frame is a multiple of 60
-      // This means that this runs every 3 seconds
-      // Shows thousands of a percent
-      log("TAS is " + currentScriptParser.currentRunPercentage.toFixed(3) + "% done");
-    }
-
     if (currentlyRunning && currentScriptParser.done() && SHOULD_LOOP) {
       // The TAS has not been stopped, the last frame has been reached
       // And the user wishes to loop
@@ -92,8 +74,6 @@ window.inputHandler = function() {
       currentScriptParser.reset();
       log("Looping back again");
     }
-
-    log(currentlyRunning + " " + currentScriptParser.done() + " " + currentScriptParser.frame)
 
     if (currentlyRunning === false || currentScriptParser.done()) {
       // Time to stop!

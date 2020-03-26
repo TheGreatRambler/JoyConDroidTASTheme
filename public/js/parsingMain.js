@@ -36,15 +36,11 @@ function parseScript() {
     this.parser = new ParserV1();
   }
 
-  // Unrelated to currentIndex
+  // the current frame
   this.frame = 0;
 
-  this.scriptFinished = false;
-
+  // the last frame of the script
   this.lastFrame = 0;
-
-  // Only used if memoize is enabled
-  this.memoizeObject = {};
 
   // Percentages
   this.currentRunPercentage = 0;
@@ -63,27 +59,16 @@ parseScript.prototype.done = function() {
 };
 
 parseScript.prototype.nextFrame = function() {
-  if (this.scriptFinished)
-  {
-    return;
-  }
-
   // Undefined, not false
   // Generate new one
   var nextInput = false;
   if (parsingStyle === PARSING_STYLE_SYNC) {
     nextInput = this.parser.instructions[this.frame]
-    if (this.parserIsDone()) {
-      this.scriptFinished = true;
-    }
   }
 
   // Update progress bar
   this.setRunProgress(this.frame / this.lastFrame);
-  if (this.scriptFinished) {
-    this.reset();
-    this.setRunProgress(1);
-  }
+
   // Always increment frame
   this.frame++;
   return nextInput;
@@ -105,18 +90,5 @@ parseScript.prototype.setScript = function(script) {
 }
 
 parseScript.prototype.reset = function() {
-  this.parser.reset();
   this.frame = 0;
-  this.scriptFinished = false;
-};
-
-/**
- * @deprecated no longer used
- */
-parseScript.prototype.getFrame = function(index) {
-  if (MEMOIZE_FUNCTION) {
-    return this.parser.getFrame(index, this.memoizeObject);
-  } else {
-    return this.parser.getFrame(index);
-  }
 };
