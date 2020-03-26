@@ -1,12 +1,10 @@
 importScripts("./scriptParserV1.js");
-importScripts("./tp/FastIntegerCompression.min.js");
 
 var parserInstance = new ParserV1();
 
 var parsingStyle = 0;
 var PARSING_STYLE_SYNC = 0;
 var PARSING_STYLE_PRECOMPILE = 1;
-var PARSING_STYLE_PRECOMPILE_COMPRESSION = 2;
 
 var currentIndex = 0;
 
@@ -52,15 +50,9 @@ function asyncParse(doneCB) {
 	(new Promise(function(resolve) {
 		var frameSuccess = parserInstance.getFrame(currentIndex);
 		if (frameSuccess) {
-			var value;
-			if (parsingStyle === PARSING_STYLE_PRECOMPILE_COMPRESSION) {
-				// No need for new array because this one is being compressed
-				value = FastIntegerCompression.compress(parserInstance.inputsThisFrame);
-			} else if (parsingStyle === PARSING_STYLE_PRECOMPILE) {
-				// Puts array on if not compression
-				// Uses strings instead of arrays
-				value = parserInstance.inputsThisFrame.join("|");
-			}
+			// Puts array on if not compression
+			// Uses strings instead of arrays
+			var value = parserInstance.inputsThisFrame.join("|");
 			// Send data to main thread
 			// Gets sent without flag to allow sending the Arraybuffer transparently
 			worker.postMessage(value);

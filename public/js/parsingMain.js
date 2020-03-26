@@ -102,7 +102,7 @@ parseScript.prototype.setCompProgress = function(compProgress) {
 };
 
 parseScript.prototype.isAsync = function() {
-  if (parsingStyle === PARSING_STYLE_PRECOMPILE || parsingStyle === PARSING_STYLE_PRECOMPILE_COMPRESSION) {
+  if (parsingStyle === PARSING_STYLE_PRECOMPILE) {
     return true;
   } else {
     // It is sync
@@ -150,40 +150,8 @@ parseScript.prototype.checkPrecompileQueue = function() {
   return nextInput;
 };
 
-parseScript.prototype.checkPrecompileCompressionQueue = function() {
-  var nextInput = false;
-  var useIfNeeded;
-  if (this._precompileFrameNum === -1) {
-    // No next frame has been specified
-    // Do it now
-    // Uncompress and do it
-    useIfNeeded = FastIntegerCompression.uncompress(this.queue.peekFront());
-    this._precompileFrameNum = useIfNeeded[0];
-  }
-
-  if (this._precompileFrameNum === this.frame) {
-    // This frame needs to be sent because the script is waiting for it
-    if (useIfNeeded) {
-      // Saves a bit of processing power
-      nextInput = useIfNeeded;
-      this.queue.shift()
-    } else {
-      nextInput = FastIntegerCompression.uncompress(this.queue.shift());
-    }
-
-    // Set next frame specified as not avaliable
-    this._precompileFrameNum = -1;
-  }
-  return nextInput;
-};
-
 parseScript.prototype.checkQueues = function() {
-  var nextInput = false;
-  if (parsingStyle === PARSING_STYLE_PRECOMPILE) {
-    nextInput = this.checkPrecompileQueue();
-  } else if (parsingStyle === PARSING_STYLE_PRECOMPILE_COMPRESSION) {
-    nextInput = this.checkPrecompileCompressionQueue();
-  }
+  var nextInput = this.checkPrecompileQueue();
   return nextInput;
 }
 
@@ -243,7 +211,7 @@ parseScript.prototype.nextFrame = function() {
 parseScript.prototype.startCompiling = function() {
   // TAS is starting to compile
   // Start async if needed
-  if (parsingStyle === PARSING_STYLE_PRECOMPILE || parsingStyle === PARSING_STYLE_PRECOMPILE_COMPRESSION) {
+  if (parsingStyle === PARSING_STYLE_PRECOMPILE ) {
     // Start parsing
     this.precompileWebworker.postMessage({
       flag: 1

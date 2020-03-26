@@ -21,7 +21,6 @@ var SETTINGS_WINDOW_Y = "-0.25%";
 var parsingStyle = 0;
 var PARSING_STYLE_SYNC = 0;
 var PARSING_STYLE_PRECOMPILE = 1;
-var PARSING_STYLE_PRECOMPILE_COMPRESSION = 2;
 
 // Set whether to memoize parser function
 var MEMOIZE_FUNCTION = true;
