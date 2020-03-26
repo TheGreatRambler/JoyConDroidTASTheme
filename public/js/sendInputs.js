@@ -1,8 +1,6 @@
 var currentlyRunning = false;
 var pauseTAS = false;
 
-var currentFrame = 0;
-
 var controllerIsCurrentlySynced = false;
 
 var currentScriptParser = new parseScript();
@@ -52,7 +50,6 @@ window.inputHandler = function() {
     // Makes it easier to clear all of them beforehand
     clearAllInputs();
 
-    currentFrame++;
     if (inputsThisFrame) {
 			var numActiveButtons = inputsThisFrame.buttons.length;
       for (var i = 0; i < numActiveButtons; i++) {
@@ -92,7 +89,6 @@ window.inputHandler = function() {
       // The TAS has not been stopped, the last frame has been reached
       // And the user wishes to loop
       // Just start it again
-      currentFrame = 0;
       currentScriptParser.reset();
       log("Looping back again");
     }
@@ -153,7 +149,6 @@ document.getElementById("startTAS").onclick = function() {
         // Is about to run right now
         if (!pauseTAS) {
           // TAS was not paused, so the frames need to be reset
-          currentFrame = 0;
           currentScriptParser.reset();
         } else {
           // Was paused, needs to be unpaused
