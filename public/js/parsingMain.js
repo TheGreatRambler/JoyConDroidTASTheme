@@ -102,12 +102,7 @@ parseScript.prototype.setCompProgress = function(compProgress) {
 };
 
 parseScript.prototype.isAsync = function() {
-  if (parsingStyle === PARSING_STYLE_PRECOMPILE) {
-    return true;
-  } else {
-    // It is sync
-    return false;
-  }
+  return parsingStyle === PARSING_STYLE_PRECOMPILE;
 };
 
 parseScript.prototype.done = function() {
@@ -211,7 +206,7 @@ parseScript.prototype.nextFrame = function() {
 parseScript.prototype.startCompiling = function() {
   // TAS is starting to compile
   // Start async if needed
-  if (parsingStyle === PARSING_STYLE_PRECOMPILE ) {
+  if (this.isAsync() ) {
     // Start parsing
     this.precompileWebworker.postMessage({
       flag: 1
