@@ -32,11 +32,6 @@ body {
 	top: -0.25%;
 }
 
-#SettingsContainer {
-	left: -300%;
-	top: 0%;
-}
-
 .controllerImages {
 	position: absolute;
 }
@@ -209,6 +204,10 @@ body {
 }
 
 /* Settings stuff */
+#SettingsContainer {
+	left: -300%;
+	top: 0%;
+}
 
 .settingsInput {
 	position: absolute;
