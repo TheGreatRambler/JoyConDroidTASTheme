@@ -54,10 +54,9 @@ window.inputHandler = function() {
 
     currentFrame++;
     if (inputsThisFrame) {
-      for (var i = 5; i < inputsThisFrame.length; i++) {
-        // Start at 5 because those first 5 are joystick inputs and frame numbers
-        // -1 because the first value is actually frames
-        var name = funcNames[inputsThisFrame[i] - 1];
+			var numActiveButtons = inputsThisFrame.buttons.length;
+      for (var i = 0; i < numActiveButtons; i++) {
+        var name = funcNames[inputsThisFrame.buttons[i]- 1]; // Key dict has FRAME for 0, but funcNames starts with A
         window.joyconJS["on" + name](true);
       }
     }
@@ -73,11 +72,11 @@ window.inputHandler = function() {
       var RX = inputsThisFrame[3];
       var RY = inputsThisFrame[4];
       // Power goes to 100
-      var leftJoystickPower = Math.min(Math.abs(Math.hypot(LX, LY)), 100);
-      var rightJoystickPower = Math.min(Math.abs(Math.hypot(RX, RY)), 100);
+      var leftJoystickPower = inputsThisFrame.leftStick.power;
+      var rightJoystickPower = inputsThisFrame.rightStick.power;;
       // Angle is in radians
-      var leftJoystickAngle = Math.atan2(LY, LX); // + (Math.PI / 2);
-      var rightJoystickAngle = Math.atan2(RY, RX); // + (Math.PI / 2);
+      var leftJoystickAngle = inputsThisFrame.leftStick.angle;
+      var rightJoystickAngle = inputsThisFrame.rightStick.angle;
       window.joyconJS.onLeftJoystick(leftJoystickPower, leftJoystickAngle);
       window.joyconJS.onRightJoystick(rightJoystickPower, rightJoystickAngle);
     }

@@ -193,12 +193,15 @@ parseScript.prototype.nextFrame = function() {
     // Generate new one
     var nextInput = false;
     if (parsingStyle === PARSING_STYLE_SYNC) {
+      nextInput = this.parser.instructions[this.frame]
+      /*
       var success = this.getFrame(this.frame);
       if (success) {
         // Can send actual array only because we know that this array wont be modified
         // Until the next input is called for (can't do for async)
         nextInput = this.parser.inputsThisFrame;
       }
+      */
       if (this.parserIsDone()) {
         this.scriptFinished = true;
       }
@@ -297,6 +300,9 @@ parseScript.prototype.reset = function() {
   this.scriptFinished = false;
 };
 
+/**
+ * @deprecated no longer used
+ */
 parseScript.prototype.getFrame = function(index) {
   if (MEMOIZE_FUNCTION) {
     return this.parser.getFrame(index, this.memoizeObject);
