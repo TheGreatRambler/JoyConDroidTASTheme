@@ -9,8 +9,6 @@ var isReadyToRun = false;
 
 var funcNames = ["A", "B", "X", "Y", "L", "R", "ZL", "ZR", "Plus", "Minus", "Left", "Up", "Right", "Down"];
 
-var hasCompiledAlready = false;
-
 function clearAllInputs() {
   funcNames.forEach(function(funcName) {
     // Turns off each and every input
@@ -85,9 +83,6 @@ window.inputHandler = function() {
     window.joyconJS.unregisterCallback();
     // Clear controller visualizer
     setControllerVisualizer(false);
-    // Let user know recompiling is needed
-    setCompileIconIfNeeded();
-    hasCompiledAlready = false;
     // Stop all currently held inputs
     clearAllInputs();
     currentlyRunning = false;
