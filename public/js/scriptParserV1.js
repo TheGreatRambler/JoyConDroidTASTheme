@@ -28,7 +28,55 @@ function ParserV1() {
 ParserV1.prototype.setScript = function(script) {
   // Automatically resets everything
   this.script = script;
+  this.parseScript(script);
   this.reset();
+}
+
+/**
+ * Parses the script string and saves the instructions in memory
+ * @param string script
+ */
+ParserV1.prototype.parseScript = function(script) {
+  // Split script into lines
+  var lines = script.split("\n");
+  // Now parse each line into instructions
+  this.instructions = {};
+
+  var numLines = lines.length;
+
+  var regex = new RegExp("(\\d+)\\s+([^\\s]+)\\s+(-?\\d+);(-?\\d+)\\s+(-?\\d+);(-?\\d+)");
+  for (var i = 0; i < numLines; i++) {
+    var line = lines[i];
+    var matches = line.match(regex)
+
+    if (!matches) {
+      continue;
+    }
+    var frame = matches[1];
+
+    var instruction = {
+      buttons: matches[2].split(";"),
+      leftStick: {
+        x: this.parseJoystickValue(matches[3]),
+        y: this.parseJoystickValue(matches[4])
+      },
+      rightStick: {
+        x: this.parseJoystickValue(matches[5]),
+        y: this.parseJoystickValue(matches[6])
+      }
+    };
+
+    this.instructions[frame] = instruction;
+    this.lastFrame = frame;
+  }
+}
+
+/**
+ * Converts the text value to the number value used by the controller
+ * @param string rawValue
+ */
+ParserV1.prototype.parseJoystickValue = function (rawValue) {
+  return Number(rawValue / 300);
 }
 
 ParserV1.prototype.reset = function() {
