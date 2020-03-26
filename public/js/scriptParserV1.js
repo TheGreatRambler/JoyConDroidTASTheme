@@ -54,15 +54,31 @@ ParserV1.prototype.parseScript = function(script) {
     }
     var frame = matches[1];
 
+    var LX = this.parseJoystickValue(matches[3]);
+    var LY = this.parseJoystickValue(matches[4]);
+    var RX = this.parseJoystickValue(matches[5]);
+    var RY = this.parseJoystickValue(matches[6]);
+
+    // Power goes to 100
+    var leftJoystickPower = Math.min(Math.abs(Math.hypot(LX, LY)), 100);
+    var rightJoystickPower = Math.min(Math.abs(Math.hypot(RX, RY)), 100);
+    // Angle is in radians
+    var leftJoystickAngle = Math.atan2(LY, LX); // + (Math.PI / 2);
+    var rightJoystickAngle = Math.atan2(RY, RX); // + (Math.PI / 2);
+
     var instruction = {
       buttons: matches[2].split(";"),
       leftStick: {
-        x: this.parseJoystickValue(matches[3]),
-        y: this.parseJoystickValue(matches[4])
+        x: LX,
+        y: LY,
+        power: leftJoystickPower,
+        angle: leftJoystickAngle
       },
       rightStick: {
-        x: this.parseJoystickValue(matches[5]),
-        y: this.parseJoystickValue(matches[6])
+        x: RX,
+        y: RY,
+        power: rightJoystickPower,
+        angle: rightJoystickAngle
       }
     };
 
@@ -75,7 +91,7 @@ ParserV1.prototype.parseScript = function(script) {
  * Converts the text value to the number value used by the controller
  * @param string rawValue
  */
-ParserV1.prototype.parseJoystickValue = function (rawValue) {
+ParserV1.prototype.parseJoystickValue = function(rawValue) {
   return Number(rawValue / 300);
 }
 
