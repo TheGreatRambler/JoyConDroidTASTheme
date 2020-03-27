@@ -26,6 +26,8 @@ disableMotionControls();
 
 window.inputHandler = function() {
   var start = performance.now();
+  log( ": " + (performance.now() - start));
+  return true;
   if (pauseTAS) {
     // Just to keep it in check
     clearAllInputs();
@@ -79,7 +81,6 @@ window.inputHandler = function() {
     log("TAS is stopped or has finished");
   }
 
-  log(currentScriptParser.frame + ": " + (performance.now() - start));
 
   return true;
 }
