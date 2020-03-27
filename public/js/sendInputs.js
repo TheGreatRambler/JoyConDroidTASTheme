@@ -25,24 +25,29 @@ function disableMotionControls() {
 disableMotionControls();
 
 window.inputHandler = function() {
-  var start = performance.now();
   if (pauseTAS) {
     // Just to keep it in check
     clearAllInputs();
     return false;
   }
 
+  log("Start of frame" + currentScriptParser.frame);
+
   // Send FPS to profiler
   callProfiler();
   // Get next frame
+  var start = performance.now();
   var inputsThisFrame = currentScriptParser.nextFrame();
+  log("Get Frame : " + (performance.now() - start));
 
   setControllerVisualizer(inputsThisFrame);
-  // Actually, not needed right now
 
   // Makes it easier to clear all of them beforehand
+  start = performance.now();
   clearAllInputs();
+  log("clearAllInputs : " + (performance.now() - start));
 
+  start = performance.now();
   if (inputsThisFrame) {
     // Fire Buttons
     var numActiveButtons = inputsThisFrame.buttons.length;
@@ -59,6 +64,7 @@ window.inputHandler = function() {
     window.joyconJS.onLeftJoystick(leftJoystickPower, leftJoystickAngle);
     window.joyconJS.onRightJoystick(rightJoystickPower, rightJoystickAngle);
   }
+  log("sendInput : " + (performance.now() - start));
 
   if (currentlyRunning && currentScriptParser.done() && SHOULD_LOOP) {
     // The TAS has not been stopped, the last frame has been reached
@@ -69,6 +75,7 @@ window.inputHandler = function() {
   }
 
   if (currentlyRunning === false || currentScriptParser.done()) {
+    start = performance.now();
     // Time to stop!
     window.joyconJS.unregisterCallback();
     // Clear controller visualizer
@@ -77,9 +84,8 @@ window.inputHandler = function() {
     clearAllInputs();
     currentlyRunning = false;
     log("TAS is stopped or has finished");
+    log("Cleanup : " + (performance.now() - start));
   }
-
-  log(currentScriptParser.frame + ": " + (performance.now() - start));
 
   return true;
 }
