@@ -55,7 +55,7 @@ parseScript.prototype.setRunProgress = function(runProgress) {
 
 parseScript.prototype.done = function() {
   // Should technically work
-  return this.lastFrame === this.frame;
+  return this.lastFrame < this.frame;
 };
 
 parseScript.prototype.nextFrame = function() {
@@ -72,10 +72,6 @@ parseScript.prototype.nextFrame = function() {
   // Always increment frame
   this.frame++;
   return nextInput;
-}
-
-parseScript.prototype.parserIsDone = function() {
-    return this.parser.done;
 }
 
 parseScript.prototype.setScript = function(script) {
