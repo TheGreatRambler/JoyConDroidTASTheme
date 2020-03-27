@@ -152,17 +152,20 @@ window.inputHandler = function() {
 
   if (currentlyRunning === false || currentScriptParser.done()) {
     // Time to stop!
-    window.joyconJS.unregisterCallback();
+    //window.joyconJS.unregisterCallback();
     // Clear controller visualizer
     setControllerVisualizer(false);
     // Stop all currently held inputs
     clearAllInputs(true);
     currentlyRunning = false;
     log("TAS is stopped or has finished");
+
+    clearInterval(interval);
+    return true;
   }
   log("Loop: " + (performance.now() - start));
 
-  return true;
+  return false;
 }
 
 function setPlayArrow() {
@@ -170,6 +173,7 @@ function setPlayArrow() {
   document.getElementById("playArrow").innerHTML = "<i class='material-icons md-80'>play_arrow</i>";
 }
 
+var interval;
 document.getElementById("startTAS").onclick = function() {
   if (!currentlyRunning || pauseTAS) {
     //if (!controllerIsCurrentlySynced) {
@@ -191,7 +195,8 @@ document.getElementById("startTAS").onclick = function() {
       // Also check pausing TAS every frame
       // Simulate 60 fps
       if (!pauseTAS) {
-        window.joyconJS.registerCallback("window.inputHandler");
+        interval = window.setInterval(window.inputHandler,16);
+        //window.joyconJS.registerCallback("window.inputHandler");
       }
     } else {
       log("Script is not ready yet");
@@ -208,6 +213,7 @@ document.getElementById("stopTAS").onclick = function() {
   if (currentlyRunning && !pauseTAS) {
     log("Stopping TAS");
     currentlyRunning = false;
+    clearInterval(interval);
     // Its startTASs job to end the TAS
   }
 };
@@ -217,5 +223,6 @@ document.getElementById("pauseTAS").onclick = function() {
   if (currentlyRunning && !pauseTAS) {
     log("Pausing TAS");
     pauseTAS = true;
+    clearInterval(interval);
   }
 };
