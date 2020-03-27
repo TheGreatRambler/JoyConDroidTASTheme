@@ -38,7 +38,7 @@ ParserV1.prototype.parseScript = function(script) {
 
   var numLines = lines.length;
 
-    var regex = new RegExp("(\\d+)(?:-(\\d+))?\\s+([^\\s]+)\\s+(-?\\d+);(-?\\d+)\\s+(-?\\d+);(-?\\d+)");
+    var regex = new RegExp("^(\\d+)(?:-(\\d+))?\\s+([^\\s]+)\\s+(-?\\d+);(-?\\d+)\\s+(-?\\d+);(-?\\d+)");
   for (var i = 0; i < numLines; i++) {
     var line = lines[i];
     var matches = line.match(regex)
