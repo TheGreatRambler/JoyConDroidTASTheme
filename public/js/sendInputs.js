@@ -47,23 +47,23 @@ joyconDroidButtons.forEach(function(funcName) {
   currentStatus[funcName] = [false];
 });
 
-function clearAllInputs() {
+function clearAllInputs(force) {
   joyconDroidButtons.forEach(function(funcName) {
     // Turns off each and every input
-    setButtonInput(funcName, false);
+    setButtonInput(funcName, false, force);
   });
-  setJoystickInput("onLeftJoystick", 0, 0);
-  setJoystickInput("onRightJoystick", 0, 0);
+  setJoystickInput("onLeftJoystick", 0, 0, force);
+  setJoystickInput("onRightJoystick", 0, 0, force);
 }
 
-function setButtonInput(functionName, param1, param2) {
-  if (currentStatus[functionName][0] != param1) {
+function setButtonInput(functionName, param1, param2, force) {
+  if (force || currentStatus[functionName][0] != param1) {
     window.joyconJS[functionName](param1);
   }
 }
 
-function setJoystickInput(functionName, param1, param2) {
-  if (currentStatus[functionName][0] != param1 || currentStatus[functionName][1] != param2) {
+function setJoystickInput(functionName, param1, param2, force) {
+  if (force ||  currentStatus[functionName][0] != param1 || currentStatus[functionName][1] != param2) {
     window.joyconJS[functionName](param1, param2);
   }
 }
@@ -133,7 +133,7 @@ window.inputHandler = function() {
     // Clear controller visualizer
     setControllerVisualizer(false);
     // Stop all currently held inputs
-    clearAllInputs();
+    clearAllInputs(true);
     currentlyRunning = false;
     log("TAS is stopped or has finished");
   }

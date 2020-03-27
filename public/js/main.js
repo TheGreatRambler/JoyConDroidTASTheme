@@ -21,7 +21,7 @@ function log(text) {
 }
 
 // Log version
-log("V 1.0.3");
+log("V 1.0.4");
 
 // Redirect errors to logging
 window.onerror = function(message) {
