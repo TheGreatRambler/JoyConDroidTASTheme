@@ -75,6 +75,7 @@ function disableMotionControls() {
 disableMotionControls();
 
 window.inputHandler = function() {
+  var start = performance.now();
   if (pauseTAS) {
     // Just to keep it in check
     clearAllInputs();
@@ -86,35 +87,26 @@ window.inputHandler = function() {
   // Send FPS to profiler
   callProfiler();
   // Get next frame
-  var start = performance.now();
   var inputsThisFrame = currentScriptParser.nextFrame();
-  log("Get Frame : " + (performance.now() - start));
 
   setControllerVisualizer(inputsThisFrame);
 
   // Makes it easier to clear all of them beforehand
   if (inputsThisFrame) {
-    start = performance.now();
     resetButtonMap();
-    log("resetButtonMap : " + (performance.now() - start));
     // Check which buttons are pressed
 
-    start = performance.now();
     var numActiveButtons = inputsThisFrame.buttons.length;
     for (var i = 0; i < numActiveButtons; i++) {
       buttonMap[inputsThisFrame.buttons[i]] = true;
     }
-    log("numActiveButtons : " + (performance.now() - start));
 
     // Update button status
-    start = performance.now();
     for (id in buttonMap) {
       setButtonInput(inputMappings[id], buttonMap[id]);
     }
-    log("buttonMap : " + (performance.now() - start));
 
     // Send joystick inputs
-    start = performance.now();
     var leftJoystickPower = inputsThisFrame.leftStick.power;
     var rightJoystickPower = inputsThisFrame.rightStick.power;
     var leftJoystickAngle = inputsThisFrame.leftStick.angle;
@@ -122,11 +114,8 @@ window.inputHandler = function() {
 
     setJoystickInput("onLeftJoystick", leftJoystickPower, leftJoystickAngle);
     setJoystickInput("onRightJoystick", rightJoystickPower, rightJoystickAngle);
-    log("joystick : " + (performance.now() - start));
   } else {
-    start = performance.now();
     clearAllInputs();
-    log("clearAllInputs : " + (performance.now() - start));
   }
 
 
@@ -139,7 +128,6 @@ window.inputHandler = function() {
   }
 
   if (currentlyRunning === false || currentScriptParser.done()) {
-    start = performance.now();
     // Time to stop!
     window.joyconJS.unregisterCallback();
     // Clear controller visualizer
@@ -148,8 +136,8 @@ window.inputHandler = function() {
     clearAllInputs();
     currentlyRunning = false;
     log("TAS is stopped or has finished");
-    log("Cleanup : " + (performance.now() - start));
   }
+  log("Loop: " + (performance.now() - start));
 
   return true;
 }
