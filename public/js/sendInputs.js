@@ -50,18 +50,21 @@ joyconDroidButtons.forEach(function(funcName) {
 function clearAllInputs() {
   joyconDroidButtons.forEach(function(funcName) {
     // Turns off each and every input
-    setInput(funcName, false);
+    setButtonInput(funcName, false);
   });
-  setInput("onLeftJoystick", 0, 0);
-  setInput("onRightJoystick", 0, 0);
+  setJoystickInput("onLeftJoystick", 0, 0);
+  setJoystickInput("onRightJoystick", 0, 0);
 }
 
-function setInput(functionName, param1, param2) {
-  if (
-    currentStatus[functionName][0] != param1 ||
-    currentStatus[functionName][1] != param2
-  ) {
-    param2 ? window.joyconJS[functionName](param1, param2) :window.joyconJS[functionName](param1);
+function setButtonInput(functionName, param1, param2) {
+  if (currentStatus[functionName][0] != param1) {
+    window.joyconJS[functionName](param1);
+  }
+}
+
+function setJoystickInput(functionName, param1, param2) {
+  if (currentStatus[functionName][0] != param1 || currentStatus[functionName][1] != param2) {
+    window.joyconJS[functionName](param1, param2);
   }
 }
 
@@ -104,26 +107,26 @@ window.inputHandler = function() {
     log("numActiveButtons : " + (performance.now() - start));
 
     // Update button status
-      start = performance.now();
+    start = performance.now();
     for (id in buttonMap) {
-      setInput(inputMappings[id], buttonMap[id]);
+      setButtonInput(inputMappings[id], buttonMap[id]);
     }
     log("buttonMap : " + (performance.now() - start));
 
     // Send joystick inputs
-      start = performance.now();
+    start = performance.now();
     var leftJoystickPower = inputsThisFrame.leftStick.power;
     var rightJoystickPower = inputsThisFrame.rightStick.power;
     var leftJoystickAngle = inputsThisFrame.leftStick.angle;
     var rightJoystickAngle = inputsThisFrame.rightStick.angle;
 
-    setInput("onLeftJoystick", leftJoystickPower, leftJoystickAngle);
-    setInput("onRightJoystick", rightJoystickPower, rightJoystickAngle);
+    setJoystickInput("onLeftJoystick", leftJoystickPower, leftJoystickAngle);
+    setJoystickInput("onRightJoystick", rightJoystickPower, rightJoystickAngle);
     log("joystick : " + (performance.now() - start));
   } else {
     start = performance.now();
     clearAllInputs();
-      log("clearAllInputs : " + (performance.now() - start));
+    log("clearAllInputs : " + (performance.now() - start));
   }
 
 
