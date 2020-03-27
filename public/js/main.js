@@ -126,3 +126,8 @@ document.getElementById("openSettings").onclick = function() {
 	log("Open settings");
 	openSettingsWindow();
 };
+
+document.getElementById("clearLog").onclick = function()
+{
+	document.getElementById("log").value = "";
+}

@@ -40,14 +40,26 @@ body {
   display: none;
 }
 
+.buttonContainer{
+  height: 57%;
+}
+
+.buttonRow{
+  height: 33%;
+  width: 100%;
+  display:flex;
+  flex-wrap: wrap;
+}
+
 .buttonFake {
   background-color: #fca103;
   text-align: center;
-  /* Absolute positioning */
-  position: absolute;
-  display: table;
   outline: 5px solid white;
-  height: 18%;
+  /* Flex */
+  flex: 1 ;
+  display:flex;
+  justify-content: center;
+  align-items: center;
   /* Prevent text from being selected */
   -webkit-user-select: none;
   /* Safari */
@@ -60,8 +72,6 @@ body {
 }
 
 .buttonText {
-  display: table-cell;
-  vertical-align: middle;
   color: white;
 }
 

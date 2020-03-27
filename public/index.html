@@ -18,34 +18,45 @@
 	<input type="file" id="hiddenFileInput">
 	<div id="TASContainer" class="window">
 		<!-- Housekeeping buttons -->
-		<div class="buttonFake buttonBackground" id="submitTASFile">
-			<p class="buttonText" id="fileInputText"><i class="material-icons md-80">file_upload</i></p>
-		</div>
-		<div class="buttonFake buttonBackground" id="syncController">
-			<p class="buttonText"><i class="material-icons md-80">sync</i></p>
-		</div>
-		<div class="buttonFake buttonBackground" id="openSettings">
-			<p class="buttonText"><i class="material-icons md-80">settings</i></p>
-		</div>
-		<!-- Running TAS -->
-		<div class="buttonFake buttonBackground" id="startTAS">
-			<p class="buttonText" id="playArrow"><i class="material-icons md-80">play_arrow</i></p>
-		</div>
-		<div class="buttonFake buttonBackground" id="stopTAS">
-			<p class="buttonText"><i class="material-icons md-80">stop</i></p>
-		</div>
-		<div class="buttonFake buttonBackground" id="pauseTAS">
-			<p class="buttonText"><i class="material-icons md-80">pause</i></p>
-		</div>
-		<!-- Extra UIs buttons -->
-		<div class="buttonFake buttonBackground" id="showController">
-			<p class="buttonText"><i class="material-icons md-80">gamepad</i></p>
-		</div>
-		<div class="buttonFake buttonBackground" id="showLog">
-			<p class="buttonText"><i class="material-icons md-80">description</i></p>
-		</div>
-		<div class="buttonFake buttonBackground" id="showStats">
-			<p class="buttonText"><i class="material-icons md-80">insert_chart</i></p>
+		<div class="buttonContainer">
+			<div class="buttonRow">
+				<div class="buttonFake buttonBackground" id="submitTASFile">
+					<p class="buttonText" id="fileInputText"><i class="material-icons md-80">file_upload</i></p>
+				</div>
+				<div class="buttonFake buttonBackground" id="syncController">
+					<p class="buttonText"><i class="material-icons md-80">sync</i></p>
+				</div>
+				<div class="buttonFake buttonBackground" id="openSettings">
+					<p class="buttonText"><i class="material-icons md-80">settings</i></p>
+				</div>
+			</div>
+			<!-- Running TAS -->
+			<div class="buttonRow">
+				<div class="buttonFake buttonBackground" id="startTAS">
+					<p class="buttonText" id="playArrow"><i class="material-icons md-80">play_arrow</i></p>
+				</div>
+				<div class="buttonFake buttonBackground" id="stopTAS">
+					<p class="buttonText"><i class="material-icons md-80">stop</i></p>
+				</div>
+				<div class="buttonFake buttonBackground" id="pauseTAS">
+					<p class="buttonText"><i class="material-icons md-80">pause</i></p>
+				</div>
+			</div>
+			<!-- Extra UIs buttons -->
+			<div class="buttonRow">
+				<div class="buttonFake buttonBackground" id="showController">
+					<p class="buttonText"><i class="material-icons md-80">gamepad</i></p>
+				</div>
+				<div class="buttonFake buttonBackground" id="showLog">
+					<p class="buttonText"><i class="material-icons md-80">description</i></p>
+				</div>
+				<div class="buttonFake buttonBackground" id="clearLog">
+					<p class="buttonText"><i class="material-icons md-80">delete</i></p>
+				</div>
+				<div class="buttonFake buttonBackground" id="showStats">
+					<p class="buttonText"><i class="material-icons md-80">insert_chart</i></p>
+				</div>
+			</div>
 		</div>
 		<!-- Progress bar -->
 		<div class="progressBar" id="progressBarBase"></div>
@@ -53,7 +64,7 @@
 		<!-- Extra UIs -->
 		<div id="controllerImageContainer" class="buttonBackground"></div>
 		<div id="logContainer">
-			<textarea readonly pellcheck="false" class="buttonBackground" id="log"></textarea>
+			<textarea readonly spellcheck="false" class="buttonBackground" id="log"></textarea>
 		</div>
 		<div id="statsChart" class="buttonBackground">
 			<canvas id="statsCanvas"></canvas>
