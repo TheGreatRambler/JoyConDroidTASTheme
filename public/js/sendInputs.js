@@ -61,8 +61,7 @@ function setInput(functionName, param1, param2) {
     currentStatus[functionName][0] != param1 ||
     currentStatus[functionName][1] != param2
   ) {
-    log(functionName + "(" + param1 + "," + param2 + ")");
-    window.joyconJS[functionName](param1, param2);
+    param2 ? window.joyconJS[functionName](param1, param2) :window.joyconJS[functionName](param1);
   }
 }
 
