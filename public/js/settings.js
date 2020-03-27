@@ -23,6 +23,11 @@ var SHOULD_LOOP = false;
 
 var VERBOSE_LOGGING = true;
 
+
+
+var SHOW_FPS = true;
+var FPS_INPUT = document.getElementById("showFPS");
+
 /*
   0 = First version: Supports buttons and joysticks in cartesian coordinates only. No motion controls or polar coordinates supported
 
@@ -100,6 +105,10 @@ function SetValuesForStartup() {
   var verboseValue = localStorage.getItem("verboseLogging") === "1" ? true : false;
   VERBOSE_LOGGING = verboseValue;
   VERBOSE_INPUT.checked = verboseValue;
+
+  var showFPS = localStorage.getItem("showFPS") === "1" ? true : false;
+  SHOW_FPS = showFPS;
+  FPS_INPUT.checked = showFPS;
 }
 
 // Set values now
@@ -125,6 +134,16 @@ VERBOSE_INPUT.onclick = function() {
   // Dont set `parsingStyle`, set localstorage option
   VERBOSE_LOGGING = selectedOption;
   localStorage.setItem("verboseLogging", selectedOption ? "1" : "0");
+};
+
+FPS_INPUT.onclick = function() {
+  var selectedOption = this.checked;
+  log("Show FPS: " + selectedOption);
+  // Dont set `parsingStyle`, set localstorage option
+  SHOW_FPS = selectedOption;
+  localStorage.setItem("showFPS", selectedOption ? "1" : "0");
+
+  selectedOption ? initStatsChart() : disableStatsChart();
 };
 
 SETTINGS_SUBMIT.onclick = function() {

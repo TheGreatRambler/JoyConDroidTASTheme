@@ -58,7 +58,7 @@ var statsConfig = {
 	}
 };
 
-var statsChart = new Chart(statsCtx, statsConfig);
+var statsChart;
 
 // Show and hide code
 function showStats() {
@@ -73,7 +73,25 @@ function hideStats() {
 	statsAreVisible = false;
 }
 
+function disableStatsChart()
+{
+	statsChart = null;
+}
+
+
+function initStatsChart()
+{
+	statsChart = new Chart(statsCtx, statsConfig);
+}
+
+SHOW_FPS ? initStatsChart() : null;
+
 function callProfiler() {
+	if (!SHOW_FPS)
+	{
+		return;
+	}
+
 	var currentTime = performance.now();
 	if (lastFrameTime !== 0) {
 		var frameTime = currentTime - lastFrameTime;
