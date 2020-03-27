@@ -27,8 +27,8 @@ var inputMappings = {
 var joyconDroidButtons = Object.values(inputMappings);
 
 var currentStatus = {
-  onLeftJoystick: [0, 0],
-  onRightJoystick: [0, 0]
+  onLeftJoystick: [0, 0, 0],
+  onRightJoystick: [0, 0, 0]
 };
 
 // This holds the pressed Status for each button on each frame
@@ -44,7 +44,7 @@ resetButtonMap();
 
 joyconDroidButtons.forEach(function(funcName) {
   // Inputs are off initially
-  currentStatus[funcName] = [false];
+  currentStatus[funcName] = [0,false];
 });
 
 function clearAllInputs(force) {
@@ -57,14 +57,37 @@ function clearAllInputs(force) {
 }
 
 function setButtonInput(functionName, param1, param2, force) {
-  if (force || currentStatus[functionName][0] != param1) {
+  if (force
+    || currentStatus[functionName][0] > 0 // Keep sending inputs for some frames after change incase the switch didn't receive it
+    || currentStatus[functionName][1] != param1) {
     window.joyconJS[functionName](param1);
+
+    // Count down / Reset
+    tickDownStatus(functionName);
+  }
+}
+
+function tickDownStatus(functionName)
+{
+  if (currentStatus[functionName][0] > 0)
+  {
+    currentStatus[functionName][0] -= 1;
+  }
+  else
+  {
+    currentStatus[functionName][0] = 2;
   }
 }
 
 function setJoystickInput(functionName, param1, param2, force) {
-  if (force ||  currentStatus[functionName][0] != param1 || currentStatus[functionName][1] != param2) {
+  if (force
+    || currentStatus[functionName][0] > 0 // Keep sending inputs for some frames after change incase the switch didn't receive it
+    || currentStatus[functionName][1] != param1
+    || currentStatus[functionName][2] != param2) {
     window.joyconJS[functionName](param1, param2);
+
+    // Count down / Reset
+    tickDownStatus(functionName);
   }
 }
 
