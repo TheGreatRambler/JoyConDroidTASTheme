@@ -20,8 +20,7 @@ var KEY_DICT = {
   RY: 18
 };
 
-function ParserV1() {
-}
+function ParserV1() {}
 
 ParserV1.prototype.setScript = function(script) {
   this.parseScript(script);
@@ -39,7 +38,7 @@ ParserV1.prototype.parseScript = function(script) {
 
   var numLines = lines.length;
 
-  var regex = new RegExp("(\\d+)\\s+([^\\s]+)\\s+(-?\\d+);(-?\\d+)\\s+(-?\\d+);(-?\\d+)");
+    var regex = new RegExp("(\\d+)(?:-(\\d+))?\\s+([^\\s]+)\\s+(-?\\d+);(-?\\d+)\\s+(-?\\d+);(-?\\d+)");
   for (var i = 0; i < numLines; i++) {
     var line = lines[i];
     var matches = line.match(regex)
@@ -48,9 +47,10 @@ ParserV1.prototype.parseScript = function(script) {
       continue;
     }
 
-    var frame = matches[1];
+    var frame = Number(matches[1]);
+    var endFrame = matches[2] ? Number(matches[2]) : frame;
 
-    var buttons = matches[2].split(";");
+    var buttons = matches[3].split(";");
     var numButtons = buttons.length;
 
     // Ignore invalid buttons
@@ -64,10 +64,10 @@ ParserV1.prototype.parseScript = function(script) {
       }
     }
 
-    var LX = this.parseJoystickValue(matches[3]);
-    var LY = this.parseJoystickValue(matches[4]);
-    var RX = this.parseJoystickValue(matches[5]);
-    var RY = this.parseJoystickValue(matches[6]);
+    var LX = this.parseJoystickValue(matches[4]);
+    var LY = this.parseJoystickValue(matches[5]);
+    var RX = this.parseJoystickValue(matches[6]);
+    var RY = this.parseJoystickValue(matches[7]);
 
     // Power goes to 100
     var leftJoystickPower = Math.min(Math.abs(Math.hypot(LX, LY)), 100);
@@ -92,8 +92,11 @@ ParserV1.prototype.parseScript = function(script) {
       }
     };
 
-    this.instructions[frame] = instruction;
-    this.lastFrame = Number(frame);
+    for (var f = frame; f<=endFrame; f++)
+    {
+      this.instructions[f] = instruction;
+      this.lastFrame = f;
+    }
   }
 }
 
@@ -109,7 +112,6 @@ ParserV1.prototype.getLastFrame = function() {
   return this.lastFrame;
 }
 
-ParserV1.prototype.getFrame = function (requestedFrame)
-{
+ParserV1.prototype.getFrame = function(requestedFrame) {
   return this.instructions[requestedFrame];
 }
