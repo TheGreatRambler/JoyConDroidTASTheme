@@ -181,23 +181,14 @@ document.getElementById("startTAS").onclick = function() {
     //} else {
     if (isReadyToRun) {
       // Is about to run right now
-      if (!pauseTAS) {
-        // TAS was not paused, so the frames need to be reset
-        currentScriptParser.reset();
-      } else {
         // Was paused, needs to be unpaused
-        pauseTAS = false;
-      }
+      pauseTAS = false;
       currentlyRunning = true;
 
       log("Starting to run");
-      // Check currently running every frame
-      // Also check pausing TAS every frame
       // Simulate 60 fps
-      if (!pauseTAS) {
-        interval = window.setInterval(window.inputHandler,16);
-        //window.joyconJS.registerCallback("window.inputHandler");
-      }
+      interval = window.setInterval(window.inputHandler,16);
+      //window.joyconJS.registerCallback("window.inputHandler");
     } else {
       log("Script is not ready yet");
     }
@@ -214,6 +205,7 @@ document.getElementById("stopTAS").onclick = function() {
     log("Stopping TAS");
     currentlyRunning = false;
     clearInterval(interval);
+    currentScriptParser.reset();
     // Its startTASs job to end the TAS
   }
 };
