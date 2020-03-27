@@ -7,15 +7,62 @@ var currentScriptParser = new parseScript();
 
 var isReadyToRun = false;
 
-var funcNames = ["A", "B", "X", "Y", "L", "R", "ZL", "ZR", "Plus", "Minus", "Left", "Up", "Right", "Down"];
+var inputMappings = {
+  1: "onA",
+  2: "onB",
+  3: "onX",
+  4: "onY",
+  5: "onL",
+  6: "onR",
+  7: "onZL",
+  8: "onZR",
+  9: "onPlus",
+  10: "onMinus",
+  11: "onLeft",
+  12: "onUp",
+  13: "onRight",
+  14: "onDown"
+};
+
+var joyconDroidButtons = Object.values(inputMappings);
+
+var currentStatus = {
+  onLeftJoystick: [0, 0],
+  onRightJoystick: [0, 0]
+};
+
+// This holds the pressed Status for each button on each frame
+var buttonMap = Object.assign({}, inputMappings);
+
+function resetButtonMap() {
+  for (id in buttonMap) {
+    buttonMap[id] = false
+  }
+}
+
+resetButtonMap();
+
+joyconDroidButtons.forEach(function(funcName) {
+  // Inputs are off initially
+  currentStatus[funcName] = [false];
+});
 
 function clearAllInputs() {
-  funcNames.forEach(function(funcName) {
+  joyconDroidButtons.forEach(function(funcName) {
     // Turns off each and every input
-    window.joyconJS["on" + funcName](false);
+    setInput(funcName, false);
   });
-  window.joyconJS.onLeftJoystick(0, 0);
-  window.joyconJS.onRightJoystick(0, 0);
+  setInput("onLeftJoystick", 0, 0);
+  setInput("onRightJoystick", 0, 0);
+}
+
+function setInput(functionName, param1, param2) {
+  if (
+    currentStatus[functionName][0] != param1 ||
+    currentStatus[functionName][1] != param2
+  ) {
+    window.joyconJS[functionName](param1, param2);
+  }
 }
 
 function disableMotionControls() {
@@ -43,28 +90,42 @@ window.inputHandler = function() {
   setControllerVisualizer(inputsThisFrame);
 
   // Makes it easier to clear all of them beforehand
-  start = performance.now();
-  clearAllInputs();
-  log("clearAllInputs : " + (performance.now() - start));
-
-  start = performance.now();
   if (inputsThisFrame) {
-    // Fire Buttons
+    start = performance.now();
+    resetButtonMap();
+    log("resetButtonMap : " + (performance.now() - start));
+    // Check which buttons are pressed
+
+    start = performance.now();
     var numActiveButtons = inputsThisFrame.buttons.length;
     for (var i = 0; i < numActiveButtons; i++) {
-      var name = funcNames[inputsThisFrame.buttons[i] - 1]; // Key dict has FRAME for 0, but funcNames starts with A
-      window.joyconJS["on" + name](true);
+      buttonMap[inputsThisFrame.buttons[i]] = true;
     }
+    log("numActiveButtons : " + (performance.now() - start));
+
+    // Update button status
+      start = performance.now();
+    for (id in buttonMap) {
+      setInput(inputMappings[id], buttonMap[id]);
+    }
+    log("buttonMap : " + (performance.now() - start));
 
     // Send joystick inputs
+      start = performance.now();
     var leftJoystickPower = inputsThisFrame.leftStick.power;
     var rightJoystickPower = inputsThisFrame.rightStick.power;
     var leftJoystickAngle = inputsThisFrame.leftStick.angle;
     var rightJoystickAngle = inputsThisFrame.rightStick.angle;
-    window.joyconJS.onLeftJoystick(leftJoystickPower, leftJoystickAngle);
-    window.joyconJS.onRightJoystick(rightJoystickPower, rightJoystickAngle);
+
+    setInput("onLeftJoystick", leftJoystickPower, leftJoystickAngle);
+    setInput("onRightJoystick", rightJoystickPower, rightJoystickAngle);
+    log("joystick : " + (performance.now() - start));
+  } else {
+    start = performance.now();
+    clearAllInputs();
+      log("clearAllInputs : " + (performance.now() - start));
   }
-  log("sendInput : " + (performance.now() - start));
+
 
   if (currentlyRunning && currentScriptParser.done() && SHOULD_LOOP) {
     // The TAS has not been stopped, the last frame has been reached
