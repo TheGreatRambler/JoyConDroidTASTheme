@@ -204,7 +204,6 @@ document.getElementById("stopTAS").onclick = function() {
   if (currentlyRunning && !pauseTAS) {
     log("Stopping TAS");
     currentlyRunning = false;
-    clearInterval(interval);
     currentScriptParser.reset();
     // Its startTASs job to end the TAS
   }
