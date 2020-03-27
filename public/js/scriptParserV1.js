@@ -98,6 +98,8 @@ ParserV1.prototype.parseScript = function(script) {
       this.lastFrame = f;
     }
   }
+
+  log (JSON.stringify(this.instructions, null, "\t" ));
 }
 
 /**
