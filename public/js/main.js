@@ -89,6 +89,7 @@ function reloadTASFile() {
 }
 
 document.getElementById("syncController").onclick = function() {
+	log("Syncing Controller");
 	// Try to sync VERY MANUALLY
 	window.joyconJS.onSync(true);
 	setTimeout(function() {
