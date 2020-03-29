@@ -38,7 +38,7 @@ ParserV1.prototype.parseScript = function(script) {
 
   var numLines = lines.length;
 
-    var regex = new RegExp("^(\\d+)(?:-(\\d+))?\\s+([^\\s]+)\\s+(-?\\d+);(-?\\d+)\\s+(-?\\d+);(-?\\d+)");
+  var regex = new RegExp("^(\\d+)(?:-(\\d+))?\\s+([^\\s]+)(?:\\s+(-?\\d+);(-?\\d+))?(?:\\s+(-?\\d+);(-?\\d+))?");
   for (var i = 0; i < numLines; i++) {
     var line = lines[i];
     var matches = line.match(regex)
@@ -64,10 +64,10 @@ ParserV1.prototype.parseScript = function(script) {
       }
     }
 
-    var LX = this.parseJoystickValue(matches[4]);
-    var LY = this.parseJoystickValue(matches[5]);
-    var RX = this.parseJoystickValue(matches[6]);
-    var RY = this.parseJoystickValue(matches[7]);
+    var LX = matches[4] ? this.parseJoystickValue(matches[4]) : 0;
+    var LY = matches[5] ? this.parseJoystickValue(matches[5]) : 0;
+    var RX = matches[6] ? this.parseJoystickValue(matches[6]) : 0;
+    var RY = matches[7] ? this.parseJoystickValue(matches[7]) : 0;
 
     // Power goes to 100
     var leftJoystickPower = Math.min(Math.abs(Math.hypot(LX, LY)), 100);
@@ -92,14 +92,13 @@ ParserV1.prototype.parseScript = function(script) {
       }
     };
 
-    for (var f = frame; f<=endFrame; f++)
-    {
+    for (var f = frame; f <= endFrame; f++) {
       this.instructions[f] = instruction;
       this.lastFrame = f;
     }
   }
 
-  log (JSON.stringify(this.instructions, null, "\t" ));
+  log(JSON.stringify(this.instructions, null, "\t"));
 }
 
 /**
