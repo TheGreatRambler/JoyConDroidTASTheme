@@ -172,6 +172,15 @@ function startAnimating() {
   then = performance.now();
   animation = animate(then);
 }
+var animation1; // just something to keep the main thread busy
+var x = 0;
+function foo()
+{
+  x = (x+1) % 100;
+  document.getElementById('progressBarTest').style.width = x +"%";
+  animation1 = requestAnimationFrame(foo);
+}
+animation1 = foo();
 
 document.getElementById("startTAS").onclick = function() {
   if (!currentlyRunning || pauseTAS) {
