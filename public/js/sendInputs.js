@@ -171,13 +171,6 @@ function animate(now) {
 function startAnimating() {
   then = performance.now();
   animation = animate(then);
-
-  animation1 = foo();
-}
-var animation1; // just something to keep the main thread busy
-function foo()
-{
-  animation1 = requestAnimationFrame(foo);
 }
 
 document.getElementById("startTAS").onclick = function() {
@@ -208,7 +201,6 @@ document.getElementById("startTAS").onclick = function() {
 function stopWorker() {
   frameWorker.postMessage(["stop"]);
   cancelAnimationFrame(animation);
-  cancelAnimationFrame(animation1);
 }
 
 document.getElementById("stopTAS").onclick = function() {
