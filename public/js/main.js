@@ -54,37 +54,38 @@ function showFileUI(fileName) {
 document.getElementById("submitTASFile").onclick = function() {
 	var hiddenInput = document.getElementById("hiddenFileInput");
 	hiddenInput.click();
-	hiddenInput.onchange = function() {
-		var file = fileInput.files[0];
-		if (file) {
-			// Make file visible
-			// We have to assume the file is good
-			showFileUI(file.name);
-			log("Added TAS file");
-			log("Name [" + file.name + "]");
-			log("Size [" + formatBytes(file.size) + "]");
-			log("Type [" + file.type + "]");
-			var fileReader = new FileReader();
-			fileReader.onload = function() {
-				var contents = fileReader.result;
-				log("Finished reading TAS file");
-				// Time to parse
-				currentScriptParser.setScript(contents);
-				log("Ready to start");
-				isReadyToRun = true;
-			};
-			fileReader.onerror = function() {
-				log("File reading failed");
-			};
-			fileReader.readAsText(file);
-			log("Starting to read TAS file")
+	hiddenInput.onchange = reloadTASFile;
+}
 
-			// Reset hidden input to allow reselecting the same file
-			this.value = "";
-		} else {
-			log("No TAS file chosen");
-		}
-	};
+document.getElementById("reloadTASFile").onclick = reloadTASFile;
+
+function reloadTASFile() {
+	var file = fileInput.files[0];
+	if (file) {
+		// Make file visible
+		// We have to assume the file is good
+		showFileUI(file.name);
+		log("Added TAS file");
+		log("Name [" + file.name + "]");
+		log("Size [" + formatBytes(file.size) + "]");
+		log("Type [" + file.type + "]");
+		var fileReader = new FileReader();
+		fileReader.onload = function() {
+			var contents = fileReader.result;
+			log("Finished reading TAS file");
+			// Time to parse
+			currentScriptParser.setScript(contents);
+			log("Ready to start");
+			isReadyToRun = true;
+		};
+		fileReader.onerror = function() {
+			log("File reading failed");
+		};
+		fileReader.readAsText(file);
+		log("Starting to read TAS file")
+	} else {
+		log("No TAS file chosen");
+	}
 }
 
 document.getElementById("syncController").onclick = function() {
