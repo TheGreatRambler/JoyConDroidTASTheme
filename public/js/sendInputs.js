@@ -60,7 +60,7 @@ function disableMotionControls() {
 }
 disableMotionControls();
 
-function runFrame {
+function runFrame() {
   if (pauseTAS) {
     // Just to keep it in check
     clearAllInputs();
@@ -118,6 +118,8 @@ function runFrame {
     // Stop all currently held inputs
     clearAllInputs();
     currentlyRunning = false;
+    currentScriptParser.reset();
+    stopWorker();
     log("TAS is stopped or has finished");
     return true;
   }
@@ -174,16 +176,15 @@ document.getElementById("startTAS").onclick = function() {
   }
 };
 
+function stopWorker() {
+  frameWorker.postMessage(["stop"]);
+}
+
 document.getElementById("stopTAS").onclick = function() {
-  // No need to stop if its not running
-  // Cant stop while pause, might change
-  if (currentlyRunning && !pauseTAS) {
-    log("Stopping TAS");
-    currentlyRunning = false;
-    currentScriptParser.reset();
-    // Its startTASs job to end the TAS
-    frameWorker.postMessage(["stop"]);
-  }
+  log("Stopping TAS");
+  currentlyRunning = false;
+  currentScriptParser.reset();
+  stopWorker();
 };
 
 document.getElementById("pauseTAS").onclick = function() {
@@ -191,6 +192,6 @@ document.getElementById("pauseTAS").onclick = function() {
   if (currentlyRunning && !pauseTAS) {
     log("Pausing TAS");
     pauseTAS = true;
-    frameWorker.postMessage(["stop"]);
+    stopWorker();
   }
 };
