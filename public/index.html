@@ -16,65 +16,91 @@
 	<input type="file" id="hiddenFileInput">
 	<div id="TASContainer" class="window">
 		<!-- Housekeeping buttons -->
-		<div class="buttonFake buttonBackground" id="submitTASFile">
-			<p class="buttonText" id="fileInputText"><i class="material-icons md-80">file_upload</i></p>
-		</div>
-		<div class="buttonFake buttonBackground" id="syncController">
-			<p class="buttonText"><i class="material-icons md-80">sync</i></p>
-		</div>
-		<div class="buttonFake buttonBackground" id="openSettings">
-			<p class="buttonText"><i class="material-icons md-80">settings</i></p>
-		</div>
-		<!-- Running TAS -->
-		<div class="buttonFake buttonBackground" id="startTAS">
-			<p class="buttonText" id="playArrow"><i class="material-icons md-80">play_arrow</i></p>
-		</div>
-		<div class="buttonFake buttonBackground" id="stopTAS">
-			<p class="buttonText"><i class="material-icons md-80">stop</i></p>
-		</div>
-		<div class="buttonFake buttonBackground" id="pauseTAS">
-			<p class="buttonText"><i class="material-icons md-80">pause</i></p>
-		</div>
-		<!-- Extra UIs buttons -->
-		<div class="buttonFake buttonBackground" id="showController">
-			<p class="buttonText"><i class="material-icons md-80">gamepad</i></p>
-		</div>
-		<div class="buttonFake buttonBackground" id="showLog">
-			<p class="buttonText"><i class="material-icons md-80">description</i></p>
-		</div>
-		<div class="buttonFake buttonBackground" id="showStats">
-			<p class="buttonText"><i class="material-icons md-80">insert_chart</i></p>
+		<div class="buttonContainer">
+			<div class="buttonRow">
+				<div class="buttonFake buttonBackground" id="submitTASFile">
+					<p class="buttonText" id="fileInputText"><i class="material-icons md-80">file_upload</i></p>
+				</div>
+					<div class="buttonFake buttonBackground" id="reloadTASFile">
+							<p class="buttonText" id="fileInputText"><i class="material-icons md-80">sync</i></p>
+					</div>
+				<div class="buttonFake buttonBackground" id="syncController">
+					<p class="buttonText"><i class="material-icons md-80">bluetooth</i></p>
+				</div>
+				<div class="buttonFake buttonBackground" id="openSettings">
+					<p class="buttonText"><i class="material-icons md-80">settings</i></p>
+				</div>
+			</div>
+			<!-- Running TAS -->
+			<div class="buttonRow">
+				<div class="buttonFake buttonBackground" id="startTAS">
+					<p class="buttonText" id="playArrow"><i class="material-icons md-80">play_arrow</i></p>
+				</div>
+				<div class="buttonFake buttonBackground" id="stopTAS">
+					<p class="buttonText"><i class="material-icons md-80">stop</i></p>
+				</div>
+				<div class="buttonFake buttonBackground" id="pauseTAS">
+					<p class="buttonText"><i class="material-icons md-80">pause</i></p>
+				</div>
+			</div>
+			<!-- Extra UIs buttons -->
+			<div class="buttonRow">
+				<div class="buttonFake buttonBackground" id="showController">
+					<p class="buttonText"><i class="material-icons md-80">gamepad</i></p>
+				</div>
+				<div class="buttonFake buttonBackground" id="showLog">
+					<p class="buttonText"><i class="material-icons md-80">description</i></p>
+				</div>
+				<div class="buttonFake buttonBackground" id="clearLog">
+					<p class="buttonText"><i class="material-icons md-80">delete</i></p>
+				</div>
+				<div class="buttonFake buttonBackground" id="showStats">
+					<p class="buttonText"><i class="material-icons md-80">insert_chart</i></p>
+				</div>
+			</div>
 		</div>
 		<!-- Progress bar -->
 		<div class="progressBar" id="progressBarBase"></div>
-		<div class="progressBar" id="progressBarComp"></div>
 		<div class="progressBar" id="progressBarRun"></div>
 		<!-- Extra UIs -->
 		<div id="controllerImageContainer" class="buttonBackground"></div>
 		<div id="logContainer">
-			<textarea readonly pellcheck="false" class="buttonBackground" id="log"></textarea>
+			<textarea readonly spellcheck="false" class="buttonBackground" id="log"></textarea>
 		</div>
 		<div id="statsChart" class="buttonBackground">
 			<canvas id="statsCanvas"></canvas>
 		</div>
 	</div>
-
 	<div id="SettingsContainer" class="window">
-		<div class="settingsInput settingsInputTitle" id="parsingTitle">Parsing Algorithm</div>
-		<select class="settingsInput settingsInputItem" id="parsingStyle">
-			<option value="PARSING_STYLE_SYNC">Sync</option>
-			<!-- <option value="PARSING_STYLE_PRECOMPILE">Precompile</option> -->
-			<!-- <option value="PARSING_STYLE_PRECOMPILE_COMPRESSION">Precompile (With compression)</option> -->
-		</select>
-		<div class="settingsInput settingsInputTitle" id="loopTitle">Should loop</div>
-		<input class="settingsInput settingsInputItem" id="shouldLoop" type="checkbox">
-		<div class="settingsInput" id="submitButton">Close Settings</div>
+		<div class="settingsItem">
+			<div class="settingsInput settingsInputTitle" id="parsingTitle">Parsing Algorithm</div>
+			<select class="settingsInput settingsInputItem" id="parsingStyle">
+				<option value="PARSING_STYLE_SYNC">Sync</option>
+			</select>
+		</div>
+		<div class="settingsItem">
+			<div class="settingsInput settingsInputTitle" id="loopTitle">Should loop</div>
+			<input class="settingsInput settingsInputItem" id="shouldLoop" type="checkbox">
+		</div>
+		<div class="settingsItem">
+			<div class="settingsInput settingsInputTitle" id="verboseTitle">Verbose Logging</div>
+			<input class="settingsInput settingsInputItem" id="verboseLogging" type="checkbox" checked="on">
+		</div>
+		<div class="settingsItem">
+			<div class="settingsInput settingsInputTitle" id="fpsTitle">Show FPS</div>
+			<input class="settingsInput settingsInputItem" id="showFPS" type="checkbox" checked="on">
+		</div>
+		<div class="settingsItem">
+			<div class="settingsInput settingsInputTitle">Interval Length (ms)</div>
+			<input class="settingsInput settingsInputItem" id="intervalLength" type="number" min="1" max="1000" value="16">
+		</div>
+		<div class="settingsItem">
+			<button class="settingsInput" id="submitButton">Close Settings</div>
+	</div>
 	</div>
 
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js" crossorigin="anonymous"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js" crossorigin="anonymous"></script>
-	<script src="./js/tp/FastIntegerCompression.min.js"></script>
-	<script src="./js/tp/denque.min.js"></script>
 	<script src="./js/tp/chartjs-plugin-streaming.min.js"></script>
 	<script src="./js/JoyConDroidImpersonator.js"></script>
 	<script src="./js/settings.js"></script>

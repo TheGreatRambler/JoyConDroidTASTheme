@@ -1,5 +1,7 @@
+# FrameRange Buttons LEFT_X;LEFTY RIGHT_X;RIGHT_Y
 0 KEY_A 0;0 0;0
 2 KEY_B -30000;-30000 0;0
-4 KEY_DUP 0;0 0;0
-6 KEY_DRIGHT 0;0 0;0
-8 KEY_DDOWN 0;0 0;0
+# Any unknown button will be ignored
+3-30 N 30000;30000 30000;30000
+# Leaving out a control stick X/Y pair will default to 0;0
+33-60 N 12345;123

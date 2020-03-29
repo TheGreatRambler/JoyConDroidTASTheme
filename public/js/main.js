@@ -5,6 +5,11 @@ var fileInput = document.getElementById("hiddenFileInput");
 logTextarea.value = "";
 
 function log(text) {
+	if (VERBOSE_LOGGING == false)
+	{
+		return;
+	}
+
 	var currentDate = new Date();
 	var dateString = "[" + gMO.format("h:mm:ss.SS") + "]: ";
 	var valueToLog = (dateString + text + "\n");
@@ -16,7 +21,7 @@ function log(text) {
 }
 
 // Log version
-log("V 1.0.0");
+log("V 1.1.0");
 
 // Redirect errors to logging
 window.onerror = function(message) {
@@ -47,35 +52,40 @@ function showFileUI(fileName) {
 }
 
 document.getElementById("submitTASFile").onclick = function() {
-	document.getElementById("hiddenFileInput").click();
-	document.getElementById("hiddenFileInput").onchange = function() {
-		var file = fileInput.files[0];
-		if (file) {
-			// Make file visible
-			// We have to assume the file is good
-			showFileUI(file.name);
-			log("Added TAS file");
-			log("Name [" + file.name + "]");
-			log("Size [" + formatBytes(file.size) + "]");
-			log("Type [" + file.type + "]");
-			var fileReader = new FileReader();
-			fileReader.onload = function() {
-				var contents = fileReader.result;
-				log("Finished reading TAS file");
-				// Time to parse
-				currentScriptParser.setScript(contents);
-				log("Ready to start");
-				isReadyToRun = true;
-			};
-			fileReader.onerror = function() {
-				log("File reading failed");
-			};
-			fileReader.readAsText(file);
-			log("Starting to read TAS file")
-		} else {
-			log("No TAS file chosen");
-		}
-	};
+	var hiddenInput = document.getElementById("hiddenFileInput");
+	hiddenInput.click();
+	hiddenInput.onchange = reloadTASFile;
+}
+
+document.getElementById("reloadTASFile").onclick = reloadTASFile;
+
+function reloadTASFile() {
+	var file = fileInput.files[0];
+	if (file) {
+		// Make file visible
+		// We have to assume the file is good
+		showFileUI(file.name);
+		log("Added TAS file");
+		log("Name [" + file.name + "]");
+		log("Size [" + formatBytes(file.size) + "]");
+		log("Type [" + file.type + "]");
+		var fileReader = new FileReader();
+		fileReader.onload = function() {
+			var contents = fileReader.result;
+			log("Finished reading TAS file");
+			// Time to parse
+			currentScriptParser.setScript(contents);
+			log("Ready to start");
+			isReadyToRun = true;
+		};
+		fileReader.onerror = function() {
+			log("File reading failed");
+		};
+		fileReader.readAsText(file);
+		log("Starting to read TAS file")
+	} else {
+		log("No TAS file chosen");
+	}
 }
 
 document.getElementById("syncController").onclick = function() {
@@ -117,3 +127,8 @@ document.getElementById("openSettings").onclick = function() {
 	log("Open settings");
 	openSettingsWindow();
 };
+
+document.getElementById("clearLog").onclick = function()
+{
+	document.getElementById("log").value = "";
+}
