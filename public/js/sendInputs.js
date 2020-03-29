@@ -60,8 +60,7 @@ function disableMotionControls() {
 }
 disableMotionControls();
 
-window.inputHandler = function() {
-  var start = performance.now();
+function runFrame {
   if (pauseTAS) {
     // Just to keep it in check
     clearAllInputs();
@@ -146,7 +145,7 @@ var frameWorker = new Worker('js/worker.js');
 frameWorker.onmessage = function(e) {
   switch (e.data) {
     case "tick":
-      window.inputHandler();
+      runFrame();
       log("tock");
       break;
   }
@@ -166,7 +165,6 @@ document.getElementById("startTAS").onclick = function() {
       log("Starting to run");
       // Simulate 60 fps
       frameWorker.postMessage(["start", intervalLength]);
-      //window.joyconJS.registerCallback("window.inputHandler");
     } else {
       log("Script is not ready yet");
     }
