@@ -147,6 +147,7 @@ frameWorker.onmessage = function(e) {
   switch (e.data) {
     case "tick":
       window.inputHandler();
+      log("tock");
       break;
   }
 }
