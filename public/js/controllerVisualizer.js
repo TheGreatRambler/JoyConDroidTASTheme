@@ -94,7 +94,7 @@ function setControllerVisualizer(inputs) {
     // Make blank image viewable
     visible(true, 17);
 		return;
-  } 
+  }
 
   // Set blank as invisible automatically
   visible(false, 17);
@@ -137,8 +137,8 @@ function setControllerVisualizer(inputs) {
   var RY = inputs.rightStick.y;
   if (RX || RY) {
     // At least one needs moving
-    var xOffset = RX / 1200;
-    var yOffset = RY / -1200;
+    var xOffset = RX / 4;
+    var yOffset = RY / -4;
     move(2, xOffset, yOffset);
   } else {
     move(2, 0, 0);
