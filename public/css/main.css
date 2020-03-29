@@ -58,6 +58,7 @@ body {
   /* Flex */
   flex: 1 ;
   display:flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
   /* Prevent text from being selected */
@@ -79,12 +80,6 @@ body {
   font-size: 80px;
 }
 
-#submitTASFile {
-  width: calc(100% / 3);
-  top: 0%;
-  left: 0%;
-}
-
 /* When a file is added */
 .addedFile .buttonText {
   font-size: 8px;
@@ -92,58 +87,17 @@ body {
   font-weight: bold;
 }
 
+.buttonFake div{
+  font-size: 12px;
+  color:white;
+}
+
 .addedFile .material-icons.md-80 {
   font-size: 45px;
 }
 
 /* End */
-#syncController {
-  width: calc(100% / 3);
-  top: 0%;
-  left: calc(100% / 3);
-}
 
-#openSettings {
-  width: calc(100% / 3);
-  top: 0%;
-  left: calc(200% / 3);
-}
-
-#startTAS {
-  width: calc(100% / 3);
-  top: 19%;
-  left: 0%;
-}
-
-#stopTAS {
-  width: calc(100% / 3);
-  top: 19%;
-  left: calc(100% / 3);
-}
-
-#pauseTAS {
-  width: calc(100% / 3);
-  top: 19%;
-  left: calc(200% / 3);
-}
-
-#showController {
-  width: calc(100% / 3);
-  top: 38%;
-  left: 0%;
-}
-
-#showLog {
-  width: calc(100% / 3);
-  top: 38%;
-  left: calc(100% / 3);
-}
-
-#showStats {
-  width: calc(100% / 3);
-  top: 38%;
-  left: calc(200% / 3);
-}
 
 /*
 	Progress bar stuff
@@ -159,12 +113,6 @@ body {
   z-index: 0;
   width: 100%;
   background-color: black;
-}
-
-#progressBarComp {
-  z-index: 0;
-  width: 0%;
-  background-color: orange;
 }
 
 #progressBarRun {
