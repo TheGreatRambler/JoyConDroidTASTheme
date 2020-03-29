@@ -147,17 +147,32 @@ var frameWorker = new Worker('js/worker.js');
 frameWorker.onmessage = function(e) {
   switch (e.data) {
     case "tick":
-      runFrame();
-      log("tock");
+      //runFrame();
       break;
   }
 }
 
+var  fpsInterval, startTime, now, then;
 var animation; // just something to keep the main thread busy
-function foo(){
-  requestAnimationFrame(foo);
+function animate(now) {
+  // request another frame
+  animation = requestAnimationFrame(animate);
+
+  // if enough time has elapsed, draw the next frame
+  if ((now - then) > intervalLength) {
+    // Get ready for next frame by setting then=now, but also adjust for your
+    // specified fpsInterval not being a multiple of RAF's interval (16.7ms)
+    then = now;
+
+    // Put your drawing code here
+    runFrame();
+  }
 }
-animation = requestAnimationFrame(foo);
+
+function startAnimating() {
+  then = performance.now();
+  animation = animate(then);
+}
 
 document.getElementById("startTAS").onclick = function() {
   if (!currentlyRunning || pauseTAS) {
@@ -173,6 +188,8 @@ document.getElementById("startTAS").onclick = function() {
       log("Starting to run");
       // Simulate 60 fps
       frameWorker.postMessage(["start", intervalLength]);
+
+      startAnimating();
     } else {
       log("Script is not ready yet");
     }
@@ -184,6 +201,7 @@ document.getElementById("startTAS").onclick = function() {
 
 function stopWorker() {
   frameWorker.postMessage(["stop"]);
+  cancelAnimationFrame(animation);
 }
 
 document.getElementById("stopTAS").onclick = function() {
