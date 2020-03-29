@@ -153,6 +153,14 @@ frameWorker.onmessage = function(e) {
   }
 }
 
+var fooInterval; // just something to keep the main thread busy
+function foo(){
+  var x;
+
+  x = 1+2;
+}
+fooInterval = setInterval(foo, 100);
+
 document.getElementById("startTAS").onclick = function() {
   if (!currentlyRunning || pauseTAS) {
     //if (!controllerIsCurrentlySynced) {
