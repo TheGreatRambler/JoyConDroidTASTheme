@@ -47,11 +47,11 @@ function clearAllInputs() {
 }
 
 function setButtonInput(functionName, param1, param2) {
-  window.joyconJS[functionName](param1);
+  //window.joyconJS[functionName](param1);
 }
 
 function setJoystickInput(functionName, param1, param2) {
-  window.joyconJS[functionName](param1, param2);
+  //window.joyconJS[functionName](param1, param2);
 }
 
 function disableMotionControls() {
