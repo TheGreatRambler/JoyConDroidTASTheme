@@ -26,11 +26,6 @@ var inputMappings = {
 
 var joyconDroidButtons = Object.values(inputMappings);
 
-var currentStatus = {
-  onLeftJoystick: [0, 0, 0],
-  onRightJoystick: [0, 0, 0]
-};
-
 // This holds the pressed Status for each button on each frame
 var buttonMap = Object.assign({}, inputMappings);
 
@@ -42,58 +37,21 @@ function resetButtonMap() {
 
 resetButtonMap();
 
-joyconDroidButtons.forEach(function(funcName) {
-  // Inputs are off initially
-  currentStatus[funcName] = [0, false];
-});
-
-function clearAllInputs(force) {
+function clearAllInputs() {
   joyconDroidButtons.forEach(function(funcName) {
     // Turns off each and every input
-    setButtonInput(funcName, false, force);
+    setButtonInput(funcName, false);
   });
-  setJoystickInput("onLeftJoystick", 0, 0, force);
-  setJoystickInput("onRightJoystick", 0, 0, force);
+  setJoystickInput("onLeftJoystick", 0, 0);
+  setJoystickInput("onRightJoystick", 0, 0);
 }
 
-function setButtonInput(functionName, param1, param2, force) {
-  /*
-  if (force ||
-    currentStatus[functionName][0] > 0 // Keep sending inputs for some frames after change incase the switch didn't receive it
-    ||
-    currentStatus[functionName][1] != param1) {
- //*/
-    window.joyconJS[functionName](param1);
-
-    /*
-    // Count down / Reset
-    tickDownStatus(functionName);
-  }
-//*/
+function setButtonInput(functionName, param1, param2) {
+  window.joyconJS[functionName](param1);
 }
 
-function tickDownStatus(functionName) {
-  if (currentStatus[functionName][0] > 0) {
-    currentStatus[functionName][0] -= 1;
-  } else {
-    currentStatus[functionName][0] = 2;
-  }
-}
-
-function setJoystickInput(functionName, param1, param2, force) {
-  /*
-  if (force
-    || currentStatus[functionName][0] > 0 // Keep sending inputs for some frames after change incase the switch didn't receive it
-    || currentStatus[functionName][1] != param1
-    || currentStatus[functionName][2] != param2) {
-    // */
+function setJoystickInput(functionName, param1, param2) {
   window.joyconJS[functionName](param1, param2);
-
-  // Count down / Reset
-  /*
-    tickDownStatus(functionName);
-  }
-  //*/
 }
 
 function disableMotionControls() {
@@ -109,8 +67,6 @@ window.inputHandler = function() {
     clearAllInputs();
     return false;
   }
-
-  log("Start of frame" + currentScriptParser.frame);
 
   // Send FPS to profiler
   callProfiler();
@@ -161,14 +117,13 @@ window.inputHandler = function() {
     // Clear controller visualizer
     setControllerVisualizer(false);
     // Stop all currently held inputs
-    clearAllInputs(true);
+    clearAllInputs();
     currentlyRunning = false;
     log("TAS is stopped or has finished");
 
     clearInterval(interval);
     return true;
   }
-  log("Loop: " + (performance.now() - start));
 
   return false;
 }
