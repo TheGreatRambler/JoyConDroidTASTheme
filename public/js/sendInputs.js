@@ -120,8 +120,6 @@ window.inputHandler = function() {
     clearAllInputs();
     currentlyRunning = false;
     log("TAS is stopped or has finished");
-
-    clearInterval(interval);
     return true;
   }
 
@@ -133,16 +131,25 @@ function setPlayArrow() {
   document.getElementById("playArrow").innerHTML = "<i class='material-icons md-80'>play_arrow</i>";
 }
 
-var interval;
 // Variable interval length
 var intervalLength;
+
 function parseIntervalLength() {
-    intervalLength = Number(document.getElementById('intervalLength').value);
-    intervalLength = intervalLength ? intervalLength : 16;
+  intervalLength = Number(document.getElementById('intervalLength').value);
+  intervalLength = intervalLength ? intervalLength : 16;
 }
 document.getElementById('intervalLength').addEventListener("change", parseIntervalLength);
 parseIntervalLength();
-//
+
+// Init worker
+var frameWorker = new Worker('js/worker.js');
+frameWorker.onmessage = function(e) {
+  switch (e.data) {
+    case "tick":
+      window.inputHandler();
+      break;
+  }
+}
 
 document.getElementById("startTAS").onclick = function() {
   if (!currentlyRunning || pauseTAS) {
@@ -157,7 +164,7 @@ document.getElementById("startTAS").onclick = function() {
 
       log("Starting to run");
       // Simulate 60 fps
-      interval = window.setInterval(window.inputHandler, intervalLength);
+      frameWorker.postMessage(["start", intervalLength]);
       //window.joyconJS.registerCallback("window.inputHandler");
     } else {
       log("Script is not ready yet");
@@ -176,6 +183,7 @@ document.getElementById("stopTAS").onclick = function() {
     currentlyRunning = false;
     currentScriptParser.reset();
     // Its startTASs job to end the TAS
+    frameWorker.postMessage(["stop"]);
   }
 };
 
@@ -184,6 +192,6 @@ document.getElementById("pauseTAS").onclick = function() {
   if (currentlyRunning && !pauseTAS) {
     log("Pausing TAS");
     pauseTAS = true;
-    clearInterval(interval);
+    frameWorker.postMessage(["stop"]);
   }
 };
