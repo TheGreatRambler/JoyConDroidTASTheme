@@ -134,6 +134,16 @@ function setPlayArrow() {
 }
 
 var interval;
+// Variable interval length
+var intervalLength;
+function parseIntervalLength() {
+    intervalLength = Number(document.getElementById('intervalLength').value);
+    intervalLength = intervalLength ? intervalLength : 16;
+}
+document.getElementById('intervalLength').addEventListener("change", parseIntervalLength);
+parseIntervalLength();
+//
+
 document.getElementById("startTAS").onclick = function() {
   if (!currentlyRunning || pauseTAS) {
     //if (!controllerIsCurrentlySynced) {
@@ -147,7 +157,7 @@ document.getElementById("startTAS").onclick = function() {
 
       log("Starting to run");
       // Simulate 60 fps
-      interval = window.setInterval(window.inputHandler, 16);
+      interval = window.setInterval(window.inputHandler, intervalLength);
       //window.joyconJS.registerCallback("window.inputHandler");
     } else {
       log("Script is not ready yet");
