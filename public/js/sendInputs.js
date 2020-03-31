@@ -168,8 +168,12 @@ function animate(now) {
   }
 }
 
+// nosleepJs
+var noSleep = new NoSleep();
+
 function startAnimating() {
   then = performance.now();
+  noSleep.enable();
   animation = animate(then);
 }
 var animation1; // just something to keep the main thread busy
@@ -210,6 +214,7 @@ document.getElementById("startTAS").onclick = function() {
 function stopWorker() {
   frameWorker.postMessage(["stop"]);
   cancelAnimationFrame(animation);
+  noSleep.disable();
 }
 
 document.getElementById("stopTAS").onclick = function() {
