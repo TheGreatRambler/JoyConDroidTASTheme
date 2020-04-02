@@ -17,7 +17,8 @@ var KEY_DICT = {
   LX: 15,
   LY: 16,
   RX: 17,
-  RY: 18
+  RY: 18,
+  HOME: 19
 };
 
 function ParserV1() {}

@@ -21,7 +21,8 @@ var inputMappings = {
   11: "onLeft",
   12: "onUp",
   13: "onRight",
-  14: "onDown"
+  14: "onDown",
+  19: "onHome"
 };
 
 var joyconDroidButtons = Object.values(inputMappings);
