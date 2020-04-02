@@ -39,7 +39,10 @@ ParserV1.prototype.parseScript = function(script) {
 
   var numLines = lines.length;
 
-  var regex = new RegExp("^(\\d+)(?:-(\\d+))?\\s+([^\\s]+)(?:\\s+(-?\\d+);(-?\\d+))?(?:\\s+(-?\\d+);(-?\\d+))?");
+  var frame = 0;
+  var endFrame = 0;
+
+  var regex = new RegExp("^(\\+?\\d+)(?:-(\\d+))?\\s+([^\\s]+)(?:\\s+(-?\\d+);(-?\\d+))?(?:\\s+(-?\\d+);(-?\\d+))?");
   for (var i = 0; i < numLines; i++) {
     var line = lines[i].toUpperCase();;
     var matches = line.match(regex)
@@ -48,8 +51,25 @@ ParserV1.prototype.parseScript = function(script) {
       continue;
     }
 
-    var frame = Number(matches[1]);
-    var endFrame = matches[2] ? Number(matches[2]) : frame;
+    // Start Frame
+    var offsetMode = matches[1][0] == "+";
+
+    if (offsetMode) { // Offset
+      frame = endFrame + Number(matches[1]);
+    } else {
+      frame = Number(matches[1]);
+    }
+
+    // End frame
+    if (matches[2]) {
+      if (offsetMode) { // Offset
+        endFrame = frame + Number(matches[2]);
+      } else {
+        endFrame = Number(matches[2]  );
+      }
+    } else {
+      endFrame = frame;
+    }
 
     var buttons = matches[3].split(";");
     var numButtons = buttons.length;
