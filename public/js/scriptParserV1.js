@@ -41,7 +41,7 @@ ParserV1.prototype.parseScript = function(script) {
 
   var regex = new RegExp("^(\\d+)(?:-(\\d+))?\\s+([^\\s]+)(?:\\s+(-?\\d+);(-?\\d+))?(?:\\s+(-?\\d+);(-?\\d+))?");
   for (var i = 0; i < numLines; i++) {
-    var line = lines[i];
+    var line = lines[i].toUpperCase();;
     var matches = line.match(regex)
 
     if (!matches) {
@@ -58,7 +58,7 @@ ParserV1.prototype.parseScript = function(script) {
     var validButtons = [];
     for (var j = 0; j < numButtons; j++) {
       var buttonName = buttons[j];
-      var ind = KEY_DICT[buttonName];
+      var ind = KEY_DICT[buttonName] ? KEY_DICT[buttonName] : KEY_DICT["KEY_" + buttonName];
 
       if (ind) {
         validButtons.push(ind);
