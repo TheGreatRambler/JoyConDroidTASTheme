@@ -17,7 +17,8 @@ var KEY_DICT = {
   LX: 15,
   LY: 16,
   RX: 17,
-  RY: 18
+  RY: 18,
+  HOME: 19
 };
 
 function ParserV1() {}
@@ -38,17 +39,37 @@ ParserV1.prototype.parseScript = function(script) {
 
   var numLines = lines.length;
 
-  var regex = new RegExp("^(\\d+)(?:-(\\d+))?\\s+([^\\s]+)(?:\\s+(-?\\d+);(-?\\d+))?(?:\\s+(-?\\d+);(-?\\d+))?");
+  var frame = 0;
+  var endFrame = 0;
+
+  var regex = new RegExp("^(\\+?\\d+)(?:-(\\d+))?\\s+([^\\s]+)(?:\\s+(-?\\d+);(-?\\d+))?(?:\\s+(-?\\d+);(-?\\d+))?");
   for (var i = 0; i < numLines; i++) {
-    var line = lines[i];
+    var line = lines[i].toUpperCase();;
     var matches = line.match(regex)
 
     if (!matches) {
       continue;
     }
 
-    var frame = Number(matches[1]);
-    var endFrame = matches[2] ? Number(matches[2]) : frame;
+    // Start Frame
+    var offsetMode = matches[1][0] == "+";
+
+    if (offsetMode) { // Offset
+      frame = endFrame + Number(matches[1]);
+    } else {
+      frame = Number(matches[1]);
+    }
+
+    // End frame
+    if (matches[2]) {
+      if (offsetMode) { // Offset
+        endFrame = frame + Number(matches[2]);
+      } else {
+        endFrame = Number(matches[2]  );
+      }
+    } else {
+      endFrame = frame;
+    }
 
     var buttons = matches[3].split(";");
     var numButtons = buttons.length;
@@ -57,7 +78,7 @@ ParserV1.prototype.parseScript = function(script) {
     var validButtons = [];
     for (var j = 0; j < numButtons; j++) {
       var buttonName = buttons[j];
-      var ind = KEY_DICT[buttonName];
+      var ind = KEY_DICT[buttonName] ? KEY_DICT[buttonName] : KEY_DICT["KEY_" + buttonName];
 
       if (ind) {
         validButtons.push(ind);

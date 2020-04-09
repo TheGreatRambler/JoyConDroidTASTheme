@@ -18,50 +18,62 @@
 		<!-- Housekeeping buttons -->
 		<div class="buttonContainer">
 			<div class="buttonRow">
-				<div class="buttonFake buttonBackground" id="submitTASFile">
+				<button class="buttonFake buttonBackground" id="submitTASFile">
 					<p class="buttonText" id="fileInputText"><i class="material-icons md-80">file_upload</i></p>
-				</div>
-					<div class="buttonFake buttonBackground" id="reloadTASFile">
-							<p class="buttonText" id="fileInputText"><i class="material-icons md-80">sync</i></p>
-					</div>
-				<div class="buttonFake buttonBackground" id="syncController">
+					<div>Load Script</div>
+				</button>
+				<button class="buttonFake buttonBackground" id="reloadTASFile">
+					<p class="buttonText" id="fileInputText"><i class="material-icons md-80">sync</i></p>
+					<div>Reload Script</div>
+				</button>
+				<button class="buttonFake buttonBackground" id="syncController">
 					<p class="buttonText"><i class="material-icons md-80">bluetooth</i></p>
-				</div>
-				<div class="buttonFake buttonBackground" id="openSettings">
+					<div>Sync Controller</div>
+				</button>
+				<button class="buttonFake buttonBackground" id="openSettings">
 					<p class="buttonText"><i class="material-icons md-80">settings</i></p>
-				</div>
+					<div>Settings</div>
+				</button>
 			</div>
 			<!-- Running TAS -->
 			<div class="buttonRow">
-				<div class="buttonFake buttonBackground" id="startTAS">
+				<button class="buttonFake buttonBackground" id="startTAS">
 					<p class="buttonText" id="playArrow"><i class="material-icons md-80">play_arrow</i></p>
-				</div>
-				<div class="buttonFake buttonBackground" id="stopTAS">
+					<div>Run</div>
+				</button>
+				<button class="buttonFake buttonBackground" id="stopTAS">
 					<p class="buttonText"><i class="material-icons md-80">stop</i></p>
-				</div>
-				<div class="buttonFake buttonBackground" id="pauseTAS">
+					<div>Stop</div>
+				</button>
+				<button class="buttonFake buttonBackground" id="pauseTAS">
 					<p class="buttonText"><i class="material-icons md-80">pause</i></p>
-				</div>
+					<div>Pause</div>
+				</button>
 			</div>
 			<!-- Extra UIs buttons -->
 			<div class="buttonRow">
-				<div class="buttonFake buttonBackground" id="showController">
+				<button class="buttonFake buttonBackground" id="showController">
 					<p class="buttonText"><i class="material-icons md-80">gamepad</i></p>
-				</div>
-				<div class="buttonFake buttonBackground" id="showLog">
+					<div>Show Controller</div>
+				</button>
+				<button class="buttonFake buttonBackground" id="showLog">
 					<p class="buttonText"><i class="material-icons md-80">description</i></p>
-				</div>
-				<div class="buttonFake buttonBackground" id="clearLog">
+					<div>Show Log</div>
+				</button>
+				<button class="buttonFake buttonBackground" id="clearLog">
 					<p class="buttonText"><i class="material-icons md-80">delete</i></p>
-				</div>
-				<div class="buttonFake buttonBackground" id="showStats">
+					<div>Clear Log</div>
+				</button>
+				<button class="buttonFake buttonBackground" id="showStats">
 					<p class="buttonText"><i class="material-icons md-80">insert_chart</i></p>
-				</div>
+					<div>Show Stats</div>
+				</button>
 			</div>
 		</div>
 		<!-- Progress bar -->
 		<div class="progressBar" id="progressBarBase"></div>
 		<div class="progressBar" id="progressBarRun"></div>
+		<div class="progressBar" id="progressBarTest" style="background-color:blue;top:58%;height:1%"></div>
 		<!-- Extra UIs -->
 		<div id="controllerImageContainer" class="buttonBackground"></div>
 		<div id="logContainer">
@@ -102,6 +114,7 @@
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js" crossorigin="anonymous"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js" crossorigin="anonymous"></script>
 	<script src="./js/tp/chartjs-plugin-streaming.min.js"></script>
+	<script src="./js/tp/nosleepJs/index.js"></script>
 	<script src="./js/JoyConDroidImpersonator.js"></script>
 	<script src="./js/settings.js"></script>
 	<script src="./js/controllerVisualizer.js"></script>

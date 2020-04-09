@@ -21,7 +21,8 @@ var inputMappings = {
   11: "onLeft",
   12: "onUp",
   13: "onRight",
-  14: "onDown"
+  14: "onDown",
+  19: "onHome"
 };
 
 var joyconDroidButtons = Object.values(inputMappings);
@@ -60,8 +61,7 @@ function disableMotionControls() {
 }
 disableMotionControls();
 
-window.inputHandler = function() {
-  var start = performance.now();
+function runFrame() {
   if (pauseTAS) {
     // Just to keep it in check
     clearAllInputs();
@@ -119,9 +119,9 @@ window.inputHandler = function() {
     // Stop all currently held inputs
     clearAllInputs();
     currentlyRunning = false;
+    currentScriptParser.reset();
+    stopWorker();
     log("TAS is stopped or has finished");
-
-    clearInterval(interval);
     return true;
   }
 
@@ -133,16 +133,59 @@ function setPlayArrow() {
   document.getElementById("playArrow").innerHTML = "<i class='material-icons md-80'>play_arrow</i>";
 }
 
-var interval;
 // Variable interval length
 var intervalLength;
+
 function parseIntervalLength() {
-    intervalLength = Number(document.getElementById('intervalLength').value);
-    intervalLength = intervalLength ? intervalLength : 16;
+  intervalLength = Number(document.getElementById('intervalLength').value);
+  intervalLength = intervalLength ? intervalLength : 16;
 }
 document.getElementById('intervalLength').addEventListener("change", parseIntervalLength);
 parseIntervalLength();
-//
+
+// Init worker
+var frameWorker = new Worker('js/worker.js');
+frameWorker.onmessage = function(e) {
+  switch (e.data) {
+    case "tick":
+      //runFrame();
+      break;
+  }
+}
+
+var  animation, fpsInterval, startTime, now, then;
+function animate(now) {
+  // request another frame
+  animation = requestAnimationFrame(animate);
+
+  // if enough time has elapsed, draw the next frame
+  if ((now - then) > intervalLength) {
+    // Get ready for next frame by setting then=now, but also adjust for your
+    // specified fpsInterval not being a multiple of RAF's interval (16.7ms)
+    then = now;
+
+    // Put your drawing code here
+    runFrame();
+  }
+}
+
+// nosleepJs
+var noSleep = new NoSleep();
+
+function startAnimating() {
+  then = performance.now();
+  noSleep.enable();
+  animation = animate(then);
+}
+var animation1; // just something to keep the main thread busy
+var x = 0;
+function foo()
+{
+  x = (x+1) % 100;
+  document.getElementById('progressBarTest').style.width = x +"%";
+  animation1 = requestAnimationFrame(foo);
+}
+animation1 = foo();
 
 document.getElementById("startTAS").onclick = function() {
   if (!currentlyRunning || pauseTAS) {
@@ -157,8 +200,9 @@ document.getElementById("startTAS").onclick = function() {
 
       log("Starting to run");
       // Simulate 60 fps
-      interval = window.setInterval(window.inputHandler, intervalLength);
-      //window.joyconJS.registerCallback("window.inputHandler");
+      frameWorker.postMessage(["start", intervalLength]);
+
+      startAnimating();
     } else {
       log("Script is not ready yet");
     }
@@ -168,15 +212,17 @@ document.getElementById("startTAS").onclick = function() {
   }
 };
 
+function stopWorker() {
+  frameWorker.postMessage(["stop"]);
+  cancelAnimationFrame(animation);
+  noSleep.disable();
+}
+
 document.getElementById("stopTAS").onclick = function() {
-  // No need to stop if its not running
-  // Cant stop while pause, might change
-  if (currentlyRunning && !pauseTAS) {
-    log("Stopping TAS");
-    currentlyRunning = false;
-    currentScriptParser.reset();
-    // Its startTASs job to end the TAS
-  }
+  log("Stopping TAS");
+  currentlyRunning = false;
+  currentScriptParser.reset();
+  stopWorker();
 };
 
 document.getElementById("pauseTAS").onclick = function() {
@@ -184,6 +230,6 @@ document.getElementById("pauseTAS").onclick = function() {
   if (currentlyRunning && !pauseTAS) {
     log("Pausing TAS");
     pauseTAS = true;
-    clearInterval(interval);
+    stopWorker();
   }
 };

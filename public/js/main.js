@@ -19,9 +19,9 @@ function log(text) {
 	// Keep log at bottom
 	logTextarea.scrollTop = logTextarea.scrollHeight;
 }
-
+1
 // Log version
-log("V 1.1.0");
+log("V 1.2.0");
 
 // Redirect errors to logging
 window.onerror = function(message) {
@@ -89,6 +89,7 @@ function reloadTASFile() {
 }
 
 document.getElementById("syncController").onclick = function() {
+	log("Syncing Controller");
 	// Try to sync VERY MANUALLY
 	window.joyconJS.onSync(true);
 	setTimeout(function() {
