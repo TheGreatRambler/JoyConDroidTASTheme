@@ -36,34 +36,72 @@ ParserV1.prototype.parseScript = function(script) {
   var lines = script.split("\n");
   // Now parse each line into instructions
   this.instructions = {};
-  this.lastFrame = 0;
+  this.lastFrame = -1;
 
   var numLines = lines.length;
 
   var instructionRegex = new RegExp("^(\\+?\\d+)(?:-(\\d+))?\\s+([^\\s]+)(?:\\s+(-?\\d+);(-?\\d+))?(?:\\s+(-?\\d+);(-?\\d+))?");
-  var loopStartRegex = new RegExp("^(\d+)\s*x\s*{");
-  var buffer = [];
+  var loopStartRegex = new RegExp("^(\\d+)\\s*[xX]\\s*{");
+  var loopEndRegex = new RegExp("^\\s*}");
+  var buffer = {};
+  var looping = false;
+  var repetitions = 0;
+  var start = 0;
+  var offset = 0;
   for (var i = 0; i < numLines; i++) {
-    var line    = lines[i].toUpperCase();
-    var matches = line.match(instructionRegex);
-    var loop = false;
+    var line        = lines[i].toUpperCase();
+    var loopMatches = line.match(loopStartRegex);
 
-    if (!matches) {
+    if (loopMatches)
+    {
+      // Start Loop
+      repetitions = Number(loopMatches[1]);
+      looping = true;
+      start  = 0;
+      buffer = {};
       continue;
     }
 
-    if (!loop){
-      buffer = [];
+    if (line.match(loopEndRegex))
+    {
+      // Stop loop
+      looping = false;
+      // Merge Buffer into instructions
+      for (var r=0; r<repetitions; r++)
+      {
+        for (var key of Object.keys(buffer)) {
+          var f                = this.lastFrame + Number(key) + 1;
+          this.instructions[f] = buffer[key];
+        }
+        this.lastFrame = f;
+      }
+      continue;
     }
 
-    var parseResult = this.parseInstructionLine(matches, this.lastFrame)
+    var matches = line.match(instructionRegex);
+
+    // Ignore invalid lines
+    if (!matches) {
+        continue;
+    }
+
+    if (!looping){
+      // write directly to instructions if not looping
+      buffer = this.instructions;
+      start  = this.lastFrame + 1;
+    }
+
+    var parseResult = this.parseInstructionLine(matches, start);
+
+    start = parseResult.endFrame;
 
     for (var f = parseResult.startFrame; f <= parseResult.endFrame; f++) {
-      buffer.push(parseResult.instruction)
+      buffer[f] = parseResult.instruction;
     }
 
-    if (!loop){
-      this.addInstructions(buffer, parseResult.startFrame)
+    if (!looping)
+    {
+      this.lastFrame = f;
     }
   }
 
@@ -91,7 +129,7 @@ ParserV1.prototype.parseInstructionLine = function(matches, start) {
   // End frame
   if (matches[2]) {
     if (offsetMode) { // Offset
-      endFrame = frame + Number(matches[2]);
+      endFrame = frame + Number(matches[2]) - 1;
     } else {
       endFrame = Number(matches[2]  );
     }
@@ -147,20 +185,6 @@ ParserV1.prototype.parseInstructionLine = function(matches, start) {
     instruction: instruction
   };
 }
-
-
-/**
- *
- */
-ParserV1.prototype.addInstructions = function(instructions, start) {
-    var numInstr = instructions.length;
-    for (var i = 0; i < numInstr; i++) {
-      var f                = start + i
-      this.instructions[f] = instructions[i];
-      this.lastFrame       = f;
-    }
-}
-
 
 /**
  * Converts the text value to the number value used by the controller
