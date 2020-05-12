@@ -114,12 +114,7 @@ function runFrame() {
   if (currentlyRunning === false || currentScriptParser.done()) {
     // Time to stop!
     //window.joyconJS.unregisterCallback();
-    // Clear controller visualizer
-    setControllerVisualizer(false);
-    // Stop all currently held inputs
-    clearAllInputs();
-    currentlyRunning = false;
-    currentScriptParser.reset();
+    reset();
     stopWorker();
     log("TAS is stopped or has finished");
     return true;
@@ -218,10 +213,17 @@ function stopWorker() {
   noSleep.disable();
 }
 
-document.getElementById("stopTAS").onclick = function() {
-  log("Stopping TAS");
+function reset(){
+  setControllerVisualizer(false);
+  // Stop all currently held inputs
+  clearAllInputs();
   currentlyRunning = false;
   currentScriptParser.reset();
+}
+
+document.getElementById("stopTAS").onclick = function() {
+  log("Stopping TAS");
+  reset();
   stopWorker();
 };
 
