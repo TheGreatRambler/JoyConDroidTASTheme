@@ -15,7 +15,7 @@ var Visualizer = {
   /**
    *
    */
-  showController: function () {
+  showController () {
     hideLog();
     hideStats();
     this.imageContainer.style.display = "block";
@@ -24,14 +24,14 @@ var Visualizer = {
   /**
    *
    */
-  hideController: function () {
+  hideController () {
     this.imageContainer.style.display = "none";
     this.currentlyVisible = false;
   },
   /**
    *
    */
-  visible: function (isVisible, index) {
+  visible (isVisible, index) {
     this.makeImage(index);
 
     if (isVisible) {
@@ -43,14 +43,14 @@ var Visualizer = {
   /**
    *
    */
-  move: function (index, x, y) {
+  move (index, x, y) {
     this.inputImages[index].style.left = x + "px";
     this.inputImages[index].style.top = y + "px";
   },
   /**
    *
    */
-  makeImage: function (key) {
+  makeImage (key) {
     if (this.inputImages[key]) {
       return;
     }
@@ -87,7 +87,7 @@ var Visualizer = {
   /**
    *
    */
-  init: function () {
+  init () {
     // Make proconbase visible as well as the sticks
     this.visible(true, "proconbase");
     this.visible(true, "leftstick");
@@ -96,7 +96,7 @@ var Visualizer = {
   /**
    *
    */
-  setControllerVisualizer: function (inputs) {
+  setControllerVisualizer (inputs) {
     if (!this.currentlyVisible) {
       return;
     }
