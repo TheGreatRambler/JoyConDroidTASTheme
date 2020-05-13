@@ -1,4 +1,5 @@
 // Uses some stuff from TASVis
+"use strict";
 var Visualizer = {
   /**
    *
@@ -175,4 +176,4 @@ var Visualizer = {
 
 Visualizer.init();
 // Toggle controller visibility
-document.getElementById("showController").onclick = Visualizer.showController;
+document.getElementById("showController").onclick = () =>{Visualizer.showController()};
