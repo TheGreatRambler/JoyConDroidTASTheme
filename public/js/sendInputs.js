@@ -73,7 +73,7 @@ function runFrame() {
   // Get next frame
   var inputsThisFrame = currentScriptParser.nextFrame();
 
-  setControllerVisualizer(inputsThisFrame);
+  Visualizer.setControllerVisualizer(inputsThisFrame);
 
   // Makes it easier to clear all of them beforehand
   if (inputsThisFrame) {
@@ -214,7 +214,7 @@ function stopWorker() {
 }
 
 function reset(){
-  setControllerVisualizer(false);
+  Visualizer.setControllerVisualizer(false);
   // Stop all currently held inputs
   clearAllInputs();
   currentlyRunning = false;
