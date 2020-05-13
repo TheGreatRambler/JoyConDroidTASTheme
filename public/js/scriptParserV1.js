@@ -18,8 +18,11 @@ var KEY_DICT = {
   LY: 16,
   RX: 17,
   RY: 18,
-  HOME: 19
+  KEY_HOME: 19
 };
+
+// Allows you to go backwards
+var KEY_INT_ARRAY = Object.keys(KEY_DICT);
 
 function ParserV1() {}
 

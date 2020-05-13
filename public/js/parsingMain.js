@@ -1,7 +1,3 @@
-
-// Allows you to go backwards
-var KEY_INT_ARRAY = Object.keys(KEY_DICT);
-
 // Main script parsing frontend
 
 function parseScript() {
