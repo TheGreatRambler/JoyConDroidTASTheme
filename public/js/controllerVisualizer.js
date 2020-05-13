@@ -16,8 +16,8 @@ var Visualizer = {
    *
    */
   showController: function () {
-    this.hideLog();
-    this.hideStats();
+    hideLog();
+    hideStats();
     this.imageContainer.style.display = "block";
     this.currentlyVisible = true;
   },

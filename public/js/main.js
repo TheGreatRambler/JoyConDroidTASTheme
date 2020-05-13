@@ -113,7 +113,7 @@ document.getElementById("syncController").onclick = function() {
 var logContainer = document.getElementById("logContainer");
 
 function showLog() {
-	hideController();
+	Visualizer.hideController();
 	hideStats();
 	logContainer.style.display = "block";
 }
