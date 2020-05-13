@@ -67,13 +67,14 @@ var Visualizer = {
     // Situate image
     oImg.style.top = 0;
 
+    var zIndex = 1;
     switch (key) {
       case "proconbase":
         zIndex = 0;
         break;
 
-      default:
-        zindex = 1;
+      case "blank":
+        zIndex = 2;
         break;
     }
 
