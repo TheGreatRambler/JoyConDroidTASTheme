@@ -42,6 +42,8 @@ body {
 
 .buttonContainer{
   height: 57%;
+  padding-top: 1px;
+  padding-left: 1px;
 }
 
 .buttonRow{
@@ -70,7 +72,7 @@ body {
 }
 
 .material-icons.md-80 {
-  font-size: 80px;
+  font-size: 60px;
 }
 
 /* When a file is added */
@@ -81,7 +83,7 @@ body {
 }
 
 .buttonFake div{
-  font-size: 12px;
+  font-size: 10px;
   color:white;
 }
 
