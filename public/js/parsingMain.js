@@ -1,33 +1,3 @@
-/*
-var KEY_DICT = {
-	FRAME: 0,
-	KEY_A: 1,
-	KEY_B: 2,
-	KEY_X: 3,
-	KEY_Y: 4,
-	KEY_L: 5,
-	KEY_R: 6,
-	KEY_ZL: 7,
-	KEY_ZR: 8,
-	KEY_PLUS: 9,
-	KEY_MINUS: 10,
-	KEY_DLEFT: 11,
-	KEY_DUP: 12,
-	KEY_DRIGHT: 13,
-	KEY_DDOWN: 14,
-	LX: 15,
-	LY: 16,
-	RX: 17,
-	RY: 18
-};
-*/
-
-// Allows you to go backwards
-var KEY_INT_ARRAY = Object.keys(KEY_DICT);
-
-// RY + 1
-var LENGTH_BUTTON_ARRAY = 19;
-
 // Main script parsing frontend
 
 function parseScript() {

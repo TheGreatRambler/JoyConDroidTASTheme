@@ -21,7 +21,7 @@ function log(text) {
 }
 1
 // Log version
-log("V 1.2.0");
+log("V 1.3.1");
 
 // Redirect errors to logging
 window.onerror = function(message) {
@@ -113,7 +113,7 @@ document.getElementById("syncController").onclick = function() {
 var logContainer = document.getElementById("logContainer");
 
 function showLog() {
-	hideController();
+	Visualizer.hideController();
 	hideStats();
 	logContainer.style.display = "block";
 }

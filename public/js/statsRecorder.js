@@ -62,7 +62,7 @@ var statsChart;
 
 // Show and hide code
 function showStats() {
-	hideController();
+	Visualizer.hideController();
 	hideLog();
 	statsContainer.style.display = "block";
 	statsAreVisible = true;
