@@ -1,0 +1,8 @@
+# wait a bit
++1-30 n
+# Taunt
++1-8 dup
+# Hold shield
++1-160 zr
+# reset training
++1-8 l;r;a

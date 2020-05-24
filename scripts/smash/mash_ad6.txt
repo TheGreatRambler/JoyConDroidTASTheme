@@ -1,0 +1,11 @@
+# wait a bit
++1-30 n
+# Taunt
++1-8 dup
+# Mash like crazy
+60x{
+  +1-1 zr 30000;0
+  +1-1 n
+}
+# reset training
++1-8 l;r;a
