@@ -27,36 +27,29 @@ var FPS_INPUT = document.getElementById("showFPS");
 var scriptCompilerVersion = 0;
 var PARSER_FIRST_VERSION = 0;
 
+function hideAllWindows()
+{
+  for (let item of document.getElementsByClassName("window")) {
+    item.classList.add("hidden");
+  }
+}
 
 function openTASWindow() {
-  closeSettingsWindow();
   // Open only the TAS window
+  hideAllWindows();
   TAS_WINDOW.classList.remove("hidden");
   // CSS animation will automatically be added
 }
 
-function closeTASWindow() {
-  // Open close the TAS window
-  TAS_WINDOW.classList.add("hidden");
-  // CSS animation will automatically be added
-}
-
 function openSettingsWindow() {
-  closeTASWindow();
   // Open only the TAS window
+  hideAllWindows();
   SETTINGS_WINDOW.classList.remove("hidden");
-  // CSS animation will automatically be added
-}
-
-function closeSettingsWindow() {
-  // Open close the TAS window
-  SETTINGS_WINDOW.classList.add("hidden");
   // CSS animation will automatically be added
 }
 
 function defaultUiPlacement() {
   openTASWindow();
-  closeSettingsWindow();
 }
 
 // Run now
