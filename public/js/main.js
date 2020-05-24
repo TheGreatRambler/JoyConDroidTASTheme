@@ -76,7 +76,6 @@ function reloadTASFile() {
 			// Time to parse
 			currentScriptParser.setScript(contents);
 			log("Ready to start");
-			isReadyToRun = true;
 		};
 		fileReader.onerror = function() {
 			log("File reading failed");
