@@ -49,6 +49,8 @@ parseScript.prototype.setScript = function(script) {
   script = script.trim();
 
   this.parser.setScript(script.trim());
+
+  isReadyToRun = true;
   // Last frame number for progress bar sheanigans
   this.lastFrame = this.parser.getLastFrame();
 

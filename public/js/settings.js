@@ -1,14 +1,5 @@
-var NOT_USED_X = "-300%";
-var NOT_USED_Y = "0%";
-
 var TAS_WINDOW = document.getElementById("TASContainer");
-var TAS_WINDOW_X = "-0.25%";
-var TAS_WINDOW_Y = "-0.25%";
-
 var SETTINGS_WINDOW = document.getElementById("SettingsContainer");
-var SETTINGS_WINDOW_X = "-0.25%";
-var SETTINGS_WINDOW_Y = "-0.25%";
-
 // Settings for entire program
 /*
   Parsing style represents way in which inputs are parsed
@@ -36,44 +27,29 @@ var FPS_INPUT = document.getElementById("showFPS");
 var scriptCompilerVersion = 0;
 var PARSER_FIRST_VERSION = 0;
 
-
-function openTASWindow() {
-  closeSettingsWindow();
-  // Open only the TAS window
-  TAS_WINDOW.style.visibility = "visible";
-  TAS_WINDOW.style.left = TAS_WINDOW_X;
-  TAS_WINDOW.style.top = TAS_WINDOW_Y;
-  // CSS animation will automatically be added
+function hideAllWindows()
+{
+  for (let item of document.getElementsByClassName("window")) {
+    item.classList.add("hidden");
+  }
 }
 
-function closeTASWindow() {
-  // Open close the TAS window
-  TAS_WINDOW.style.visibility = "hidden";
-  TAS_WINDOW.style.left = NOT_USED_X;
-  TAS_WINDOW.style.top = NOT_USED_Y;
+function openTASWindow() {
+  // Open only the TAS window
+  hideAllWindows();
+  TAS_WINDOW.classList.remove("hidden");
   // CSS animation will automatically be added
 }
 
 function openSettingsWindow() {
-  closeTASWindow();
   // Open only the TAS window
-  SETTINGS_WINDOW.style.visibility = "visible";
-  SETTINGS_WINDOW.style.left = SETTINGS_WINDOW_X;
-  SETTINGS_WINDOW.style.top = SETTINGS_WINDOW_Y;
-  // CSS animation will automatically be added
-}
-
-function closeSettingsWindow() {
-  // Open close the TAS window
-  SETTINGS_WINDOW.style.visibility = "hidden";
-  SETTINGS_WINDOW.style.left = NOT_USED_X;
-  SETTINGS_WINDOW.style.top = NOT_USED_Y;
+  hideAllWindows();
+  SETTINGS_WINDOW.classList.remove("hidden");
   // CSS animation will automatically be added
 }
 
 function defaultUiPlacement() {
   openTASWindow();
-  closeSettingsWindow();
 }
 
 // Run now

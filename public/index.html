@@ -26,9 +26,9 @@
 					<p class="buttonText" id="fileInputText"><i class="material-icons md-80">sync</i></p>
 					<div>Reload Script</div>
 				</button>
-				<button class="buttonFake buttonBackground" id="syncController">
-					<p class="buttonText"><i class="material-icons md-80">bluetooth</i></p>
-					<div>Sync Controller</div>
+				<button class="buttonFake buttonBackground" id="defaultScripts">
+					<p class="buttonText"><i class="material-icons md-80">assignment_returned</i></p>
+					<div>Predefined Scripts</div>
 				</button>
 				<button class="buttonFake buttonBackground" id="openSettings">
 					<p class="buttonText"><i class="material-icons md-80">settings</i></p>
@@ -48,6 +48,10 @@
 				<button class="buttonFake buttonBackground" id="pauseTAS">
 					<p class="buttonText"><i class="material-icons md-80">pause</i></p>
 					<div>Pause</div>
+				</button>
+				<button class="buttonFake buttonBackground" id="syncController">
+					<p class="buttonText"><i class="material-icons md-80">bluetooth</i></p>
+					<div>Sync Controller</div>
 				</button>
 			</div>
 			<!-- Extra UIs buttons -->
@@ -73,7 +77,6 @@
 		<!-- Progress bar -->
 		<div class="progressBar" id="progressBarBase"></div>
 		<div class="progressBar" id="progressBarRun"></div>
-		<div class="progressBar" id="progressBarTest" style="background-color:blue;top:58%;height:1%"></div>
 		<!-- Extra UIs -->
 		<div id="controllerImageContainer" class="buttonBackground"></div>
 		<div id="logContainer">
@@ -83,7 +86,7 @@
 			<canvas id="statsCanvas"></canvas>
 		</div>
 	</div>
-	<div id="SettingsContainer" class="window">
+	<div id="SettingsContainer" class="window hidden">
 		<div class="settingsItem">
 			<div class="settingsInput settingsInputTitle" id="parsingTitle">Parsing Algorithm</div>
 			<select class="settingsInput settingsInputItem" id="parsingStyle">
@@ -107,8 +110,19 @@
 			<input class="settingsInput settingsInputItem" id="intervalLength" type="number" min="1" max="1000" value="16">
 		</div>
 		<div class="settingsItem">
-			<button class="settingsInput" id="submitButton">Close Settings</div>
+			<button class="settingsInput" id="submitButton">Close Settings</button>
+		</div>
 	</div>
+	<div id="ScriptContainer" class="window hidden">
+		<div class="settingsItem">
+			<div class="settingsInput settingsInputTitle" id="parsingTitle">Smash</div>
+			<select class="settingsInput settingsInputItem" id="SmashScripts">
+				<option></option>
+			</select>
+		</div>
+		<div class="settingsItem">
+			<button class="settingsInput" id="CloseScripts">Close Scripts</div>
+		</div>
 	</div>
 
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js" crossorigin="anonymous"></script>
@@ -123,6 +137,7 @@
 	<script src="./js/statsRecorder.js"></script>
 	<script src="./js/sendInputs.js"></script>
 	<script src="./js/main.js"></script>
+	<script src="./js/script_predefined.js"></script>
 </body>
 
 </html>

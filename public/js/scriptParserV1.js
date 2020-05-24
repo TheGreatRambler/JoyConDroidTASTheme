@@ -43,8 +43,8 @@ ParserV1.prototype.parseScript = function(script) {
 
   var numLines = lines.length;
 
-  var instructionRegex = new RegExp("^(\\+?\\d+)(?:-(\\d+))?\\s+([^\\s]+)(?:\\s+(-?\\d+);(-?\\d+))?(?:\\s+(-?\\d+);(-?\\d+))?");
-  var loopStartRegex = new RegExp("^(\\d+)\\s*[xX]\\s*{");
+  var instructionRegex = new RegExp("^\\s*(\\+?\\d+)(?:-(\\d+))?\\s+([^\\s]+)(?:\\s+(-?\\d+);(-?\\d+))?(?:\\s+(-?\\d+);(-?\\d+))?");
+  var loopStartRegex = new RegExp("^\\s*(\\d+)\\s*[xX]\\s*{");
   var loopEndRegex = new RegExp("^\\s*}");
   var buffer = {};
   var looping = false;
