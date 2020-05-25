@@ -25,7 +25,7 @@ parseScript.prototype.setRunProgress = function(runProgress) {
 
 parseScript.prototype.done = function() {
   // Should technically work
-  return this.lastFrame < this.frame;
+  return this.lastFrame == this.frame;
 };
 
 parseScript.prototype.nextFrame = function() {
